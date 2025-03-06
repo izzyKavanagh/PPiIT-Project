@@ -1,0 +1,43 @@
+package Network;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// create instances of router and dhcp
+		Router router = new Router();
+		DHCPServer dhcpServer = new DHCPServer();
+		
+		//create instances of computers
+		Computer pc1 = new Computer("PC1", "00:1A:2B:3C:4D:5E");
+	}
+	
+		
+        Router router = new Router();
+        DHCPServer dhcpServer = new DHCPServer();
+        DNSServer dnsServer = new DNSServer();
+
+        // Creating two PCs instead of a PC and a Smartphone
+        Computer pc1 = new Computer("PC1", "00:1A:2B:3C:4D:5E");
+        Computer pc2 = new Computer("PC2", "22:33:44:55:66:77");
+
+        // Connecting PCs to the router
+        pc1.connectToRouter(router);
+        pc2.connectToRouter(router);
+
+        // Requesting IP addresses from DHCP
+        pc1.requestIpAddress(dhcpServer);
+        pc2.requestIpAddress(dhcpServer);
+
+        // Printing assigned IPs for verification
+        System.out.println(pc1.getName() + " IP: " + pc1.getIpAddress());
+        System.out.println(pc2.getName() + " IP: " + pc2.getIpAddress());
+
+        // Simulating communication between two PCs
+        pc1.sendMessage("Hello, PC2!", pc2.getIpAddress());
+        pc2.sendMessage("Hello, PC1!", pc1.getIpAddress());
+
+        // Simulating a domain resolution request
+        String googleIp = dnsServer.resolveDomain("google.com");
+        System.out.println("Google IP Address: " + googleIp);
+    }
+}
