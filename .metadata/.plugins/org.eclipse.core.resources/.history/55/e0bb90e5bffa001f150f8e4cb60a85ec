@@ -1,0 +1,27 @@
+package Network;
+
+
+// Class for representing computer
+public class Computer{
+	String name, macAddress, IPAddress;
+	Router router;
+	
+	public Computer(String name, String macAddress) {
+	     this.name = name;
+	     this.macAddress = macAddress;
+	     this.IPAddress = null;
+	  }
+	
+	public void sendMessage(String message, String destinationIp) {
+		  // Method for sending messages to other devices (through router)
+	  }
+	
+	public void receiveMessage(Packet packet) {
+	      // method for receiving messages from other devices
+	  }
+
+	  public String getName() {
+	      return name;
+	  }
+}
+
