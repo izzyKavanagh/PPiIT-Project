@@ -10,16 +10,8 @@ public class Packet {
 		this.message = message;
 	}
 
-	public String getSourceIP() {
-		return sourceIP;
+	 public String getSourceIp() { return sourceIp; }
+	 public String getDestinationIp() { return destinationIp; }
+	 public String getMessage() { return message; }
 	}
-
-	public String getDestinationIP() {
-		return destinationIP;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-	
 }
