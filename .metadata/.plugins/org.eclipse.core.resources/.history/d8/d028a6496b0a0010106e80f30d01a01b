@@ -1,0 +1,45 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+	
+	// create hashmap to store ip addresses and associated mac addresses
+	private Map<String, String> ipAllocations = new HashMap<>();
+	private int nextIP = 2; // Start assigning IPs from 192.168.10.2 
+    private Set<String> availableIPs = new HashSet<>();
+    private String networkPrefix = "192.168.10."; // Default subnet
+
+    // Method to assign an IP to a device
+    public String assignIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            return ipAllocations.get(macAddress); // Return existing IP if assigned
+        }
+
+        if (availableIPs.isEmpty()) {
+            System.out.println("No available IP addresses in the pool!");
+            return null;
+        }
+
+        String assignedIp = availableIPs.iterator().next();
+        availableIPs.remove(assignedIp);
+        ipAllocations.put(macAddress, assignedIp);
+
+        System.out.println("Assigned IP " + assignedIp + " to MAC " + macAddress);
+        return assignedIp;
+        // return ipAllocations.get(macAddress);
+    }
+
+    // Method to release an IP back to the pool
+    public void releaseIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            String ip = ipAllocations.remove(macAddress);
+            availableIPs.add(ip);
+            System.out.println("Released IP " + ip);
+        }
+    }
+}

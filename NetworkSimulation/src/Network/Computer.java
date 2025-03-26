@@ -5,14 +5,14 @@ package Network;
 public class Computer {
 	
 	// computer's information
-	String name, macAddress, IPAddress;
+	String name, macAddress, ipAddress;
 	Router connectedRouter;
 	
 	public Computer(String name, String macAddress) {
 		this.name = name;
 	    this.macAddress = macAddress;
 	    // Initialise to null because IP assigned by DHCP
-	    this.IPAddress = null;
+	    this.ipAddress = null;
 	}
 	
 	public void connectToRouter(Router router) {
@@ -32,12 +32,13 @@ public class Computer {
 	
 	// method to get ip address from DHCPServer
 	public void requestIpAddress(DHCPServer dhcpServer) {
-		//pass mac address to dhcp so ip can be assigned to specific computer
+		this.ipAddress = dhcpServer.assignIp(macAddress);
+        System.out.println(name + " assigned IP: " + ipAddress);
 	}
 
 	// method to return computer's ip
 	public String getIpAddress() { 
-		return IPAddress;
+		return ipAddress;
 	}
 }
 

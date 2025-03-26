@@ -1,0 +1,46 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+	
+	// create hashmap to store ip addresses and associated mac addresses
+	private Map<String, String> ipAllocations = new HashMap<>();
+	private int nextIP = 2; // Start assigning IPs from 192.168.10.2 
+	private final int MAX_IPS = 254; // Max devices (192.168.0.2 - 192.168.0.255)
+    private String networkPrefix = "192.168.0."; // Default subnet
+
+    // Method to assign an IP to a device
+    public String assignIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            return ipAllocations.get(macAddress); // Return existing IP if assigned
+        }
+
+        if (nextIP > MAX_IPS) {
+            System.out.println("No available IP addresses left!");
+            return null;
+        }
+
+        String assignedIp = networkPrefix + nextIP;
+        ipAllocations.put(macAddress, assignedIp);
+        nextIP++; // Move to the next IP
+
+        System.out.println("Assigned IP " + assignedIp + " to MAC " + macAddress);
+        
+        return assignedIp;
+    }
+
+    // Method to release an IP back to the pool
+    public void releaseIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            ipAllocations.remove(macAddress);
+            System.out.println("Released IP assigned to MAC " + macAddress);
+        } else {
+            System.out.println("MAC " + macAddress + " has no assigned IP.");
+        }
+    }
+}
