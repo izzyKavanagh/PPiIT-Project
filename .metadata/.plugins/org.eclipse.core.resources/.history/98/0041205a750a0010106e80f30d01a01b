@@ -1,0 +1,38 @@
+package Network;
+
+import java.util.Scanner;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// initialize scanner object for reading in data
+		Scanner scanner = new Scanner(System.in);
+		// create instances of router and DHCP
+		Router router = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
+		DHCPServer dhcpServer = new DHCPServer();
+        
+		// Configure the IP pool
+        dhcpServer.configureIpPool(scanner);
+        
+		//create instances of computers
+		Computer pc1 = new Computer("PC1", "00:2A:2B:2C:2D:2E");
+		Computer pc2 = new Computer("PC2", "00:3A:3B:3C:3D:3E");
+		
+		//get IP addresses for computers 
+		pc1.requestIpAddress(dhcpServer);
+		pc2.requestIpAddress(dhcpServer);
+		
+		//connect the PCs to the router
+		pc1.connectToRouter(router);
+		pc2.connectToRouter(router);
+		
+		System.out.println(pc1.getIpAddress());
+		System.out.println(pc2.getIpAddress());
+		
+		dhcpServer.printAllocations();
+		
+		scanner.close();
+		
+		//implement further functionality for sending messages,etc.
+    }
+}

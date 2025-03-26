@@ -1,0 +1,29 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+// Simulates a Router
+public class Router extends Device{
+	
+	public Router(String name, String macAddress, String ipAddress) {
+		super(name, macAddress);
+		this.ipAddress = ipAddress;
+	}
+	
+	// HashMap to store routing table (connected devices and their IP addresses)
+    private Map<String, Device> routingTable = new HashMap<>();
+
+    public void connectDevice(Device device) {
+        if (device.getIpAddress() == null) 
+        {
+            System.out.println("ERROR: Device does not have an IP address.");
+        } 
+        else 
+        {
+            routingTable.put(device.getIpAddress(), device);
+            System.out.println("IP Address " + device.getIpAddress());
+        }
+    }
+    
+}
