@@ -2,7 +2,7 @@ package Network;
 
 
 // Class for representing computer
-public class Computer extends Device{
+public class Computer {
 	
 Router connectedRouter;
 	

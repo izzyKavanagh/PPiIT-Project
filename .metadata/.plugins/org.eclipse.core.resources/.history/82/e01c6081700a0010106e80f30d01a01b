@@ -3,7 +3,7 @@ package Network;
 public class NetworkSimulationRunner {
 	
 	public static void main(String[] args) {
-		// create instances of router and DHCP
+		// create instances of router and dhcp
 		Router router = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
 		DHCPServer dhcpServer = new DHCPServer();
 		
@@ -16,7 +16,7 @@ public class NetworkSimulationRunner {
 		pc1.requestIpAddress(dhcpServer);
 		pc2.requestIpAddress(dhcpServer);
 		
-		//connect the PCs to the router
+		//connect the pcs to the router
 		pc1.connectToRouter(router);
 		pc2.connectToRouter(router);
 		
