@@ -1,0 +1,31 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Switch extends Device{
+	
+	private Map<String, String> macTable; // MAC address table
+	private final int ports = 24; //number of ports the switch has
+	private int nextAvailablePort = 0;
+
+    public Switch(String name, String macAddress) {
+        super(name, macAddress);
+        this.macTable = new HashMap<>();
+    }
+
+    // method to connect a device to the switch
+    public void connectDevice(Device device) {
+    	 if (nextAvailablePort > ports) {
+             System.out.println("ERROR: No available ports on " + name);
+             return;
+         }
+        
+        String assignedPort = "Fa0/" + nextAvailablePort;
+        macTable.put(device.getMacAddress(), assignedPort);
+        nextAvailablePort++; // Move to the next available port
+
+        System.out.println(device.getName() + " connected to " + name + " on Port " + assignedPort);
+    }
+    
+}

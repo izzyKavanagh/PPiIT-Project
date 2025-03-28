@@ -1,0 +1,26 @@
+package Network;
+
+
+// Class for representing computer
+public class Computer extends Device{
+	
+Router connectedRouter;
+	
+	public Computer(String name, String macAddress) {
+		super(name,macAddress);
+	}
+	
+	// method to get ip address from DHCPServer
+	public void requestIpAddress(DHCPServer dhcpServer) {
+		//pass mac address to dhcp so ip can be assigned to specific computer
+		this.ipAddress = dhcpServer.assignIp(macAddress);
+        System.out.println(name + " assigned IP: " + ipAddress);
+	}
+	
+	public void connectToSwitch(Switch networkSwitch) {
+	    this.connectedRouter = null;  // Remove direct router connection
+	    networkSwitch.connectDevice(this);
+	    System.out.println(name + " connected to switch: " + networkSwitch.getName());
+	}
+}
+

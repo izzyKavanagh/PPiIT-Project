@@ -8,8 +8,9 @@ public class NetworkSimulationRunner {
 		// initialize scanner object for reading in data
 		Scanner scanner = new Scanner(System.in);
 		// create instances of router and DHCP
-		Router router = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
+		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
 		DHCPServer dhcpServer = new DHCPServer();
+		Switch switch0 = new Switch("Switch0", "00:AA:BB:CC:DD:EE");
         
 		// Configure the IP pool
         dhcpServer.configureIpPool(scanner);
@@ -26,13 +27,19 @@ public class NetworkSimulationRunner {
 		pc2.requestIpAddress(dhcpServer);
 		pc3.requestIpAddress(dhcpServer);
 		
+		switch0.connectToRouter(router0);
+		
 		//connect the PCs to the router
-		pc0.connectToRouter(router);
-		pc1.connectToRouter(router);
-		pc2.connectToRouter(router);
-		pc3.connectToRouter(router);
+		pc0.connectToSwitch(switch0);
+		pc1.connectToSwitch(switch0);
+		pc2.connectToSwitch(switch0);
+		pc3.connectToSwitch(switch0);
 		
 		dhcpServer.printAllocations();
+		
+		router0.printConnectedDevices();
+		
+		switch0.printMacTable();
 		
 		scanner.close();
 		

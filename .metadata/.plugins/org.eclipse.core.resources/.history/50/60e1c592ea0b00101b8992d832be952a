@@ -1,0 +1,22 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Switch extends Device{
+	
+	private Map<String, Device> macTable; // MAC address table
+
+    public Switch(String name, String macAddress, int ports) {
+        super(name, macAddress);
+        this.macTable = new HashMap<>();
+        this.ports = ports;
+    }
+
+    // method to connect a device to the switch
+    public void connectDevice(Device device) {
+        macTable.put(device.getMacAddress(), device);
+        System.out.println(device.getName() + " connected to " + this.name);
+    }
+    
+}

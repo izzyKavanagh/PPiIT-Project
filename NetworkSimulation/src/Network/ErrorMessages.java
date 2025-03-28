@@ -5,7 +5,10 @@ public enum ErrorMessages {
     INVALID_IP_START_ZERO("IP pool cannot start with 0."),
     INVALID_IP_START_ONE("IP pool cannot start with 1 (router uses 192.168.x.1)."),
     INVALID_IP_OUT_OF_BOUNDS("IP addresses must be between 2 and 254."),
-    INVALID_IP_RANGE("End IP cannot be smaller than the start IP.");
+    INVALID_IP_RANGE("End IP cannot be smaller than the start IP."),
+	
+	// Port-related errors (switches/routers)
+	NO_MORE_PORTS("ERROR: Cannot connect device as there are no available ports."); 
     
     private final String message;
 

@@ -1,0 +1,65 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+// Simulates a Router
+public class Router extends Device{
+	
+	// HashMap to store routing table (connected devices and their IP addresses)
+    private Map<String, Device> routingTable = new HashMap<>();
+    private Map<String, String> connectedDevices = new HashMap<>();
+	public final int totalPorts = 8;
+	private int nextAvailablePort = 0;
+	
+	public Router(String name, String macAddress, String ipAddress) {
+		super(name, macAddress);
+		this.ipAddress = ipAddress;
+	}
+
+    public void connectDevice(Device device) {
+        if (nextAvailablePort > totalPorts) 
+   	 	{
+            System.out.println(ErrorMessages.NO_MORE_PORTS);
+            return;
+        }
+   	 	else 
+   	 	{
+   	 		String assignedPort = "Fa0/" + nextAvailablePort;
+   	 		connectedDevices.put(device.getMacAddress(), assignedPort);
+   	 		nextAvailablePort++; // go to next available port
+   	     
+   	 		System.out.println(device.getName() + " connected to " + name + " on Port " + assignedPort);
+   	 	}
+    }
+    
+    public void updateRoutingTabe(Device device) {
+ 
+    	if (device.getIpAddress() == null) 
+        {
+            System.out.println("ERROR: Device does not have an IP address.");
+        } 
+        else 
+        {
+            routingTable.put(device.getIpAddress(), device);
+        }
+    }
+    
+    public void printConnectedDevices() {
+    	System.out.println("\nConnected Devcies Table of " + name + ":");
+        if (connectedDevices.isEmpty()) {
+        	System.out.println("No allocated IPs.");
+            return;
+        }
+        
+        System.out.println("+-------------------+------------+");
+        System.out.println("| MAC Address       | Port       |");
+        System.out.println("+-------------------+------------+");
+
+        for (Map.Entry<String, String> entry : connectedDevices.entrySet()) {
+            System.out.printf("| %-17s | %-10s |\n", entry.getKey(), entry.getValue());
+        }
+
+        System.out.println("+-------------------+------------+\n");
+    }
+}

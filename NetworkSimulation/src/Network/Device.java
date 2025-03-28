@@ -6,6 +6,7 @@ public abstract class Device {
     protected String macAddress;
     protected String ipAddress;
     protected Router connectedRouter;
+	protected Switch connectedSwitch;
 
     public Device(String name, String macAddress) {
         this.name = name;
@@ -29,9 +30,22 @@ public abstract class Device {
         this.connectedRouter = router;
         router.connectDevice(this);
     }
+    
+    public void connectToSwitch(Switch networkSwitch) {
+        this.connectedSwitch = networkSwitch;
+        networkSwitch.connectDevice(this);
+    }
 
     public void requestIpAddress(DHCPServer dhcpServer) {
         this.ipAddress = dhcpServer.assignIp(macAddress);
         System.out.println(name + " assigned IP: " + ipAddress);
     }
+    
+    public void sendMessage(String message, String destinationIp) {
+		// Method for sending messages to other devices (through router)
+	}
+	
+	public void receiveMessage(Packet packet) {
+		// method for receiving messages from other devices
+	}
 }

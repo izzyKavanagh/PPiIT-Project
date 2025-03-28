@@ -51,7 +51,7 @@ public class DHCPServer {
         return null;
     }
     
-    // Method to set an IP pool range (e.g., 192.168.10.50 to 192.168.10.100)
+    // Method to set an IP pool range 
     public void setIpPool(int start, int end) {
         availableIPs.clear();
         ipAllocations.clear();
@@ -66,7 +66,7 @@ public class DHCPServer {
     // Method to assign an IP to a device
     public String assignIp(String macAddress) {
         if (ipAllocations.containsKey(macAddress)) {
-            return ipAllocations.get(macAddress); // Return existing IP if assigned
+            return ipAllocations.get(macAddress);
         }
 
         if (availableIPs.isEmpty()) {
@@ -91,7 +91,7 @@ public class DHCPServer {
     }
     
     public void printAllocations() {
-        System.out.println("Current IP Allocations:");
+        System.out.println("\nCurrent IP Allocations:");
         if (ipAllocations.isEmpty()) {
             System.out.println("No allocated IPs.");
             return;
