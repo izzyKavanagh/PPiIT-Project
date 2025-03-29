@@ -48,7 +48,7 @@ public class Switch extends Device{
     }
 
 	public Router getConnectedRouter() {
-		return connectedRouter;
+		return this.connectedRouter;
 	}
     
 }

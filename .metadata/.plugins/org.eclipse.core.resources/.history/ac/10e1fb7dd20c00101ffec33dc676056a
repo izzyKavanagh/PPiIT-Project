@@ -43,17 +43,6 @@ public abstract class Device {
     }
     
     public void connectToSwitch(Switch networkSwitch) {
-    	this.connectedSwitch = networkSwitch;
-	    Router router = networkSwitch.getConnectedRouter();
-	    
-	    networkSwitch.connectDevice(this);
-	    System.out.println(name + " connected to switch: " + networkSwitch.getName());
-	    
-	    // if switch is connected to device and is not using DHCP
-	    if (router != null && !useDHCP) 
-	    {
-	        router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
-	    }
     }
 
     public void requestIpAddress(DHCPServer dhcpServer) {

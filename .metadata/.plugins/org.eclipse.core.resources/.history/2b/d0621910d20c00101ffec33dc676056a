@@ -31,10 +31,10 @@ public class NetworkSimulationRunner {
 		switch0.connectToRouter(router0);
 		
 		//connect the PCs to the router
-		pc0.connectToSwitch(switch0);
-		pc1.connectToSwitch(switch0);
-		pc2.connectToSwitch(switch0);
-		pc3.connectToSwitch(switch0);
+		pc0.connectToSwitch(switch0, router0);
+		pc1.connectToSwitch(switch0, router0);
+		pc2.connectToSwitch(switch0, router0);
+		pc3.connectToSwitch(switch0, router0);
 		
 		//dhcpServer.printAllocations();
 		

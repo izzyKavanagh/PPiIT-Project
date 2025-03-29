@@ -16,5 +16,15 @@ Router connectedRouter;
 		this.ipAddress = dhcpServer.assignIp(macAddress);
         System.out.println(name + " assigned IP: " + ipAddress);
 	}
+	
+	public void useDhcp(DHCPServer dhcpServer) {
+        requestIpAddress(dhcpServer);
+    }
+	
+	public void connectToSwitch(Switch networkSwitch) {
+	    this.connectedRouter = null;  // Remove direct router connection
+	    networkSwitch.connectDevice(this);
+	    System.out.println(name + " connected to switch: " + networkSwitch.getName());
+	}
 }
 

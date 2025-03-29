@@ -46,9 +46,5 @@ public class Switch extends Device{
 
         System.out.println("+-------------------+------------+\n");
     }
-
-	public Router getConnectedRouter() {
-		return connectedRouter;
-	}
     
 }
