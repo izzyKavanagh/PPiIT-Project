@@ -13,7 +13,7 @@ public class NetworkSimulationRunner {
 		Switch switch0 = new Switch("Switch0", "00:AA:BB:CC:DD:EE");
         
 		// Configure the IP pool
-        dhcpServer.configureIpPool(scanner);
+        //dhcpServer.configureIpPool(scanner);
         
 		//create instances of computers
 		Computer pc0 = new Computer("PC0", "00:2A:2B:2C:2D:2E");
@@ -21,21 +21,24 @@ public class NetworkSimulationRunner {
 		Computer pc2 = new Computer("PC2", "00:4A:5B:6C:7D:8E");
 		Computer pc3 = new Computer("PC3", "00:5A:6B:7C:8D:9E");
 		
+		/*
 		//get IP addresses for computers 
 		pc0.requestIpAddress(dhcpServer);
 		pc1.requestIpAddress(dhcpServer);
 		pc2.requestIpAddress(dhcpServer);
 		pc3.requestIpAddress(dhcpServer);
-		
+		 */
 		switch0.connectToRouter(router0);
 		
 		//connect the PCs to the router
-		pc0.connectToSwitch(switch0);
-		pc1.connectToSwitch(switch0);
-		pc2.connectToSwitch(switch0);
-		pc3.connectToSwitch(switch0);
+		pc0.connectToSwitch(switch0, router0);
+		pc1.connectToSwitch(switch0, router0);
+		pc2.connectToSwitch(switch0, router0);
+		pc3.connectToSwitch(switch0, router0);
 		
-		dhcpServer.printAllocations();
+		//dhcpServer.printAllocations();
+		
+		router0.printAllocations();
 		
 		router0.printConnectedDevices();
 		

@@ -7,6 +7,7 @@ public abstract class Device {
     protected String ipAddress;
     protected Router connectedRouter;
 	protected Switch connectedSwitch;
+	protected boolean useDHCP = false; // default is static IP
 
     public Device(String name, String macAddress) {
         this.name = name;
@@ -27,13 +28,27 @@ public abstract class Device {
     }
 
     public void connectToRouter(Router router) {
-        this.connectedRouter = router;
-        router.connectDevice(this);
+    	this.connectedRouter = router;
+    	//check if the instance of device is a switch
+    	if(!(this instanceof Switch) && !useDHCP) // layer 2 switches don't have IP addresses
+    	{
+            router.connectDevice(this);
+            this.ipAddress = router.assignStaticIP(macAddress);
+            System.out.println(name + " assigned IP: " + ipAddress);
+    	}
+    	else
+    	{
+            router.connectDevice(this);
+    	}
     }
     
-    public void connectToSwitch(Switch networkSwitch) {
+    public void connectToSwitch(Switch networkSwitch, Router router) {
         this.connectedSwitch = networkSwitch;
         networkSwitch.connectDevice(this);
+        
+       this.connectedRouter = router;
+        this.ipAddress = router.assignStaticIP(macAddress);
+        System.out.println(name + " assigned IP: " + ipAddress);
     }
 
     public void requestIpAddress(DHCPServer dhcpServer) {

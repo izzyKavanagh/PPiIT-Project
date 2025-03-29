@@ -10,12 +10,26 @@ public class Router extends Device{
     private Map<String, Device> routingTable = new HashMap<>();
     // HashMap to store connectedDevices table (connected devices and their port number)
     private Map<String, String> connectedDevices = new HashMap<>();
+    // HashMap to store devices' MAC addresses and associated static IPs 
+    private Map<String, String> staticIpAllocations = new HashMap<>();
 	public final int totalPorts = 8;
 	private int nextAvailablePort = 0;
+	private String staticIpPrefix = "266.444.1.";
+	private int nextIP = 2;
+	private String assignedStaticIp;
 	
 	public Router(String name, String macAddress, String ipAddress) {
 		super(name, macAddress);
 		this.ipAddress = ipAddress;
+	}
+	
+	public String assignStaticIP(String macAddress) {
+		
+		assignedStaticIp = staticIpPrefix.concat(Integer.toString(nextIP));
+	    staticIpAllocations.put(macAddress, assignedStaticIp);
+	    nextIP++;
+	    
+	    return assignedStaticIp;
 	}
 
     public void connectDevice(Device device) {
@@ -34,7 +48,7 @@ public class Router extends Device{
    	 	}
     }
     
-    public void updateRoutingTabe(Device device) {
+    public void updateRoutingTable(Device device) {
  
     	if (device.getIpAddress() == null) 
         {
@@ -45,6 +59,25 @@ public class Router extends Device{
             routingTable.put(device.getIpAddress(), device);
         }
     }
+    
+    public void printAllocations() {
+        System.out.println("\nCurrent Static IP Allocations:");
+        if (staticIpAllocations.isEmpty()) {
+            System.out.println("No allocated IPs.");
+            return;
+        }
+
+        System.out.println("+----------------+-------------------+");
+        System.out.println("|   IP Address   |    MAC Address    |");
+        System.out.println("+----------------+-------------------+");
+
+        for (Map.Entry<String, String> entry : staticIpAllocations.entrySet()) {
+            System.out.printf("| %-14s | %-17s |\n", entry.getValue(), entry.getKey());
+        }
+
+        System.out.println("+----------------+-------------------+\n");
+    }
+    
     
     public void printConnectedDevices() {
     	System.out.println("\nConnected Devcies Table of " + name + ":");
