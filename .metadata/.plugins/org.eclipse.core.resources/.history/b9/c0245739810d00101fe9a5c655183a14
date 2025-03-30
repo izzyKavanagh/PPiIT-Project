@@ -1,0 +1,42 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+
+	private Map<String, IPPool> ipPools = new HashMap<>();
+	
+	public void createIpPool(Scanner scanner) {
+		System.out.println("Enter name of IP pool: ");
+		String poolName = scanner.nextLine();
+		
+		IPPool newPool = new IPPool();
+		newPool.configureIpPool(scanner);
+		ipPools.put(poolName, newPool);
+		
+		System.out.println("New IP pool " + poolName + " created successfully!");
+	}
+	
+	public void printPools()
+	{
+		if(ipPools.isEmpty())
+		{
+			System.out.println("No IP pools have been created.");
+		}
+		else
+		{
+			System.out.println("IP pools: ");
+			
+			for (IPPool value : ipPools.values()) 
+			{
+	            System.out.println("Value: " + value);
+	        }
+		}
+	}
+	
+}

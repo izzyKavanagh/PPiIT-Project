@@ -13,7 +13,7 @@ Router connectedRouter;
 	// method to get IP address from DHCPServer
 	public void useDhcp(DHCPServer dhcpServer) {
 		//pass MAC address to DHCP so IP can be assigned to specific computer
-		this.ipAddress = dhcpServer.assignIp(macAddress);
+		//this.ipAddress = dhcpServer.assignIp(macAddress);
         System.out.println(name + " assigned IP: " + ipAddress);
 	}
 }

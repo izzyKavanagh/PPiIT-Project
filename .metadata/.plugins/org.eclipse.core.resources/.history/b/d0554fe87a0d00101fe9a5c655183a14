@@ -1,0 +1,17 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+	
+	// create HashMap to store IP addresses and associated MAC addresses
+	private Map<String, String> ipAllocations = new HashMap<>();
+	private Set<String> availableIPs = new HashSet<>();
+    private String networkPrefix = "192.168.10."; // Default subnet
+    
+}

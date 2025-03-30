@@ -1,6 +1,6 @@
 package Network;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Map;
 
 // simulates a layer 2 unmanaged switch

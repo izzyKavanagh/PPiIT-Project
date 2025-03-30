@@ -1,0 +1,22 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+
+	private Map<String, String> ipPools = new HashMap<>();
+	
+	public void createIpPool(Scanner scanner) {
+		
+		IPPool pool = new IPPool();
+		pool.configureIpPool(scanner);
+	}
+	
+	
+	
+}

@@ -1,0 +1,15 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class IpPool {
+
+	private Map<String, String> ipAllocations = new HashMap<>();
+	private Set<String> availableIPs = new HashSet<>();
+    private String networkPrefix = "192.168.10."; // Default subnet
+    private String name;
+    
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename compilation unit &apos;Network.IpPool.java&apos; to &apos;IPPool.java&apos;&#x0D;&#x0A;- Original project: &apos;NetworkSimulation&apos;&#x0D;&#x0A;- Original element: &apos;Network.IpPool.java&apos;&#x0D;&#x0A;- Renamed element: &apos;Network.IPPool.java&apos;" description="Rename compilation unit &apos;IpPool.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;Network{IpPool.java" name="IPPool.java" references="false" stamp="1743348252426" version="1.0"/>
+</session>

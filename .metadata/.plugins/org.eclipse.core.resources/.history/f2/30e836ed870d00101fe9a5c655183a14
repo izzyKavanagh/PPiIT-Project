@@ -1,0 +1,85 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+public class IPPool {
+
+	private Set<String> availableIPs = new HashSet<>();
+    private String networkPrefix = "192.168.10."; // Default subnet
+    private String name;
+    
+    public IPPool(String name) {
+    	this.poolName = poolName;
+    }
+    
+    public ErrorMessages checkIP(int startIP, int endIP) {
+        if (startIP == 0) return ErrorMessages.INVALID_IP_START_ZERO;
+        if (startIP == 1) return ErrorMessages.INVALID_IP_START_ONE;
+        if (startIP > 254 || startIP < 0) return ErrorMessages.INVALID_IP_OUT_OF_BOUNDS;
+        if (endIP > 254 || endIP < 0) return ErrorMessages.INVALID_IP_OUT_OF_BOUNDS;
+        if (endIP < startIP) return ErrorMessages.INVALID_IP_RANGE;
+        return null;
+    }
+    
+    // Method to set an IP pool range 
+    public void setIpPool(int start, int end) {
+        availableIPs.clear();
+        ipAllocations.clear();
+
+        for (int i = start; i <= end; i++) {
+            availableIPs.add(networkPrefix + i);
+        }
+
+        System.out.println("IP Pool set: " + networkPrefix + start + " to " + networkPrefix + end);
+    }
+    
+    // Method to assign an IP to a device
+    public String assignIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            return ipAllocations.get(macAddress);
+        }
+
+        if (availableIPs.isEmpty()) {
+            System.out.println("No available IP addresses in the pool!");
+            return null;
+        }
+
+        String assignedIp = availableIPs.iterator().next();
+        availableIPs.remove(assignedIp);
+        ipAllocations.put(macAddress, assignedIp);
+
+        return assignedIp;
+    }
+
+    // Method to release an IP back to the pool
+    public void releaseIp(String macAddress) {
+        if (ipAllocations.containsKey(macAddress)) {
+            String ip = ipAllocations.remove(macAddress);
+            availableIPs.add(ip);
+            System.out.println("Released IP " + ip);
+        }
+    }
+    
+    public void printAllocations() {
+        System.out.println("\nCurrent IP Allocations:");
+        if (ipAllocations.isEmpty()) {
+            System.out.println("No allocated IPs.");
+            return;
+        }
+
+        System.out.println("+----------------+-------------------+");
+        System.out.println("|   IP Address   |    MAC Address    |");
+        System.out.println("+----------------+-------------------+");
+
+        for (Map.Entry<String, String> entry : ipAllocations.entrySet()) {
+            System.out.printf("| %-14s | %-17s |\n", entry.getValue(), entry.getKey());
+        }
+
+        System.out.println("+----------------+-------------------+\n");
+    }
+    
+}

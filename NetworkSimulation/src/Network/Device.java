@@ -56,8 +56,8 @@ public abstract class Device {
 	    }
     }
 
-    public void requestIpAddress(DHCPServer dhcpServer) {
-        this.ipAddress = dhcpServer.assignIp(macAddress);
+    public void requestIpAddress(IPPool ipPool) {
+        this.ipAddress = ipPool.assignIp(macAddress);
         System.out.println(name + " assigned IP: " + ipAddress);
     }
     
