@@ -10,11 +10,41 @@ public class NetworkSimulationRunner {
 		// create instances of router and DHCP
 		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
 		DHCPServer dhcpServer = new DHCPServer();
-		IPPool ipPool = new IPPool();
 		Switch switch0 = new Switch("Switch0", "00:AA:BB:CC:DD:EE");
+		IPPool newPool = new IPPool();
+		
+		//String poolName = newPool.getPoolName();
         
-		// Configure the IP pool
-        //dhcpServer.configureIpPool(scanner);
+        System.out.println("\n===== DHCP Server Setup =====");
+        System.out.println("1. View existing IP Pools");
+        System.out.println("2. Create a new IP Pool");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        do{
+        	System.out.println("\n===== DHCP Server Setup =====");
+            System.out.println("1. View existing IP Pools");
+            System.out.println("2. Create a new IP Pool");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    dhcpServer.printPools();
+                    break;
+                case 2:
+                    dhcpServer.configureIpPool(scanner);
+                    break;
+                case 3:
+                	break;    	
+            }
+        }while(choice !=3);
         
 		//create instances of computers
 		Computer pc0 = new Computer("PC0", "00:2A:2B:2C:2D:2E");
@@ -22,12 +52,13 @@ public class NetworkSimulationRunner {
 		Computer pc2 = new Computer("PC2", "00:4A:5B:6C:7D:8E");
 		Computer pc3 = new Computer("PC3", "00:5A:6B:7C:8D:9E");
 		
-		
+		/*
 		//get IP addresses for computers 
-		pc0.requestIpAddress(ipPool);
-		pc1.requestIpAddress(ipPool);
-		pc2.requestIpAddress(ipPool);
-		pc3.requestIpAddress(ipPool);
+		pc0.useDHCP(dhcpServer, poolName);
+		pc1.useDHCP(dhcpServer, poolName);
+		pc2.useDHCP(dhcpServer, poolName);
+		pc3.useDHCP(dhcpServer, poolName);
+		*/
 		 
 		switch0.connectToRouter(router0);
 		

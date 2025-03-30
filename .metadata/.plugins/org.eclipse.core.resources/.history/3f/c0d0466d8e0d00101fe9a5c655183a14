@@ -1,0 +1,103 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
+// Class to simulate DHCP Server 
+public class DHCPServer {
+
+	private Map<String, String> ipAllocations = new HashMap<>();
+	private Map<String, IPPool> ipPools = new HashMap<>();
+	
+	public void configureIpPool(Scanner scanner) {
+        int startIP, endIP;
+        ErrorMessages error;
+        System.out.println("Enter name of IP pool: ");
+ 		String poolName = scanner.nextLine();
+ 		
+        IPPool newPool = new IPPool(poolName);
+        
+        do {
+        	
+            System.out.print("Enter the start of the IP pool: ");
+            startIP = validateScannerInput(scanner);
+                 
+            System.out.print("Enter the end of the IP pool: ");
+            endIP = validateScannerInput(scanner);
+            
+            error = newPool.checkIP(startIP,endIP);
+            
+            if (error == null) {
+                break;  // Exit loop if no errors
+            }
+            System.out.println("ERROR: " + error.getMessage());
+             
+        }while(error != null);
+        
+		ipPools.put(poolName, newPool); 
+		
+		System.out.println("New IP pool " + poolName + " created successfully!");
+
+        newPool.setIpPool(startIP, endIP);
+    }
+	
+	// Method to assign an IP to a device
+    public String assignIp(String poolName, String macAddress) {
+    	IPPool pool = new IPPool(poolName);
+    	Set<String> availableIPs = pool.getAvailableIPs();
+    	
+        if (ipAllocations.containsKey(macAddress)) {
+            return ipAllocations.get(macAddress);
+        }
+
+        if (availableIPs.isEmpty()) {
+            System.out.println("No available IP addresses in the pool!");
+            return null;
+        }
+
+        String assignedIp = availableIPs.iterator().next();
+        availableIPs.remove(assignedIp);
+        ipAllocations.put(macAddress, assignedIp);
+
+        return assignedIp;
+    }
+
+    // Method to release an IP back to the pool
+    public void releaseIp(String macAddress) {
+    	IPPool pool;
+    	Set<String> availableIPs = pool.getAvailableIPs();
+        if (ipAllocations.containsKey(macAddress)) {
+            String ip = ipAllocations.remove(macAddress);
+            availableIPs.add(ip);
+            System.out.println("Released IP " + ip);
+        }
+    }
+    
+	public void printPools()
+	{
+		if(ipPools.isEmpty())
+		{
+			System.out.println("No IP pools have been created.");
+		}
+		else
+		{
+			System.out.println("IP pools: ");
+			for (IPPool value : ipPools.values()) 
+			{
+	            System.out.println("Value: " + value);
+	        }
+		}
+	}
+	
+	private int validateScannerInput(Scanner scanner) {
+        while (!scanner.hasNextInt()) {
+            System.out.print("Invalid input! Please enter a valid number: ");
+            scanner.next(); // Discard invalid input
+        }
+        return scanner.nextInt();
+    }
+	
+}

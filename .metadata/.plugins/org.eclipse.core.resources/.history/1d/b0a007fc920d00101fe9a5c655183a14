@@ -1,0 +1,55 @@
+package Network;
+
+import java.util.Scanner;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// initialize scanner object for reading in data
+		Scanner scanner = new Scanner(System.in);
+		// create instances of router and DHCP
+		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
+		DHCPServer dhcpServer = new DHCPServer();
+		//IPPool ipPool = new IPPool();
+		Switch switch0 = new Switch("Switch0", "00:AA:BB:CC:DD:EE");
+        
+		// Configure the IP pool
+        dhcpServer.configureIpPool(scanner);
+        
+		//create instances of computers
+		Computer pc0 = new Computer("PC0", "00:2A:2B:2C:2D:2E");
+		Computer pc1 = new Computer("PC1", "00:3A:3B:3C:3D:3E");
+		Computer pc2 = new Computer("PC2", "00:4A:5B:6C:7D:8E");
+		Computer pc3 = new Computer("PC3", "00:5A:6B:7C:8D:9E");
+		
+		
+		//get IP addresses for computers 
+		pc0.useDHCP(dhcpServer, );
+		pc1.useDHCP(dhcpServer, );
+		pc2.useDHCP(dhcpServer, );
+		pc3.useDHCP(dhcpServer, );
+		
+		 
+		switch0.connectToRouter(router0);
+		
+		//connect the PCs to the router
+		pc0.connectToSwitch(switch0);
+		pc1.connectToSwitch(switch0);
+		pc2.connectToSwitch(switch0);
+		pc3.connectToSwitch(switch0);
+		
+		//dhcpServer.printAllocations();
+		
+		router0.printAllocations();
+		
+		router0.printConnectedDevices();
+		
+		switch0.printMacTable();
+		
+		dhcpServer.printPools();
+		
+		scanner.close();
+		
+		//implement further functionality for sending messages,etc.
+    }
+}
