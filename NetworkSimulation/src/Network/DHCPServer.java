@@ -30,7 +30,8 @@ public class DHCPServer {
             
             error = newPool.checkIP(startIP,endIP);
             
-            if (error == null) {
+            if (error == null) 
+            {
                 break;  // Exit loop if no errors
             }
             System.out.println("ERROR: " + error.getMessage());
@@ -94,6 +95,11 @@ public class DHCPServer {
 	    }
 	}
 	
+	public boolean poolExists(String poolName) {
+	    return ipPools.containsKey(poolName);
+	}
+	
+	
 	private int validateScannerInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             System.out.print("Invalid input! Please enter a valid number: ");
@@ -101,5 +107,9 @@ public class DHCPServer {
         }
         return scanner.nextInt();
     }
+
+	public Map<String, IPPool> getPools() {
+		return ipPools;
+	}
 	
 }
