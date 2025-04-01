@@ -79,7 +79,7 @@ public class NetworkSimulationRunner {
 		
 		router0.printConnectedDevices();
 		
-		//switch0.printMacTable();
+		switch0.printMacTable();
 		
 		dhcpServer.printPools();
 		

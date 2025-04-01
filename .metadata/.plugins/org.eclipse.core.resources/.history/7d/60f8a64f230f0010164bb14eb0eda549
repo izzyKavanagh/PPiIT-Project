@@ -29,8 +29,6 @@ public abstract class Switch extends Device{
     	nextAvailablePort++; // go to next available port
     }
     
-    public abstract void configureVLAN(int vlanId, String vlanName);
-    
     public void connectToRouter(Router router) {
         if (connectedRouter != null) {
             System.out.println("Switch is already connected to a router: " + connectedRouter.getName());

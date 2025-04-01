@@ -1,0 +1,20 @@
+package Network;
+
+import java.util.Map;
+
+public class Layer2Switch extends Switch{
+	
+	private Map<Integer, String> vlanTable; // VLAN table
+
+	public Layer2Switch(String name, String macAddress) {
+		super(name, macAddress);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void configureVLAN(int vlanId, String vlanName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
