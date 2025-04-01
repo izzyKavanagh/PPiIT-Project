@@ -1,8 +1,5 @@
 package Network;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Layer3Switch extends Layer2Switch{
 	
 	private Map<Integer, String> vlanRoutingTable; // VLAN routing table
@@ -12,12 +9,6 @@ public class Layer3Switch extends Layer2Switch{
 		this.vlanRoutingTable = new HashMap<>();
 	}
 
-	@Override
-	public void configureVLAN(int vlanId, String vlanName) {
-		super.configureVLAN(vlanId, vlanName);  // use layer2Switch's method to configure VLAN
-		System.out.println("VLAN " + vlanId + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
-	}
-	
 	public void enableRoutingBetweenVLANs(int vlan1, int vlan2) {
         String route = "Routing enabled between VLAN " + vlan1 + " and VLAN " + vlan2;
         vlanRoutingTable.put(vlan1, route);

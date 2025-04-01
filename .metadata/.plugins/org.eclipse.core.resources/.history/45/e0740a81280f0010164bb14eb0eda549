@@ -16,8 +16,8 @@ public class NetworkSimulationRunner {
 		DHCPServer dhcpServer = new DHCPServer();
 				
 		// Create Layer 2 and Layer 3 Switches
-        Layer2Switch switch0 = new Layer2Switch("Switch0", "00:AA:BB:CC:DD:EE");
-        Layer2Switch switch1 = new Layer2Switch("Switch1", "00:BB:CC:DD:EE:FF");
+        Layer2Switch switch0 = new Layer2Switch("Layer2Switch1", "00:AA:BB:CC:DD:EE");
+        Layer2Switch switch1 = new Layer2Switch("Layer2Switch2", "00:BB:CC:DD:EE:FF");
         Layer3Switch coreSwitch = new Layer3Switch("CoreSwitch", "00:CC:DD:EE:FF:AA");
 		
 		List<Computer> computers = new ArrayList<>();
@@ -35,7 +35,7 @@ public class NetworkSimulationRunner {
 		coreSwitch.connectToSwitch(switch0);
 		coreSwitch.connectToSwitch(switch1);
         
-        System.out.println(coreSwitch.getConnectedRouter().getName());
+        System.out.println(switch0.getConnectedRouter().getName());
         
 		//connect PCs to switch0
         pc0.connectToSwitch(switch0);

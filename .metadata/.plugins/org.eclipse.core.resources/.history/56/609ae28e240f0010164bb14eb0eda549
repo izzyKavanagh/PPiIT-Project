@@ -1,0 +1,16 @@
+package Network;
+
+public class Layer3Switch extends Switch{
+
+	public Layer3Switch(String name, String macAddress) {
+		super(name, macAddress);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void configureVLAN(int vlanId, String vlanName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

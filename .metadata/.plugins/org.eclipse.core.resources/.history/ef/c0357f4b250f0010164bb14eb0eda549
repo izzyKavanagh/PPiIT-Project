@@ -14,8 +14,8 @@ public class Layer3Switch extends Layer2Switch{
 
 	@Override
 	public void configureVLAN(int vlanId, String vlanName) {
-		super.configureVLAN(vlanId, vlanName);  // use layer2Switch's method to configure VLAN
-		System.out.println("VLAN " + vlanId + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+		vlanTable.put(vlanId, vlanName);
+        System.out.println("VLAN " + vlanId + " (" + vlanName + ") configured on Layer 2 Switch: " + name);
 	}
 	
 	public void enableRoutingBetweenVLANs(int vlan1, int vlan2) {

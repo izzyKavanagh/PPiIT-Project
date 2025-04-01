@@ -51,7 +51,7 @@ public abstract class Device {
 	    System.out.println(name + " connected to switch: " + networkSwitch.getName());
 	    
 	    // if switch is connected to router and is not using DHCP
-	    if (router != null && staticIP) 
+	    if (router != null && !useDHCP) 
 	    {
 	        ipAddress = router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
 	        System.out.println(name + " assigned Static IP: " + ipAddress);
@@ -66,7 +66,7 @@ public abstract class Device {
     public void useStatic()
     {
 	    Router router = connectedSwitch.getConnectedRouter();
-    	if (router != null && staticIP) 
+    	if (router != null && !useDHCP) 
 	    {
 	        ipAddress = router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
 	        System.out.println(name + " assigned Static IP: " + ipAddress);
