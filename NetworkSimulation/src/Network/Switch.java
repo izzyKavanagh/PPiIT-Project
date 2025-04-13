@@ -8,39 +8,32 @@ public abstract class Switch extends Device{
 	
 	private Map<String, String> macTable; // MAC address table
 	private final int totalPorts = 24; //number of ports the switch has
-	private int nextAvailablePort = 0;
+	public Router connectedRouter;
 
     public Switch(String name, String macAddress) {
         super(name, macAddress);
         this.macTable = new HashMap<>();
     }
+    
+    @Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+    
+    public void setConnectedRouter(Router router) {
+        this.connectedRouter = router;
+    }
 
-    // method to connect a device to the switch
-    public void connectDevice(Device device) {
-    	if (nextAvailablePort >= totalPorts) 
-    	{
-    		System.out.println(ErrorMessages.NO_MORE_PORTS.getMessage());
-            return;
-        }
-    	String assignedPort = "Fa0/" + nextAvailablePort;
-    	macTable.put(device.getMacAddress(), assignedPort);
-    	System.out.println(device.getName() + " connected to " + name + " on Port " + assignedPort);
+	public Router getConnectedRouter() {
+		return connectedRouter;
+	}
+    
+    public void updateMacTable(Device device, String port) {
+    	macTable.put(device.getMacAddress(), port);
+    }
     	
-    	nextAvailablePort++; // go to next available port
-    }
-    
     public abstract void configureVLAN(int vlanId, String vlanName);
-    
-    public void connectToRouter(Router router) {
-        if (connectedRouter != null) {
-            System.out.println("Switch is already connected to a router: " + connectedRouter.getName());
-            return;
-        }
-        
-        this.connectedRouter = router;  // Store reference to router
-        router.connectDevice(this);  // Connect switch to the router
-        System.out.println(name + " is now connected to Router: " + router.getName());
-    }
     
     public void printMacTable() {
     	System.out.println("\nMAC Address Tabe of " + name + ":");
@@ -59,9 +52,5 @@ public abstract class Switch extends Device{
 
         System.out.println("+-------------------+------------+\n");
     }
-
-	public Router getConnectedRouter() {
-		return connectedRouter;
-	}
     
 }

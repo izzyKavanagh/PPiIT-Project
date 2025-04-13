@@ -1,5 +1,0 @@
-package Network;
-
-public class Layer2Switch extends Switch{
-
-}

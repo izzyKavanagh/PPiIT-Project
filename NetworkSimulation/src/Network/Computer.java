@@ -4,10 +4,17 @@ package Network;
 // Class for representing computer
 public class Computer extends Device{
 	
-Router connectedRouter;
+	private final int totalPorts = 1;
+	private Router connectedRouter;
 	
 	public Computer(String name, String macAddress) {
 		super(name,macAddress);
+	}
+	
+	@Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
 	}
 }
 

@@ -1,0 +1,83 @@
+package Network;
+
+public abstract class Device {
+
+	protected String name;
+    protected String macAddress;
+    protected String ipAddress;
+    protected Router connectedRouter;
+	protected Switch connectedSwitch;
+	protected boolean staticIP; // default is static IP
+
+    public Device(String name, String macAddress) {
+        this.name = name;
+        this.macAddress = macAddress;
+        this.ipAddress = null; // Assigned by DHCP
+        this.staticIP = true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void connectToRouter(Router router, Topology topology) {
+    	this.connectedRouter = router;
+    	//check if the instance of device is a switch
+    	if(!(this instanceof Layer2Switch) || (this instanceof Layer3Switch && staticIP)) // layer 2 switches don't have IP addresses
+    	{
+            router.connectDevice(this, topology);
+            this.ipAddress = router.assignStaticIP(macAddress);
+            System.out.println(name + " assigned IP: " + ipAddress);
+    	}
+    	else
+    	{
+            router.connectDevice(this, topology);
+    	}
+    }
+    
+    public void connectToSwitch(Switch networkSwitch, Topology topology) {
+    	this.connectedSwitch = networkSwitch;
+	    Router router = networkSwitch.getConnectedRouter();
+	    
+	    networkSwitch.connectDevice(this);
+	    System.out.println(name + " connected to switch: " + networkSwitch.getName());
+	    
+	    // if switch is connected to router and is not using DHCP
+	    if (router != null && staticIP) 
+	    {
+	        ipAddress = router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
+	        System.out.println(name + " assigned Static IP: " + ipAddress);
+	    }
+    }
+
+    public void useDHCP(DHCPServer dhcpServer, String poolName) {
+        this.ipAddress = dhcpServer.assignIp(poolName,macAddress);
+        System.out.println(name + " assigned IP: " + ipAddress);
+    }
+    
+    public void useStatic()
+    {
+	    Router router = connectedSwitch.getConnectedRouter();
+    	if (router != null && staticIP) 
+	    {
+	        ipAddress = router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
+	        System.out.println(name + " assigned Static IP: " + ipAddress);
+	    }
+    }
+    
+    public void sendMessage(String message, String destinationIp) {
+		// Method for sending messages to other devices (through router)
+	}
+	
+	public void receiveMessage(Packet packet) {
+		// method for receiving messages from other devices
+	}
+}

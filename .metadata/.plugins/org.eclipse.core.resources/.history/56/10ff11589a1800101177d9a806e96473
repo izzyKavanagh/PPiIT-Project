@@ -1,0 +1,45 @@
+package Network;
+
+public class NetworkManager {
+	private Topology topology;
+	
+	public NetworkManager(Topology topology) {
+        this.topology = topology;
+    }
+
+    public void connectDeviceToRouter(Device device, Router router) {
+        router.connectDevice(device, topology);
+        
+        if (!(device instanceof Layer2Switch) || (device instanceof Layer3Switch && device.staticIP)) {
+            String assignedIp = router.assignStaticIP(device.getMacAddress());
+            device.ipAddress = assignedIp;
+            System.out.println(device.getName() + " assigned IP: " + assignedIp);
+        }
+    }
+
+    public void connectDeviceToSwitch(Device device, Switch networkSwitch) {
+        networkSwitch.connectDevice(device, topology);
+        device.connectedSwitch = networkSwitch;
+
+        Router router = networkSwitch.getConnectedRouter();
+        if (router != null && device.staticIP) {
+            String assignedIp = router.assignStaticIP(device.getMacAddress());
+            
+            device.ipAddress = assignedIp;
+            System.out.println(device.getName() + " assigned Static IP: " + assignedIp);
+        }
+    }
+
+    public void connectSwitchToRouter(Switch networkSwitch, Router router) {
+        networkSwitch.connectToRouter(router, topology);
+    }
+
+    public void connectRouterToDevice(Router router, Device device) {
+        router.connectDevice(device, topology);
+    }
+
+    public Topology getTopology() {
+        return topology;
+    }
+}
+

@@ -6,6 +6,7 @@ import java.util.Map;
 public class Layer3Switch extends Layer2Switch{
 	
 	private Map<Integer, String> vlanRoutingTable; // VLAN routing table
+	private String ipAddress;
 
 	public Layer3Switch(String name, String macAddress) {
 		super(name, macAddress);
@@ -17,7 +18,11 @@ public class Layer3Switch extends Layer2Switch{
 		super.configureVLAN(vlanId, vlanName);  // use layer2Switch's method to configure VLAN
 		System.out.println("VLAN " + vlanId + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
 	}
-	
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
 	public void enableRoutingBetweenVLANs(int vlan1, int vlan2) {
         String route = "Routing enabled between VLAN " + vlan1 + " and VLAN " + vlan2;
         vlanRoutingTable.put(vlan1, route);

@@ -1,0 +1,79 @@
+package Network;
+
+import java.util.HashMap;  
+import java.util.Map;
+
+public class Topology {
+	
+	private Map<String, Map<String, Device>> networkTopology = new HashMap<>();
+
+	public Topology() {}
+	
+	public void registerDevice(Device device) {
+		if (!networkTopology.containsKey(device.getName())) {
+	        Map<String, Device> portMap = new HashMap<>();
+	        for (int i = 0; i < device.getTotalPorts(); i++) {
+	            portMap.put("Fa0/" + i, null);
+	        }
+	        networkTopology.put(device.getName(), portMap);
+	    }
+	}
+
+	public boolean connectDevices(Device source, Device target) {
+	    Map<String, Device> sourcePorts = networkTopology.get(source.getName());
+	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
+	    
+	    if (sourcePorts == null || targetPorts == null) {
+	        System.out.println("One or both devices are not registered.");
+	        return false;
+	    }
+	    
+	    String availablePort = null;
+	    String availableTargetPort = null;
+	    
+	    for (Map.Entry<String, Device> entry : sourcePorts.entrySet()) {
+	        if (entry.getValue() == null) {
+	            availablePort = entry.getKey();
+	            break;
+	        }
+	    }
+
+	    if (availablePort == null) {
+	        System.out.println(source.getName() + " has no available ports.");
+	        return false;
+	    }
+	    
+	    if (availableTargetPort == null) {
+	        System.out.println(target.getName() + " has no available ports.");
+	        return false;
+	    }
+	    
+
+	    if (source instanceof Switch sw) {
+	        sw.updateMacTable(target, availablePort);
+	    }
+	    
+	    sourcePorts.put(availablePort, target);
+	    System.out.println(target.getName() + " connected to " + source.getName() + " on Port " + availablePort);
+	    return true;
+	}
+
+	public void printNetworkTopology() {
+        System.out.println("\nNetwork Topology (Port Connections):");
+        for (Map.Entry<String, Map<String, Device>> entry : networkTopology.entrySet()) {
+            String deviceName = entry.getKey();
+            Map<String, Device> ports = entry.getValue();
+            System.out.println("\nDevice: " + deviceName);
+            System.out.println("+--------+-------------------+");
+            System.out.println("| Port   | Connected Device   |");
+            System.out.println("+--------+-------------------+");
+            for (Map.Entry<String, Device> portEntry : ports.entrySet()) {
+                String port = portEntry.getKey();
+                Device connectedDevice = portEntry.getValue();
+                String connectedName = (connectedDevice != null) ? connectedDevice.getName() : "Empty";
+                System.out.printf("| %-6s | %-17s |\n", port, connectedName);
+            }
+            System.out.println("+--------+-------------------+\n");
+        }
+    }
+}
