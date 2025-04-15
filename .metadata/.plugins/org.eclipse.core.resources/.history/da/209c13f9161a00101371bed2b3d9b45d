@@ -27,7 +27,49 @@ public class Topology {
 	}
 
 	public boolean connectDevices(Device source, Device target) {
-		Map<String, Device> sourcePorts = networkTopology.get(source.getName());
+	    Map<String, Device> sourcePorts = networkTopology.get(source.getName());
+	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
+	    
+	    if (sourcePorts == null || targetPorts == null) {
+	        System.out.println("One or both devices are not registered.");
+	        return false;
+	    }
+	    
+	    boolean disconnected = false;
+	    
+	    for (Map.Entry<String, Device> entry : sourcePorts.entrySet()) {
+	        if (entry.getValue() != null && entry.getValue().equals(target)) {
+	        	entry.setValue(null);
+	        	disconnected = true;
+	            System.out.println("Disconnected " + target.getName() + " from " + source.getName() + " at " + entry.getKey());
+	            break;
+	        }
+	    }
+
+	    for (Map.Entry<String, Device> entry : targetPorts.entrySet()) {
+	        if (entry.getValue() != null && entry.getValue().equals(target)) {
+	        	entry.setValue(null);
+	        	disconnected = true;
+	            System.out.println("Disconnected " + target.getName() + " from " + source.getName() + " at " + entry.getKey());
+	            break;
+	        }
+	    }
+
+	    /* add functionality to delete connections from mac table 
+	    if (source instanceof Switch sw) {
+	        sw.updateMacTable(target, availableSourcePort);
+	    }
+	    */
+	    
+	    if (!disconnected) {
+	        System.out.println("No connection found between these devices.");
+	    }
+	    
+	    return true;
+	}
+	
+	public boolean disconnectDevices(Device source, Device target) {
+	    Map<String, Device> sourcePorts = networkTopology.get(source.getName());
 	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
 	    
 	    if (sourcePorts == null || targetPorts == null) {
@@ -90,48 +132,6 @@ public class Topology {
 	    */
 	    
 	    System.out.println(target.getName() + " connected to " + source.getName() + " on Port " + availableSourcePort);
-	    
-	    return true;
-	}
-	
-	public boolean disconnectDevices(Device source, Device target) {
-		Map<String, Device> sourcePorts = networkTopology.get(source.getName());
-	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
-	    
-	    if (sourcePorts == null || targetPorts == null) {
-	        System.out.println("One or both devices are not registered.");
-	        return false;
-	    }
-	    
-	    boolean disconnected = false;
-	    
-	    for (Map.Entry<String, Device> entry : sourcePorts.entrySet()) {
-	        if (entry.getValue() != null && entry.getValue().equals(target)) {
-	        	entry.setValue(null);
-	        	disconnected = true;
-	            System.out.println("Disconnected " + target.getName() + " from " + source.getName() + " at " + entry.getKey());
-	            break;
-	        }
-	    }
-
-	    for (Map.Entry<String, Device> entry : targetPorts.entrySet()) {
-	        if (entry.getValue() != null && entry.getValue().equals(source)) {
-	        	entry.setValue(null);
-	        	disconnected = true;
-	            System.out.println("Disconnected " + target.getName() + " from " + source.getName() + " at " + entry.getKey());
-	            break;
-	        }
-	    }
-
-	    /* add functionality to delete connections from mac table 
-	    if (source instanceof Switch sw) {
-	        sw.updateMacTable(target, availableSourcePort);
-	    }
-	    */
-	    
-	    if (!disconnected) {
-	        System.out.println("No connection found between these devices.");
-	    }
 	    
 	    return true;
 	}

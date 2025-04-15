@@ -115,7 +115,7 @@ public class Topology {
 	    }
 
 	    for (Map.Entry<String, Device> entry : targetPorts.entrySet()) {
-	        if (entry.getValue() != null && entry.getValue().equals(source)) {
+	        if (entry.getValue() != null && entry.getValue().equals(target)) {
 	        	entry.setValue(null);
 	        	disconnected = true;
 	            System.out.println("Disconnected " + target.getName() + " from " + source.getName() + " at " + entry.getKey());
