@@ -8,21 +8,14 @@ public class NetworkManager {
     }
 
     public void connectDeviceToRouter(Device device, Router router) {
-        boolean connected = topology.connectDevices(router, device);
-
-        if (connected) {
             if (!(device instanceof Layer2Switch) || (device instanceof Layer3Switch && device.staticIP)) {
                 String assignedIp = router.assignStaticIP(device.getMacAddress());
                 device.ipAddress = assignedIp;
                 System.out.println(device.getName() + " assigned IP: " + assignedIp);
             }
-        }
     }
 
     public void connectDeviceToSwitch(Device device, Switch networkSwitch) {
-    	boolean connected = topology.connectDevices(networkSwitch, device);
-
-        if (connected) {
             device.connectedSwitch = networkSwitch;
 
             Router router = networkSwitch.getConnectedRouter();
@@ -31,16 +24,15 @@ public class NetworkManager {
                 device.ipAddress = assignedIp;
                 System.out.println(device.getName() + " assigned Static IP: " + assignedIp);
             }
-        }
     }
 
     public void connectSwitchToRouter(Switch networkSwitch, Router router) {
-    	boolean connected = topology.connectDevices(router, networkSwitch);
-
-        if (connected) {
             networkSwitch.setConnectedRouter(router); 
             System.out.println(networkSwitch.getName() + " is now connected to Router: " + router.getName());
-        }
+    }
+    
+    public void getConnection() {
+    	
     }
 
     public Topology getTopology() {

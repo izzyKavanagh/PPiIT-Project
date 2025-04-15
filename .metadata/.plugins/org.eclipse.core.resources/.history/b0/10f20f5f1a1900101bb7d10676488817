@@ -1,0 +1,268 @@
+package Network;
+
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// initialize scanner object for reading in data
+		Scanner scanner = new Scanner(System.in);
+		
+		// New Topology instance to keep track of connections
+		Topology topology = new Topology();
+		
+		// create network manager instance to manage connecting devices
+		NetworkManager manager = new NetworkManager(topology);
+		
+		// create instances of router and DHCP
+		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
+		DHCPServer dhcpServer = new DHCPServer();
+				
+		// Create Layer 2 and Layer 3 Switches
+        Layer2Switch switch0 = new Layer2Switch("Switch0", "00:AA:BB:CC:DD:EE");
+        Layer2Switch switch1 = new Layer2Switch("Switch1", "00:BB:CC:DD:EE:FF");
+        Layer3Switch coreSwitch = new Layer3Switch("CoreSwitch", "00:CC:DD:EE:FF:AA");
+		
+		List<Computer> computers = new ArrayList<>();
+        
+		//create instances of PCs and add them to computers list for easy processing
+		Computer pc0 = new Computer("PC0", "00:2A:2B:2C:2D:2E");
+		Computer pc1 = new Computer("PC1", "00:3A:3B:3C:3D:3E");
+		Computer pc2 = new Computer("PC2", "00:4A:5B:6C:7D:8E");
+		Computer pc3 = new Computer("PC3", "00:5A:6B:7C:8D:9E");
+		
+		computers.add(pc0);
+		computers.add(pc1);
+		computers.add(pc2);
+		computers.add(pc3);
+		
+		//ensure that all devices are correctly registered in the network topology, i.e., the "system" knows they exist
+		topology.registerDevice(router0);
+		topology.registerDevice(switch0);
+		topology.registerDevice(switch1);
+		topology.registerDevice(coreSwitch);
+		topology.registerDevice(pc0);
+		topology.registerDevice(pc1);
+		topology.registerDevice(pc2);
+		topology.registerDevice(pc3);
+		
+		//connect switch to router
+		manager.connectSwitchToRouter(coreSwitch, router0);
+		
+		manager.connectDeviceToSwitch(switch0,coreSwitch);
+		manager.connectDeviceToSwitch(switch1,coreSwitch);
+                
+		//connect PCs to switch0
+        manager.connectDeviceToSwitch(pc0, switch0);
+        manager.connectDeviceToSwitch(pc1, switch0);
+        
+        //connect PCs to switch1
+        manager.connectDeviceToSwitch(pc2, switch1);
+        manager.connectDeviceToSwitch(pc3, switch1);
+        
+        //devices don't get IP as the system doesn't know that the devices are connected to a router, as there's no "direct" connection.
+        // -> use graph theory breath first search & adjacency dictionary????
+
+        // Display network topology
+     	topology.printNetworkTopology();
+     		
+        int choice;
+        
+        do{
+        	System.out.println("\n===== DHCP Server Setup =====");
+            System.out.println("1. View existing IP Pools");
+            System.out.println("2. Create a new IP Pool");
+            System.out.println("3. Manage PCs");
+            System.out.println("4. Add Connection"); 
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    dhcpServer.printPools();
+                    break;
+                case 2:
+                    dhcpServer.configureIpPool(scanner);
+                    break;
+                case 3:
+                	managePCs(scanner, dhcpServer, computers);
+                	break;
+                case 4:
+                	addConnection(scanner,manager,topology); 
+                	break; 
+                case 5:
+                	break; 
+            }
+        }while(choice !=5);
+		
+		/*
+		//get IP addresses for computers 
+		pc0.useDHCP(dhcpServer, poolName);
+		pc1.useDHCP(dhcpServer, poolName);
+		pc2.useDHCP(dhcpServer, poolName);
+		pc3.useDHCP(dhcpServer, poolName);
+		*/
+		 
+		//switch0.connectToRouter(router0);
+		
+		//dhcpServer.printAllocations();
+		
+		router0.printAllocations();
+		
+		//switch0.printMacTable();
+		
+		dhcpServer.printPools();
+		
+		scanner.close();
+		
+		//implement further functionality for sending messages,etc.
+    }
+
+	private static void managePCs(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers) {
+		
+		 while (true) {
+			 System.out.println("\n===== PC Management =====");
+	         for (int i = 0; i < computers.size(); i++) 
+	         {
+	        	 Computer pc = computers.get(i);
+	        	 
+	        	 System.out.print((i + 1) + ". " + pc.getName() + " (IP: ");
+	        	 
+	        	 if (pc.getIpAddress() == null) 
+	        	 {
+	        		    System.out.print("Not Assigned");
+	        	 } 
+	        	 else 
+	        	 {
+	        		 System.out.print(pc.getIpAddress());
+	        	 }
+	        	 
+	        	 System.out.print(", DHCP: ");
+
+	        	 if (!pc.staticIP) 
+	        	 {
+	        		 System.out.println("Enabled)");
+	        	 } 
+	        	 else 
+	        	 {
+	        		 System.out.println("Disabled)");
+	        	 }
+	         }
+	         
+	         System.out.println((computers.size() + 1) + ". Return to Main Menu");
+	         System.out.print("Select a PC to manage: ");
+
+	         int pcChoice = scanner.nextInt();
+	         scanner.nextLine(); // Consume newline
+
+	         if (pcChoice == computers.size() + 1) return; // Return to main menu
+
+	         if (pcChoice < 1 || pcChoice > computers.size()) 
+	         {
+	        	 System.out.println("Invalid selection! Try again.");
+	             continue;
+	         }
+
+	         Computer selectedPC = computers.get(pcChoice - 1);
+	         configurePC(scanner, dhcpServer, selectedPC);
+	     }
+	}
+
+	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, Computer pc) {
+		
+		System.out.println("\nManaging " + pc.getName());
+		
+		System.out.print("Current IP: ");
+		
+		if (pc.getIpAddress() == null) {
+		    System.out.println("Not Assigned");
+		} 
+		else 
+		{
+		    System.out.println(pc.getIpAddress());
+		}
+
+		System.out.print("DHCP Enabled: ");
+		
+		if (!pc.staticIP) 
+		{
+		    System.out.println("Yes");
+		} 
+		else 
+		{
+		    System.out.println("No");
+		}
+
+        System.out.println("1. Enable DHCP");
+        System.out.println("2. Disable DHCP (Use Static IP)");
+        System.out.println("3. Return to PC Menu");
+        System.out.print("Enter your choice: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        switch (choice) {
+            case 1:
+            	Map<String, IPPool> pools = dhcpServer.getPools(); // Assuming this method exists
+
+                if (pools.isEmpty()) 
+                {
+                    System.out.println("No available IP Pools.");
+                    return;
+                }
+
+                List<String> poolNames = new ArrayList<>(pools.keySet()); // Extract keys (pool names)
+
+                System.out.println("Available IP Pools:");
+                for (int i = 0; i < poolNames.size(); i++) 
+                {
+                    System.out.println((i + 1) + ". " + poolNames.get(i));
+                }
+
+                System.out.print("Select a pool number: ");
+                int poolChoice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (poolChoice < 1 || poolChoice > poolNames.size()) 
+                {
+                    System.out.println("Invalid selection! Try again.");
+                    return;
+                }
+
+                String selectedPool = poolNames.get(poolChoice - 1);
+                pc.staticIP = false;
+                pc.useDHCP(dhcpServer, selectedPool);
+                System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
+                break;
+
+            case 2:
+            	pc.staticIP = true;
+            	pc.useStatic();
+                System.out.println(pc.getName() + " is now using Static IP.");
+                break;
+
+            case 3:
+                return;
+
+            default:
+                System.out.println("Invalid choice! Try again.");
+        }
+		
+	}
+	
+	public static void addConnection(Scanner scanner, NetworkManager manager, Topology topology) {
+		List<NetworkInterface> devices = new ArrayList<>(topology.getDevices().values());
+	    
+	    if (devices.size() < 2) {
+	        System.out.println("Not enough devices to create a connection.");
+	        return;
+	    }
+	}
+}

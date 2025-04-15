@@ -1,6 +1,8 @@
 package Network;
 
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,9 +19,11 @@ public class NetworkSimulationRunner {
 		// create network manager instance to manage connecting devices
 		NetworkManager manager = new NetworkManager(topology);
 		
+		topology.setNetworkManager(manager);
+		
 		// create instances of router and DHCP
 		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
-		DHCPServer dhcpServer = new DHCPServer();
+		DHCPServer dhcpServer = new DHCPServer("DHCP Server", "00:2A:2B:3C:3D:3E");
 				
 		// Create Layer 2 and Layer 3 Switches
         Layer2Switch switch0 = new Layer2Switch("Switch0", "00:AA:BB:CC:DD:EE");
@@ -48,20 +52,24 @@ public class NetworkSimulationRunner {
 		topology.registerDevice(pc1);
 		topology.registerDevice(pc2);
 		topology.registerDevice(pc3);
+		topology.registerDevice(dhcpServer);
 		
-		//connect switch to router
-		manager.connectSwitchToRouter(coreSwitch, router0);
+		//connect main switch to router
+		topology.connectDevices(coreSwitch, router0);
 		
-		manager.connectDeviceToSwitch(switch0,coreSwitch);
-		manager.connectDeviceToSwitch(switch1,coreSwitch);
+		// connect switches to main switch
+		topology.connectDevices(switch0, coreSwitch);
+		topology.connectDevices(switch1,coreSwitch);
                 
-		//connect PCs to switch0
-        manager.connectDeviceToSwitch(pc0, switch0);
-        manager.connectDeviceToSwitch(pc1, switch0);
+		//connect PCs to switche0
+		topology.connectDevices(pc0, switch0);
         
         //connect PCs to switch1
-        manager.connectDeviceToSwitch(pc2, switch1);
-        manager.connectDeviceToSwitch(pc3, switch1);
+		topology.connectDevices(pc2, switch1);
+		topology.connectDevices(pc3, switch1);
+        
+        //devices don't get IP as the system doesn't know that the devices are connected to a router, as there's no "direct" connection.
+        // -> use graph theory breath first search & adjacency dictionary????
 
         // Display network topology
      	topology.printNetworkTopology();
@@ -73,7 +81,8 @@ public class NetworkSimulationRunner {
             System.out.println("1. View existing IP Pools");
             System.out.println("2. Create a new IP Pool");
             System.out.println("3. Manage PCs");
-            System.out.println("4. Exit");
+            System.out.println("4. Add Connection"); 
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
@@ -88,23 +97,14 @@ public class NetworkSimulationRunner {
                     break;
                 case 3:
                 	managePCs(scanner, dhcpServer, computers);
-                	break;    	
+                	break;
                 case 4:
+                	addConnection(scanner,topology); 
+                	break; 
+                case 5:
                 	break; 
             }
-        }while(choice !=4);
-		
-		/*
-		//get IP addresses for computers 
-		pc0.useDHCP(dhcpServer, poolName);
-		pc1.useDHCP(dhcpServer, poolName);
-		pc2.useDHCP(dhcpServer, poolName);
-		pc3.useDHCP(dhcpServer, poolName);
-		*/
-		 
-		//switch0.connectToRouter(router0);
-		
-		//dhcpServer.printAllocations();
+        }while(choice !=5);
 		
 		router0.printAllocations();
 		
@@ -247,5 +247,29 @@ public class NetworkSimulationRunner {
                 System.out.println("Invalid choice! Try again.");
         }
 		
+	}
+	
+	public static void addConnection(Scanner scanner,Topology topology) {
+		List<Device> devices = new ArrayList<>(topology.getTopology().values());
+	    
+	    System.out.println("\n===== Network Devices =====");
+	    
+	    // print devices
+	    for(int i = 1;i<devices.size();i++) {
+	    	System.out.println(i + ". " + devices.get(i).getName());
+	    }
+	    
+	    System.out.println("Enter device you wish to form a connection on: ");
+	    int sourceDevice = scanner.nextInt();
+	    
+	    System.out.println("Enter device you wish to connect to : ");
+	    int targetDevice = scanner.nextInt();
+	    
+	    Device source = devices.get(sourceDevice - 1);
+        Device target = devices.get(targetDevice - 1);
+        
+        topology.connectDevices(source, target);
+        
+        topology.printNetworkTopology();
 	}
 }

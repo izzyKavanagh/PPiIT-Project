@@ -6,7 +6,11 @@ import java.util.Scanner;
 import java.util.Set;
 
 // Class to simulate DHCP Server 
-public class DHCPServer {
+public class DHCPServer extends Device{
+
+	public DHCPServer(String name, String macAddress) {
+		super(name, macAddress);
+	}
 
 	private Map<String, String> ipAllocations = new HashMap<>();
 	private Map<String, IPPool> ipPools = new HashMap<>();
