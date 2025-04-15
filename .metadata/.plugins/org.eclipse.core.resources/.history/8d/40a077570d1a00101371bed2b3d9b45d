@@ -60,11 +60,9 @@ public class NetworkSimulationRunner {
 		// connect switches to main switch
 		topology.connectDevices(switch0, coreSwitch);
 		topology.connectDevices(switch1,coreSwitch);
-		topology.connectDevices(switch2,coreSwitch);
                 
 		//connect PCs to switche0
 		topology.connectDevices(pc0, switch0);
-		topology.connectDevices(pc1, switch0);
         
         //connect PCs to switch1
 		topology.connectDevices(pc2, switch1);

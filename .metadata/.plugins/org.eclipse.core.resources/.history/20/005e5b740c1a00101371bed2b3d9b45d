@@ -16,12 +16,6 @@ public class DHCPServer extends Device{
 	private Map<String, IPPool> ipPools = new HashMap<>();
 	private final int totalPorts = 8;
 	
-	@Override
-	public int getTotalPorts()
-	{
-		return totalPorts;
-	}
-	
 	public void configureIpPool(Scanner scanner) {
         int startIP, endIP;
         String poolName;

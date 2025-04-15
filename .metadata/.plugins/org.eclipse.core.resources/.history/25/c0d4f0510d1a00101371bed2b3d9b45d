@@ -46,7 +46,6 @@ public class NetworkSimulationRunner {
 		topology.registerDevice(router0);
 		topology.registerDevice(switch0);
 		topology.registerDevice(switch1);
-		topology.registerDevice(switch2);
 		topology.registerDevice(coreSwitch);
 		topology.registerDevice(pc0);
 		topology.registerDevice(pc1);
@@ -60,17 +59,15 @@ public class NetworkSimulationRunner {
 		// connect switches to main switch
 		topology.connectDevices(switch0, coreSwitch);
 		topology.connectDevices(switch1,coreSwitch);
-		topology.connectDevices(switch2,coreSwitch);
                 
 		//connect PCs to switche0
 		topology.connectDevices(pc0, switch0);
-		topology.connectDevices(pc1, switch0);
         
         //connect PCs to switch1
 		topology.connectDevices(pc2, switch1);
 		topology.connectDevices(pc3, switch1);
 		
-		topology.connectDevices(dhcpServer, switch2);
+		topology.connectDevices(pc3, switch1);
         
         //devices don't get IP as the system doesn't know that the devices are connected to a router, as there's no "direct" connection.
         // -> use graph theory breath first search & adjacency dictionary????
