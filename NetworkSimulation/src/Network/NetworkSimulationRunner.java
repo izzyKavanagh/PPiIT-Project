@@ -1,6 +1,6 @@
 package Network;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -37,11 +37,13 @@ public class NetworkSimulationRunner {
 		Computer pc1 = new Computer("PC1", "00:3A:3B:3C:3D:3E");
 		Computer pc2 = new Computer("PC2", "00:4A:5B:6C:7D:8E");
 		Computer pc3 = new Computer("PC3", "00:5A:6B:7C:8D:9E");
+		Computer pc4 = new Computer("PC4", "00:5A:6B:7C:8D:9E");
 		
 		computers.add(pc0);
 		computers.add(pc1);
 		computers.add(pc2);
 		computers.add(pc3);
+		computers.add(pc4);
 		
 		//ensure that all devices are correctly registered in the network topology, i.e., the "system" knows they exist
 		topology.registerDevice(router0);
@@ -53,6 +55,7 @@ public class NetworkSimulationRunner {
 		topology.registerDevice(pc1);
 		topology.registerDevice(pc2);
 		topology.registerDevice(pc3);
+		topology.registerDevice(pc4); 
 		topology.registerDevice(dhcpServer);
 		
 		//connect main switch to router
@@ -72,12 +75,15 @@ public class NetworkSimulationRunner {
 		topology.connectDevices(pc3, switch1);
 		
 		topology.connectDevices(dhcpServer, switch2);
+		
+		topology.updateAdjacencyList();
         
         //devices don't get IP as the system doesn't know that the devices are connected to a router, as there's no "direct" connection.
         // -> use graph theory breath first search & adjacency dictionary????
 
         // Display network topology
      	topology.printNetworkTopology();
+     	topology.printAdjacencyList();
      		
         int choice;
         
@@ -102,7 +108,7 @@ public class NetworkSimulationRunner {
                     dhcpServer.configureIpPool(scanner);
                     break;
                 case 3:
-                	managePCs(scanner, dhcpServer, computers);
+                	managePCs(scanner, dhcpServer, computers, manager);
                 	break;
                 case 4:
                 	addConnection(scanner,topology); 
@@ -126,7 +132,7 @@ public class NetworkSimulationRunner {
 		//implement further functionality for sending messages,etc.
     }
 
-	private static void managePCs(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers) {
+	private static void managePCs(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers, NetworkManager manager) {
 		
 		 while (true) {
 			 System.out.println("\n===== PC Management =====");
@@ -172,11 +178,11 @@ public class NetworkSimulationRunner {
 	         }
 
 	         Computer selectedPC = computers.get(pcChoice - 1);
-	         configurePC(scanner, dhcpServer, selectedPC);
+	         configurePC(scanner, dhcpServer, selectedPC, manager);
 	     }
 	}
 
-	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, Computer pc) {
+	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, Computer pc, NetworkManager manager) {
 		
 		System.out.println("\nManaging " + pc.getName());
 		
@@ -239,13 +245,13 @@ public class NetworkSimulationRunner {
 
                 String selectedPool = poolNames.get(poolChoice - 1);
                 pc.staticIP = false;
-                pc.useDHCP(dhcpServer, selectedPool);
+                manager.useDynamicIpAllocation(pc, selectedPool);
                 System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
                 break;
 
             case 2:
             	pc.staticIP = true;
-            	pc.useStatic();
+            	manager.useStaticIpAllocation(pc);
                 System.out.println(pc.getName() + " is now using Static IP.");
                 break;
 
@@ -283,6 +289,7 @@ public class NetworkSimulationRunner {
         topology.connectDevices(source, target);
         
         topology.printNetworkTopology();
+        topology.printAdjacencyList();
 	}
 	
 	public static void removeConnection(Scanner scanner,Topology topology) {
@@ -312,5 +319,7 @@ public class NetworkSimulationRunner {
         topology.disconnectDevices(source, target);
         
         topology.printNetworkTopology();
+        
+        topology.printAdjacencyList();
 	}
 }

@@ -1,0 +1,44 @@
+package Network;
+
+public class NetworkManager {
+	private Topology topology;
+	
+	public NetworkManager(Topology topology) {
+        this.topology = topology;
+    }
+
+    public void useStaticIPAllocation(Device device) {
+    	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedRouter = topology.findConnectedDeviceOfType(device, Router.class);
+
+    	if (connectedRouter != null && !(device instanceof Layer2Switch)) {
+    	    Router router = (Router) connectedRouter;
+    	    String ip = router.assignStaticIP(device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    }
+
+    
+    public void useDynamicIPAllocation(Device device, String poolName) {
+    	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedDHCP = topology.findConnectedDeviceOfType(device, DHCPServer.class);
+
+    	if (connectedDHCP != null && !(device instanceof Layer2Switch) && !(device instanceof Router)) {
+    		System.out.println("router found");
+    	    DHCPServer dhcpServer = (DHCPServer) connectedDHCP;
+    	    String ip = dhcpServer.assignIp(poolName, device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    }
+
+    public Topology getTopology() {
+        return topology;
+    }
+}
+

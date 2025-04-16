@@ -7,32 +7,45 @@ public class NetworkManager {
         this.topology = topology;
     }
 
-    public void connectDeviceToRouter(Device device, Router router) {
-            if (!(device instanceof Layer2Switch) || (device instanceof Layer3Switch && device.staticIP)) {
-                String assignedIp = router.assignStaticIP(device.getMacAddress());
-                device.ipAddress = assignedIp;
-                System.out.println(device.getName() + " assigned IP: " + assignedIp);
-            }
-    }
-
-    public void connectDeviceToSwitch(Device device, Switch networkSwitch) {
-            device.connectedSwitch = networkSwitch;
-
-            Router router = networkSwitch.getConnectedRouter();
-            if (router != null && device.staticIP) {
-                String assignedIp = router.assignStaticIP(device.getMacAddress());
-                device.ipAddress = assignedIp;
-                System.out.println(device.getName() + " assigned Static IP: " + assignedIp);
-            }
-    }
-
-    public void connectSwitchToRouter(Switch networkSwitch, Router router) {
-            networkSwitch.setConnectedRouter(router); 
-            System.out.println(networkSwitch.getName() + " is now connected to Router: " + router.getName());
-    }
-    
-    public void getConnection() {
+    public void useStaticIpAllocation(Device device) {
     	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedRouter = topology.checkIfConnected(device, Router.class);
+
+    	if (connectedRouter != null && !(device instanceof Layer2Switch)) {
+    	    Router router = (Router) connectedRouter;
+    	    String ip = router.assignStaticIP(device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    	
+    	if(connectedRouter == null) 
+    	{
+    		System.out.println("ERROR: No router found on " + device.getName() + "'s network.");
+    	}
+    	
+    }
+
+    
+    public void useDynamicIpAllocation(Device device, String poolName) {
+    	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedDHCP = topology.checkIfConnected(device, DHCPServer.class);
+
+    	if (connectedDHCP != null && !(device instanceof Layer2Switch) && !(device instanceof Router)) 
+    	{
+    	    DHCPServer dhcpServer = (DHCPServer) connectedDHCP;
+    	    String ip = dhcpServer.assignIp(poolName, device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    	
+    	if(connectedDHCP == null) 
+    	{
+    		System.out.println("ERROR: No DHCP server found on" + device.getName() + "'s network.");
+    	}
     }
 
     public Topology getTopology() {

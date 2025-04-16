@@ -28,21 +28,6 @@ public abstract class Device {
     public String getIpAddress() {
         return ipAddress;
     }
-
-    public void useDHCP(DHCPServer dhcpServer, String poolName) {
-        this.ipAddress = dhcpServer.assignIp(poolName,macAddress);
-        System.out.println(name + " assigned IP: " + ipAddress);
-    }
-    
-    public void useStatic()
-    {
-	    Router router = connectedSwitch.getConnectedRouter();
-    	if (router != null && staticIP) 
-	    {
-	        ipAddress = router.assignStaticIP(this.macAddress);  // give device connecting to switch a static IP 
-	        System.out.println(name + " assigned Static IP: " + ipAddress);
-	    }
-    }
     
     public int getTotalPorts() {
 	    return totalPorts;

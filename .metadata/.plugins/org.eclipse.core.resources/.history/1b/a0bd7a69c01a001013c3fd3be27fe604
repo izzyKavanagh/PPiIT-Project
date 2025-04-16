@@ -1,0 +1,29 @@
+package Network;
+
+public class NetworkManager {
+	private Topology topology;
+	
+	public NetworkManager(Topology topology) {
+        this.topology = topology;
+    }
+
+    public void getConnectedRouter(Device device) {
+    	
+    	Device connectedRouter = topology.findConnectedDeviceOfType(device, Router.class);
+    	
+    	topology.updateAdjacencyList();
+
+    	if (connectedRouter != null && device.staticIP && !(device instanceof Switch)) {
+    		System.out.println("router found");
+    	    Router router = (Router) connectedRouter;
+    	    String ip = router.assignStaticIP(device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    }
+
+    public Topology getTopology() {
+        return topology;
+    }
+}
+
