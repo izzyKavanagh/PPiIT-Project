@@ -23,6 +23,8 @@ public class NetworkSimulationRunner {
 		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
 		DHCPServer dhcpServer = new DHCPServer("DHCP Server", "00:2A:2B:3C:3D:3E");
 				
+		List<Switch> switches = new ArrayList<>();
+		
 		// ADD IN ERROR CHECKING FOR DEVICE NAMES: USER CANT USE SAME NAME FOR 2 DEVICES
 		// Create Layer 2 and Layer 3 Switches
         Layer2Switch switch0 = new Layer2Switch("Switch0", "00:AA:BB:CC:DD:EE");
@@ -30,6 +32,11 @@ public class NetworkSimulationRunner {
         Layer2Switch switch2 = new Layer2Switch("Switch2", "00:DD:EE:FF:AA:BB");
         Layer3Switch coreSwitch = new Layer3Switch("CoreSwitch", "00:CC:DD:EE:FF:AA");
 		
+        switches.add(switch0);
+        switches.add(switch1);
+        switches.add(switch2);
+        switches.add(coreSwitch);
+        
 		List<Computer> computers = new ArrayList<>();
         
 		//create instances of PCs and add them to computers list for easy processing
@@ -92,9 +99,10 @@ public class NetworkSimulationRunner {
             System.out.println("1. View existing IP Pools");
             System.out.println("2. Create a new IP Pool");
             System.out.println("3. Manage PCs");
-            System.out.println("4. Add Connection"); 
-            System.out.println("5. Remove Connection");
-            System.out.println("6. Exit");
+            System.out.println("4. Manage Switches");
+            System.out.println("5. Add Connection"); 
+            System.out.println("6. Remove Connection");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
@@ -111,15 +119,18 @@ public class NetworkSimulationRunner {
                 	managePCs(scanner, dhcpServer, computers, manager);
                 	break;
                 case 4:
-                	addConnection(scanner,topology); 
+                	manageVLANS(switches, scanner);
                 	break; 
                 case 5:
-                	removeConnection(scanner,topology); 
+                	addConnection(scanner,topology); 
                 	break;
                 case 6:
+                	removeConnection(scanner,topology); 
                 	break; 
+                case 7:
+                	break;
             }
-        }while(choice !=6);
+        }while(choice !=7);
 		
 		router0.printAllocations();
 		
@@ -321,5 +332,93 @@ public class NetworkSimulationRunner {
         topology.printNetworkTopology();
         
         topology.printAdjacencyList();
+	}
+	
+	public static void manageVLANS(List<Switch> switches, Scanner scanner) {
+		if (switches.isEmpty()) {
+	        System.out.println("No switches available in the network.");
+	        return;
+	    }
+		
+		System.out.println("\n===== VLAN Management =====");
+	    for (int i = 0; i < switches.size(); i++) {
+	        System.out.println((i + 1) + ". " + switches.get(i).getName());
+	    }
+	    System.out.print("Select a switch to manage: ");
+	    int switchChoice = scanner.nextInt() - 1;
+
+	    Switch selectedSwitch = switches.get(switchChoice);
+		
+	    int choice;
+	    
+	    do {
+	    	
+	        System.out.println("\nManaging VLANs on " + selectedSwitch.getName());
+	        System.out.println("1. View VLANs");
+	        System.out.println("2. Create VLAN");
+	        System.out.println("3. Assign VLAN to Port");
+	        System.out.println("4. View Current Port Assignments");
+	        System.out.println("5. Return to Main Menu");
+	        System.out.print("Choice: ");
+	        choice = scanner.nextInt();
+	        
+	        switch (choice) {
+            case 1:
+                selectedSwitch.printVLANs();
+                break;
+            case 2:
+                System.out.print("Enter VLAN Number: ");
+                int vlanId = scanner.nextInt();
+                scanner.nextLine();
+                System.out.print("Enter VLAN Name: ");
+                String vlanName = scanner.nextLine();
+                selectedSwitch.configureVLAN(vlanId, vlanName);
+                break;
+            case 3:
+                System.out.println("Ports:");
+                List<String> ports = new ArrayList<>(selectedSwitch.getVlanPortMap().keySet());
+                for (int j = 0; j < ports.size(); j++) {
+                    System.out.println((j + 1) + ". " + ports.get(j));
+                }
+                
+                System.out.print("Select port number: ");
+                int portChoice = scanner.nextInt();
+                String selectedPort = ports.get(portChoice - 1);
+                scanner.nextLine();
+                
+                if (selectedSwitch.getVlanTable().isEmpty()) {
+                    System.out.println("No VLANs configured. Please create a VLAN first.");
+                    break;
+                }
+
+                System.out.println("Available VLANs:");
+                List<Integer> vlans = new ArrayList<>(selectedSwitch.getVlanTable().keySet());
+                
+                for (int i = 0; i < vlans.size(); i++) {
+                    int id = vlans.get(i);
+                    System.out.println((i + 1) + ". VLAN " + id + " - " + selectedSwitch.getVlanTable().get(id));
+                }
+
+                System.out.print("Select VLAN number: ");
+                int vlanChoice = scanner.nextInt();
+                
+                int selectedVlanId = vlans.get(vlanChoice - 1);
+                scanner.nextLine();
+
+                selectedSwitch.getVlanPortMap().put(selectedPort, selectedVlanId);
+                System.out.println("Port " + selectedPort + " assigned to VLAN " + selectedVlanId);
+                
+                selectedSwitch.printPortVLANAssignments();
+                break;
+            case 4:
+            	selectedSwitch.printPortVLANAssignments();
+                break;
+            case 5:
+            	break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+	    } while (choice != 4);
+		
 	}
 }

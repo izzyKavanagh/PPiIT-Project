@@ -3,49 +3,28 @@ package Network;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Layer3Switch extends Layer2Switch{
+public class Layer3Switch extends Switch{
 	
-	private Map<Integer, String> vlanRoutingTable; // VLAN routing table
 	private String ipAddress;
 
 	public Layer3Switch(String name, String macAddress) {
 		super(name, macAddress);
-		this.vlanRoutingTable = new HashMap<>();
-	}
-
-	@Override
-	public void configureVLAN(int vlanId, String vlanName) {
-		super.configureVLAN(vlanId, vlanName);  // use layer2Switch's method to configure VLAN
-		System.out.println("VLAN " + vlanId + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
 	}
 
     public String getIpAddress() {
         return ipAddress;
     }
-    
-	public void enableRoutingBetweenVLANs(int vlan1, int vlan2) {
-        String route = "Routing enabled between VLAN " + vlan1 + " and VLAN " + vlan2;
-        vlanRoutingTable.put(vlan1, route);
-        vlanRoutingTable.put(vlan2, route);
-        System.out.println(route + " on Layer 3 Switch: " + name);
-    }
+	
+    @Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		getVlanTable().put(vlanNumber, vlanName);
+        System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+	}
 
-    public void printRoutingTable() {
-        System.out.println("\nVLAN Routing Table of " + name + ":");
-        if (vlanRoutingTable.isEmpty()) {
-            System.out.println("No VLAN routing enabled.");
-            return;
-        }
-
-        System.out.println("+-------+--------------------------+");
-        System.out.println("| VLAN  | Routing Info              |");
-        System.out.println("+-------+--------------------------+");
-
-        for (Map.Entry<Integer, String> entry : vlanRoutingTable.entrySet()) {
-            System.out.printf("| %-5d | %-24s |\n", entry.getKey(), entry.getValue());
-        }
-
-        System.out.println("+-------+--------------------------+\n");
-    }
+	@Override
+	public void assignPortToVLAN(String port, int vlanId) {
+		getVlanPortMap().put(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	}
 
 }

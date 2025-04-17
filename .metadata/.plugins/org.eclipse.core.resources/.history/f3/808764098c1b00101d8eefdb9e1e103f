@@ -1,0 +1,65 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Layer3Switch extends Layer2Switch{
+	
+	private Map<Integer, String> vlanTable;
+	private String ipAddress;
+	private Map<String, Integer> vlanPortMap;
+
+	public Layer3Switch(String name, String macAddress) {
+		super(name, macAddress);
+		this.vlanTable = new HashMap<>();
+	}
+
+	@Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		super.configureVLAN(vlanNumber, vlanName);  // use layer2Switch's method to configure VLAN
+		System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+	}
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+	
+	@Override
+	public void assignPortToVLAN(String port, int vlanId) {
+	    super.assignPortToVLAN(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	}
+
+    public void printRoutingTable() {
+        System.out.println("\nVLAN Routing Table of " + name + ":");
+        if (vlanRoutingTable.isEmpty()) {
+            System.out.println("No VLAN routing enabled.");
+            return;
+        }
+
+        System.out.println("+-------+--------------------------+");
+        System.out.println("| VLAN  | Routing Info              |");
+        System.out.println("+-------+--------------------------+");
+
+        for (Map.Entry<Integer, String> entry : vlanRoutingTable.entrySet()) {
+            System.out.printf("| %-5d | %-24s |\n", entry.getKey(), entry.getValue());
+        }
+
+        System.out.println("+-------+--------------------------+\n");
+    }
+    
+    public void printPortVLANAssignments() {
+    	super.printPortVLANAssignments();
+    }
+    
+    @Override
+	public Map<String, Integer> getVlanPortMap() {
+		return vlanPortMap;
+	}
+
+	@Override
+	public Map<Integer, String> getVlanTable() {
+		return vlanTable;
+	}
+
+}

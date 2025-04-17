@@ -1,0 +1,46 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Layer2Switch extends Switch{
+	
+	private Map<Integer, String> vlanTable; // VLAN table
+	private Map<String, Integer> vlanPortMap;
+
+	public Layer2Switch(String name, String macAddress) {
+		super(name, macAddress);
+		this.vlanTable = new HashMap<>();
+	}
+
+	@Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		vlanTable.put(vlanNumber, vlanName);
+        System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 2 Switch: " + name);
+	}
+	
+	public void printVLANs() {
+        System.out.println("\nVLAN Table of " + name + ":");
+        if (vlanTable.isEmpty()) {
+            System.out.println("No VLANs configured.");
+            return;
+        }
+
+        System.out.println("+-------+------------+");
+        System.out.println("| VLAN  | Name       |");
+        System.out.println("+-------+------------+");
+
+        for (Map.Entry<Integer, String> entry : vlanTable.entrySet()) {
+            System.out.printf("| %-5d | %-10s |\n", entry.getKey(), entry.getValue());
+        }
+
+        System.out.println("+-------+------------+\n");
+    }
+
+	@Override
+	public void assignPortToVLAN(String port, int vlanId) {
+	    vlanPortMap.put(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	}
+
+}
