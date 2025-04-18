@@ -1,0 +1,25 @@
+package Network;
+
+import java.util.List;
+
+public class VLANInterface {
+	
+	private String ipAddress;
+    private String subnetMask;
+    private List<String> helperAddresses;
+
+    public VLANInterface(String ipAddress, String subnetMask) {
+        this.ipAddress = ipAddress;
+        this.subnetMask = subnetMask;
+        this.helperAddresses = new ArrayList<>();
+    }
+
+    public void addHelperAddress(String helperAddress) {
+        helperAddresses.add(helperAddress);
+    }
+
+    @Override
+    public String toString() {
+        return "IP: " + ipAddress + "/" + subnetMask + ", Helpers: " + helperAddresses;
+    }
+}

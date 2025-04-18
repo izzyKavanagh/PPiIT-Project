@@ -1,7 +1,5 @@
 package Network;
 
-import java.util.Map;
-
 public class Layer2Switch extends Switch{
 	
 

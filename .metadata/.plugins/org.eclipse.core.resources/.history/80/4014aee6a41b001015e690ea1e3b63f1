@@ -1,0 +1,30 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Layer3Switch extends Switch{
+	
+	private String ipAddress;
+
+	public Layer3Switch(String name, String macAddress) {
+		super(name, macAddress);
+	}
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+	
+    @Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		getVlanTable().put(vlanNumber, vlanName);
+        System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+	}
+
+	@Override
+	public void assignPortToVLAN(String port, int vlanId) {
+		getVlanPortMap().put(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	}
+
+}

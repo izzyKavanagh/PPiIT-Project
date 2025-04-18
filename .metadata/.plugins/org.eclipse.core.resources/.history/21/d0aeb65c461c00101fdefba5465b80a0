@@ -1,0 +1,23 @@
+package Network;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class VLANInterface {
+	
+    private Map<String, String> helperAddresses;
+
+    public VLANInterface() {
+        this.helperAddresses = new HashMap<>();
+    }
+
+    public void addVlanInterface(String vlan,String helperAddress) {
+        helperAddresses.put(vlan, helperAddress);
+    }
+
+    public Map<String, String> getVlanInterfaces() {
+        return helperAddresses;
+    }
+}

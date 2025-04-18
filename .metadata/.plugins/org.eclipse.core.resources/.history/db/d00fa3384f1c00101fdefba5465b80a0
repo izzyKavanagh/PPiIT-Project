@@ -1,0 +1,7 @@
+package Network;
+
+public interface DeviceWithCLI {
+	void startCLI();
+    void configureIpHelper(String vlanInterface, String helperAddress);
+	void addIpHelperAddress(int vlanNumber, String helperAddress);
+}

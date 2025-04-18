@@ -5,7 +5,6 @@ package Network;
 public class Computer extends Device{
 	
 	private final int totalPorts = 1;
-	private Router connectedRouter;
 	
 	public Computer(String name, String macAddress) {
 		super(name,macAddress);

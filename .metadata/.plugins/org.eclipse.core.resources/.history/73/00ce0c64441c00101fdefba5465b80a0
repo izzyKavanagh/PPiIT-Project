@@ -1,0 +1,18 @@
+package Network;
+
+import java.util.ArrayList; 
+import java.util.List;
+
+public class VLANInterface {
+
+    private String helperAddress;
+
+    public void setHelperAddress(String helperAddress) {
+        this.helperAddress = helperAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "IP: " + ipAddress + ", Helper: " + helperAddress;
+    }
+}

@@ -2,14 +2,20 @@ package Network;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 // Simulates a Router
-public class Router extends Device{
+public class Router extends Device implements DeviceWithCLI{
 	
 	// HashMap to store routing table (connected devices and their IP addresses)
     private Map<String, Device> routingTable = new HashMap<>();
     // HashMap to store devices' MAC addresses and associated static IPs 
     private Map<String, String> staticIpAllocations = new HashMap<>();
+    
+    private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
+    
+    private Map<VLANInterface, String> ipHelper = new HashMap<>();
+    
 	public final int totalPorts = 8;
 	private String staticIpPrefix = "266.444.1.";
 	private int nextIP = 2;
@@ -47,6 +53,33 @@ public class Router extends Device{
         }
     }
     
+    public void configureVLANInterface(int vlanId, String ipAddress, String subnetMask) {
+        VLANInterface vlanInterface = new VLANInterface(ipAddress, subnetMask);
+        vlanInterfaces.put(vlanId, vlanInterface);
+        System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress + "/" + subnetMask);
+    }
+
+    public void addIpHelperAddress(int vlanId, String helperAddress) {
+        VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
+        if (vlanInterface != null) {
+            vlanInterface.setHelperAddress(helperAddress);
+            System.out.println("Added helper address " + helperAddress + " to VLAN " + vlanId);
+        } else {
+            System.out.println("VLAN interface " + vlanId + " not configured.");
+        }
+    }
+
+    public void showVLANInterfaces() {
+        if (vlanInterfaces.isEmpty()) {
+            System.out.println("No VLAN interfaces configured.");
+        } else {
+            System.out.println("\nVLAN Interfaces:");
+            for (Map.Entry<Integer, VLANInterface> entry : vlanInterfaces.entrySet()) {
+                System.out.println("VLAN " + entry.getKey() + " - " + entry.getValue());
+            }
+        }
+    }
+    
     public void printAllocations() {
         System.out.println("\nCurrent Static IP Allocations:");
         if (staticIpAllocations.isEmpty()) {
@@ -63,5 +96,29 @@ public class Router extends Device{
         }
 
         System.out.println("+----------------+-------------------+\n");
+    }
+
+    @Override
+    public void configureIpHelper(VLANInterface vlanInterface, String helperAddress) {
+        ipHelper.put(vlanInterface, helperAddress);
+        System.out.println("Configured IP helper " + helperAddress + " on interface " + vlanInterface);
+    }
+
+    @Override
+    public void startCLI() {
+    	Scanner sc = new Scanner(System.in);
+        System.out.println("Starting CLI for " + name);
+
+        while (true) {
+            System.out.print("Enter VLAN interface number (or '-1' to quit): ");
+            int vlanId = sc.nextInt();
+            if (vlanId == -1) break;
+
+            System.out.print("Enter IP helper address: ");
+            String helperAddress = sc.nextLine();
+
+            addIpHelperAddress(vlanId, helperAddress);
+        }
+        sc.close();
     }
 }

@@ -1,0 +1,94 @@
+package Network;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Layer3Switch extends Switch implements DeviceWithCLI{
+	
+	private String ipAddress;
+	private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
+	
+	private Map<VLANInterface, String> ipHelper = new HashMap<>();
+	
+	public Layer3Switch(String name, String macAddress) {
+		super(name, macAddress);
+	}
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+	
+    @Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		getVlanTable().put(vlanNumber, vlanName);
+        System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+	}
+
+	@Override
+	public void assignPortToVLAN(String port, int vlanId) {
+		getVlanPortMap().put(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	}
+	
+	
+	public void configureVLANInterface(int vlanId, String ipAddress, String subnetMask) {
+	    VLANInterface vlanInterface = new VLANInterface(ipAddress, subnetMask);
+	    vlanInterfaces.put(vlanId, vlanInterface);
+	    System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress + "/" + subnetMask);
+	}
+
+	public void addIpHelperAddress(int vlanId, String helperAddress) {
+	    VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
+	    if (vlanInterface != null) {
+	        vlanInterface.setHelperAddress(helperAddress);
+	        System.out.println("Added helper address " + helperAddress + " to VLAN " + vlanId);
+	    } else {
+	        System.out.println("VLAN interface " + vlanId + " not configured.");
+	    }
+	}
+
+	public void showVLANInterfaces() {
+	    if (vlanInterfaces.isEmpty()) {
+	        System.out.println("No VLAN interfaces configured.");
+	    } else {
+	        System.out.println("\nVLAN Interfaces:");
+	        for (Map.Entry<Integer, VLANInterface> entry : vlanInterfaces.entrySet()) {
+	            System.out.println("VLAN " + entry.getKey() + " - " + entry.getValue());
+	        }
+	    }
+	}
+
+	 @Override
+	    public void configureIpHelper(VLANInterface vlanInterface, String helperAddress) {
+	        ipHelper.put(vlanInterface, helperAddress);
+	        System.out.println("Configured IP helper " + helperAddress + " on interface " + vlanInterface);
+	    }
+
+	    @Override
+	    public void startCLI() {
+	    	Scanner sc = new Scanner(System.in);
+	        System.out.println("Starting CLI for " + name);
+
+	        while (true) {
+	            System.out.print("Enter VLAN interface number (or '-1' to quit): ");
+	            int vlanInput = sc.nextInt();
+	            if (vlanInput == -1) break;
+
+	            int vlanId;
+	            try {
+	                vlanId = Integer.parseInt(vlanInput);
+	            } catch (NumberFormatException e) {
+	                System.out.println("Invalid VLAN number.");
+	                continue;
+	            }
+
+	            System.out.print("Enter IP helper address: ");
+	            String helperAddress = sc.nextLine();
+
+	            addIpHelperAddress(vlanId, helperAddress);
+	        }
+	        sc.close();
+	    }
+
+}
