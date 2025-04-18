@@ -36,7 +36,7 @@ public class CLI {
             System.out.print("Enter helper IP address for VLAN " + vlanNumber + ": ");
             String helperAddress = scanner.nextLine();
 
-            device.addIpHelperAddress(vlanNumber, helperAddress);
+            device.configureIpHelper(vlanNumber, helperAddress);
             System.out.println("Helper address " + helperAddress + " assigned to VLAN " + vlanNumber + ".\n");
         }
 

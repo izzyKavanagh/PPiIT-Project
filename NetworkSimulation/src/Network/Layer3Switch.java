@@ -9,7 +9,7 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	private String ipAddress;
 	private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
 	
-	private Map<VLANInterface, String> ipHelper = new HashMap<>();
+	private Map<Integer, String> ipHelper = new HashMap<>();
 	
 	public Layer3Switch(String name, String macAddress) {
 		super(name, macAddress);
@@ -32,20 +32,10 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	}
 	
 	
-	public void configureVLANInterface(int vlanId, String ipAddress, String subnetMask) {
-	    VLANInterface vlanInterface = new VLANInterface(ipAddress, subnetMask);
+	public void configureVLANInterface(int vlanId, String ipAddress) {
+	    VLANInterface vlanInterface = new VLANInterface(ipAddress);
 	    vlanInterfaces.put(vlanId, vlanInterface);
-	    System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress + "/" + subnetMask);
-	}
-
-	public void addIpHelperAddress(int vlanId, String helperAddress) {
-	    VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
-	    if (vlanInterface != null) {
-	        vlanInterface.setHelperAddress(helperAddress);
-	        System.out.println("Added helper address " + helperAddress + " to VLAN " + vlanId);
-	    } else {
-	        System.out.println("VLAN interface " + vlanId + " not configured.");
-	    }
+	    System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress);
 	}
 
 	public void showVLANInterfaces() {
@@ -60,9 +50,14 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	}
 
 	 @Override
-	    public void configureIpHelper(VLANInterface vlanInterface, String helperAddress) {
-	        ipHelper.put(vlanInterface, helperAddress);
-	        System.out.println("Configured IP helper " + helperAddress + " on interface " + vlanInterface);
+	    public void configureIpHelper(int vlanId, String helperAddress) {
+		 	VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
+		    if (vlanInterface != null) {
+		        vlanInterface.setHelperAddress(helperAddress);
+		        System.out.println("Added helper address " + helperAddress + " to VLAN " + vlanId);
+		    } else {
+		        System.out.println("VLAN interface " + vlanId + " not configured.");
+		    }
 	    }
 
 	    @Override
@@ -78,7 +73,7 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	            System.out.print("Enter IP helper address: ");
 	            String helperAddress = sc.nextLine();
 
-	            addIpHelperAddress(vlanId, helperAddress);
+	            configureIpHelper(vlanId, helperAddress);
 	        }
 	        sc.close();
 	    }

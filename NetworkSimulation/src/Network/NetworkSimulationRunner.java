@@ -119,7 +119,7 @@ public class NetworkSimulationRunner {
                 	managePCs(scanner, dhcpServer, computers, manager);
                 	break;
                 case 4:
-                	manageVLANS(switches, scanner);
+                	manageSwitches(switches, scanner);
                 	break; 
                 case 5:
                 	addConnection(scanner,topology); 
@@ -334,23 +334,37 @@ public class NetworkSimulationRunner {
         topology.printAdjacencyList();
 	}
 	
-	public static void manageVLANS(List<Switch> switches, Scanner scanner) {
-		if (switches.isEmpty()) {
+	public static void manageSwitches(List<Switch> switches, Scanner scanner) {
+	    if (switches.isEmpty()) {
 	        System.out.println("No switches available in the network.");
 	        return;
 	    }
-		
-		System.out.println("\n===== VLAN Management =====");
+
+	    System.out.println("\n===== Switch Management =====");
 	    for (int i = 0; i < switches.size(); i++) {
 	        System.out.println((i + 1) + ". " + switches.get(i).getName());
 	    }
+	    
 	    System.out.print("Select a switch to manage: ");
 	    int switchChoice = scanner.nextInt() - 1;
 
+	    if (switchChoice < 0 || switchChoice >= switches.size()) {
+	        System.out.println("Invalid selection.");
+	        return;
+	    }
+
 	    Switch selectedSwitch = switches.get(switchChoice);
+
+	    if (selectedSwitch instanceof Layer2Switch) {
+	    	manageVLANS((Layer2Switch) selectedSwitch, scanner);
+	    } else {
+	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner);
+	    }
+	}
+	
+	private static void manageVLANS(Switch selectedSwitch, Scanner scanner) {
+		int choice;
 		
-	    int choice;
-	    
 	    do {
 	    	
 	        System.out.println("\nManaging VLANs on " + selectedSwitch.getName());
@@ -417,8 +431,52 @@ public class NetworkSimulationRunner {
             	break;
             default:
                 System.out.println("Invalid choice.");
-        }
-	    } while (choice != 4);
+	        }
+	    } while (choice != 5);
+		
+	}
+
+	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner) {
+		int choice;
+
+	    do {
+	        System.out.println("\nManaging Layer 3 Switch: " + selectedSwitch.getName());
+	        System.out.println("1. Manage VLANs");
+	        System.out.println("2. Manage VLAN Interfaces (SVIs)");
+	        System.out.println("3. Configure IP Helper Address");
+	        System.out.println("4. View VLAN Interfaces (SVIs)");
+	        System.out.println("5. Return to Previous Menu");
+	        System.out.print("Choice: ");
+	        choice = scanner.nextInt();
+
+	        switch (choice) {
+	            case 1:
+	            	manageVLANS(selectedSwitch, scanner); // Layer 3 inherits Layer 2 capabilities
+	                break;
+	            case 2:
+	                System.out.print("Enter VLAN ID for the interface: ");
+	                int vlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter IP Address for VLAN interface: ");
+	                String ipAddress = scanner.nextLine();
+	                selectedSwitch.configureVLANInterface(vlanId, ipAddress);
+	                break;
+	            case 3:
+	                System.out.print("Enter VLAN ID to configure IP Helper for: ");
+	                int helperVlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter DHCP Server IP Address: ");
+	                String helperIp = scanner.nextLine();
+	                selectedSwitch.configureIpHelper(helperVlanId, helperIp);
+	                break;
+	            case 4:
+	                selectedSwitch.showVLANInterfaces();
+	            case 5:
+	                break;
+	            default:
+	                System.out.println("Invalid choice.");
+	        }
+	    } while (choice != 5);
 		
 	}
 }

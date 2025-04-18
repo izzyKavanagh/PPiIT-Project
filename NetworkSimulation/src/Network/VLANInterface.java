@@ -3,20 +3,22 @@ package Network;
 public class VLANInterface {
 	
 	private String ipAddress;
-    private String subnetMask;
     private String helperAddress;
 
-    public VLANInterface(String ipAddress, String subnetMask) {
+    public VLANInterface(String ipAddress) {
         this.ipAddress = ipAddress;
-        this.subnetMask = subnetMask;
     }
 
     public void setHelperAddress(String helperAddress) {
         this.helperAddress = helperAddress;
     }
 
+    public String getHelperAddress() {
+        return helperAddress;
+    }
+    
     @Override
     public String toString() {
-        return "IP: " + ipAddress + "/" + subnetMask + ", Helper: " + helperAddress;
+        return "IP: " + ipAddress + ", Helper: " + helperAddress;
     }
 }
