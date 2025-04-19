@@ -13,7 +13,9 @@ public class Router extends Device implements DeviceWithCLI{
     private Map<String, String> staticIpAllocations = new HashMap<>();
     
     private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
-        
+    
+    private Map<VLANInterface, String> ipHelper = new HashMap<>();
+    
 	public final int totalPorts = 8;
 	private String staticIpPrefix = "266.444.1.";
 	private int nextIP = 2;

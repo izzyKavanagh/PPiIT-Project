@@ -1,7 +1,8 @@
 package Network;
 
-import java.util.ArrayList;  
+import java.util.ArrayList; 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class NetworkSimulationRunner {
@@ -122,7 +123,7 @@ public class NetworkSimulationRunner {
                 	PCMenu.managePCs(scanner, dhcpServer, computers, manager);
                 	break;
                 case 4:
-                	SwitchMenu.manageSwitches(switches, scanner, topology);
+                	manageSwitches(switches, scanner, topology);
                 	break; 
                 case 5:
                 	TopologyMenu.addConnection(scanner,topology); 
