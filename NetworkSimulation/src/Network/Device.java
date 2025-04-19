@@ -5,12 +5,22 @@ public abstract class Device {
 	protected String name;
     protected String macAddress;
     protected String ipAddress;
+    protected String gatewayIP;
     protected Router connectedRouter;
 	protected Switch connectedSwitch;
 	protected boolean staticIP; // default is static IP
 	protected int totalPorts;
+	protected int vlanId;
 
-    public Device(String name, String macAddress) {
+    public int getVlanId() {
+		return vlanId;
+	}
+
+	public void setVlanId(int vlandId) {
+		this.vlanId = vlandId;
+	}
+
+	public Device(String name, String macAddress) {
         this.name = name;
         this.macAddress = macAddress;
         this.ipAddress = null; // Assigned by DHCP
@@ -25,8 +35,20 @@ public abstract class Device {
         return macAddress;
     }
 
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    
     public String getIpAddress() {
         return ipAddress;
+    }
+    
+    public void setGatewayIp(String gatewayIP) {
+        this.gatewayIP = gatewayIP;
+    }
+    
+    public String getGatewayIp() {
+        return gatewayIP;
     }
     
     public int getTotalPorts() {

@@ -1,0 +1,155 @@
+package Network;
+
+import java.util.Map;
+
+public class NetworkManager {
+	private Topology topology;
+	
+	public NetworkManager(Topology topology) {
+        this.topology = topology;
+    }
+
+    public void useStaticIpAllocation(Device device) {
+    	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedRouter = topology.checkIfConnected(device, Router.class);
+
+    	if (connectedRouter != null && !(device instanceof Layer2Switch)) {
+    	    Router router = (Router) connectedRouter;
+    	    String ip = router.assignStaticIP(device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    	
+    	if(connectedRouter == null) 
+    	{
+    		System.out.println("ERROR: No router found on " + device.getName() + "'s network.");
+    	}
+    	
+    }
+
+    // out-dated method
+    public void useDynamicIpAllocation(Device device, String poolName) {
+    	
+    	topology.updateAdjacencyList();
+    	
+    	Device connectedDHCP = topology.checkIfConnected(device, DHCPServer.class);
+
+    	if (connectedDHCP != null && !(device instanceof Layer2Switch) && !(device instanceof Router)) 
+    	{
+    	    DHCPServer dhcpServer = (DHCPServer) connectedDHCP;
+    	    String ip = dhcpServer.assignIp(poolName, device.getMacAddress());
+    	    device.ipAddress = ip;
+    	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	}
+    	
+    	if(connectedDHCP == null) 
+    	{
+    		System.out.println("ERROR: No DHCP server found on" + device.getName() + "'s network.");
+    	}
+    }
+   
+    //method to check if there is a layer 3 device connected to device & get corresponding VLAN interface & check if there is IP helper
+    public String findLayer3Device(Device device, int vlanId)
+    {	
+    	String gatewayIP, helperIP;
+    	
+    	Device connectedSwitch = topology.checkIfConnected(device, Layer3Switch.class);
+    	
+    	Device connectedRouter = topology.checkIfConnected(device, Router.class);
+
+    	if (connectedSwitch != null) 
+    	{
+    	    Layer3Switch layer3Switch = (Layer3Switch) connectedSwitch;
+    	    Map<Integer, VLANInterface> vlanInterfaceMap = layer3Switch.getVLANInterfaces();
+    	    VLANInterface vlanIntf = vlanInterfaceMap.get(vlanId);
+    	    if(vlanIntf != null) 
+    	    {
+    	    	gatewayIP = vlanIntf.getIpAddress();
+    	    	device.setGatewayIp(gatewayIP);
+    	    	helperIP = vlanIntf.getHelperAddress();
+    	    	
+    	    	if(helperIP != null) {
+    	    		return helperIP;
+    	    	}
+    	    	else 
+        	    {
+        	    	System.out.println("No helper IP was found for VLAN " + vlanId);
+        	    	return null;
+        	    }
+    	    }
+    	    if(vlanIntf == null) 
+    	    {
+    	    	System.out.println("No VLAN Interface set up for VLAN " + vlanId);
+    	    	return null;
+    	    }
+    	}
+    	else if(connectedRouter != null) 
+    	{
+    		Router router = (Router) connectedRouter;
+    	    Map<Integer, VLANInterface> vlanInterfaceMap = router.getVLANInterfaces();
+    	    VLANInterface vlanIntf = vlanInterfaceMap.get(vlanId);
+    	    
+    	    if(vlanIntf != null) 
+    	    {
+    	    	gatewayIP = vlanIntf.getIpAddress();
+    	    	device.setGatewayIp(gatewayIP);
+    	    	helperIP = vlanIntf.getHelperAddress();
+    	    	
+    	    	if(helperIP != null) {
+    	    		return helperIP;
+    	    	}
+    	    	else 
+        	    {
+        	    	System.out.println("No helper IP was found for VLAN " + vlanId);
+        	    	return null;
+        	    }
+    	    }
+    	    if(vlanIntf == null) 
+    	    {
+    	    	System.out.println("No VLAN Interface set up for VLAN " + vlanId);
+    	    	return null;
+    	    }
+    	}
+    	else 
+    	{
+    		System.out.println("ERROR: No layer 3 device found on" + device.getName() + "'s network.");
+    	}
+    	
+    	return null;
+    }
+    
+    //method to find connected DHCP & give pc/device IP from pool w/ same gateway IP
+    public void findDHCPServer(Device device, String gatewayIP, String helperIP) {
+    	
+    	Device connectedDHCP = topology.checkIfConnected(device, DHCPServer.class);
+
+    	if (connectedDHCP != null) 
+    	{
+    	    DHCPServer dhcpServer = (DHCPServer) connectedDHCP;
+    	    String ip = dhcpServer.getIpAddress();
+    	    
+    	    if(ip.equalsIgnoreCase(helperIP)) 
+    	    {
+    	    	String dynamicIP = dhcpServer.assignIp(gatewayIP, device.getMacAddress());
+        	    device.ipAddress = dynamicIP;
+        	    System.out.println("DHCP Server found!");
+        	    System.out.println(device.getName() + " assigned IP: " + ip);
+    	    }
+    	    else
+    	    {
+    	    	System.out.println("Unable to find DHCP Server with ip matching VLAN's IP helper address: " + helperIP);
+    	    }
+    	}
+    	else
+    	{
+    		System.out.println("ERROR: No DHCP server found on" + device.getName() + "'s network.");
+    	}
+    }
+
+    public Topology getTopology() {
+        return topology;
+    }
+}
+

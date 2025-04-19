@@ -70,6 +70,11 @@ public class Router extends Device implements DeviceWithCLI{
         }
     }
     
+    public Map<Integer, VLANInterface> getVLANInterfaces()
+	{
+		return vlanInterfaces;
+	}
+    
     public void printAllocations() {
         System.out.println("\nCurrent Static IP Allocations:");
         if (staticIpAllocations.isEmpty()) {

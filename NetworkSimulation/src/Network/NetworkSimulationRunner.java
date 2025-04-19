@@ -83,6 +83,10 @@ public class NetworkSimulationRunner {
 		
 		topology.connectDevices(dhcpServer, switch2);
 		
+		dhcpServer.setIpAddress("192.168.0.5");
+		
+		System.out.println(dhcpServer.getIpAddress());
+		
 		topology.updateAdjacencyList();
         
         //devices don't get IP as the system doesn't know that the devices are connected to a router, as there's no "direct" connection.
@@ -119,7 +123,7 @@ public class NetworkSimulationRunner {
                 	managePCs(scanner, dhcpServer, computers, manager);
                 	break;
                 case 4:
-                	manageSwitches(switches, scanner);
+                	manageSwitches(switches, scanner, topology);
                 	break; 
                 case 5:
                 	addConnection(scanner,topology); 
@@ -235,28 +239,18 @@ public class NetworkSimulationRunner {
                     System.out.println("No available IP Pools.");
                     return;
                 }
-
-                List<String> poolNames = new ArrayList<>(pools.keySet()); // Extract keys (pool names)
-
-                System.out.println("Available IP Pools:");
-                for (int i = 0; i < poolNames.size(); i++) 
-                {
-                    System.out.println((i + 1) + ". " + poolNames.get(i));
-                }
-
-                System.out.print("Select a pool number: ");
-                int poolChoice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-
-                if (poolChoice < 1 || poolChoice > poolNames.size()) 
-                {
-                    System.out.println("Invalid selection! Try again.");
-                    return;
-                }
-
-                String selectedPool = poolNames.get(poolChoice - 1);
+                
+            	String helperIP = manager.findLayer3Device(pc);
+            	
+            	if(helperIP == null)
+            	{
+            		return;
+            	}
+            	
+            	manager.findDHCPServer(pc, pc.getGatewayIp(), helperIP);
+                
                 pc.staticIP = false;
-                manager.useDynamicIpAllocation(pc, selectedPool);
+                
                 System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
                 break;
 
@@ -276,7 +270,7 @@ public class NetworkSimulationRunner {
 	}
 	
 	public static void addConnection(Scanner scanner,Topology topology) {
-		List<String> devices = new ArrayList<>(topology.getTopology().keySet());
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    
 	    System.out.println("\n===== Network Devices =====");
 	    
@@ -294,8 +288,8 @@ public class NetworkSimulationRunner {
 	    String sourceDevice = devices.get(sourceDeviceIndex); 
 	    String targetDevice = devices.get(targetDeviceIndex);
 	    
-	    Device source = topology.getTopology().get(sourceDevice);
-        Device target = topology.getTopology().get(targetDevice);
+	    Device source = topology.getRegisteredDevices().get(sourceDevice);
+        Device target = topology.getRegisteredDevices().get(targetDevice);
         
         topology.connectDevices(source, target);
         
@@ -304,7 +298,7 @@ public class NetworkSimulationRunner {
 	}
 	
 	public static void removeConnection(Scanner scanner,Topology topology) {
-		List<String> devices = new ArrayList<>(topology.getTopology().keySet());
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    
 	    System.out.println("\n===== Network Devices =====");
 	    
@@ -324,8 +318,8 @@ public class NetworkSimulationRunner {
 	    String sourceDevice = devices.get(sourceDeviceIndex); 
 	    String targetDevice = devices.get(targetDeviceIndex);
 	    
-	    Device source = topology.getTopology().get(sourceDevice);
-        Device target = topology.getTopology().get(targetDevice);
+	    Device source = topology.getRegisteredDevices().get(sourceDevice);
+        Device target = topology.getRegisteredDevices().get(targetDevice);
         
         topology.disconnectDevices(source, target);
         
@@ -334,7 +328,7 @@ public class NetworkSimulationRunner {
         topology.printAdjacencyList();
 	}
 	
-	public static void manageSwitches(List<Switch> switches, Scanner scanner) {
+	public static void manageSwitches(List<Switch> switches, Scanner scanner, Topology topology) {
 	    if (switches.isEmpty()) {
 	        System.out.println("No switches available in the network.");
 	        return;
@@ -356,13 +350,13 @@ public class NetworkSimulationRunner {
 	    Switch selectedSwitch = switches.get(switchChoice);
 
 	    if (selectedSwitch instanceof Layer2Switch) {
-	    	manageVLANS((Layer2Switch) selectedSwitch, scanner);
+	    	manageVLANS((Layer2Switch) selectedSwitch, scanner, topology);
 	    } else {
-	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner);
+	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner, topology);
 	    }
 	}
 	
-	private static void manageVLANS(Switch selectedSwitch, Scanner scanner) {
+	private static void manageVLANS(Switch selectedSwitch, Scanner scanner, Topology topology) {
 		int choice;
 		
 	    do {
@@ -419,7 +413,7 @@ public class NetworkSimulationRunner {
                 int selectedVlanId = vlans.get(vlanChoice - 1);
                 scanner.nextLine();
 
-                selectedSwitch.getVlanPortMap().put(selectedPort, selectedVlanId);
+                selectedSwitch.assignPortToVLAN(selectedPort, selectedVlanId, topology);
                 System.out.println("Port " + selectedPort + " assigned to VLAN " + selectedVlanId);
                 
                 selectedSwitch.printPortVLANAssignments();
@@ -436,7 +430,7 @@ public class NetworkSimulationRunner {
 		
 	}
 
-	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner) {
+	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner, Topology topology) {
 		int choice;
 
 	    do {
@@ -451,7 +445,7 @@ public class NetworkSimulationRunner {
 
 	        switch (choice) {
 	            case 1:
-	            	manageVLANS(selectedSwitch, scanner); // Layer 3 inherits Layer 2 capabilities
+	            	manageVLANS(selectedSwitch, scanner, topology); // Layer 3 inherits Layer 2 capabilities
 	                break;
 	            case 2:
 	                System.out.print("Enter VLAN ID for the interface: ");
@@ -471,6 +465,7 @@ public class NetworkSimulationRunner {
 	                break;
 	            case 4:
 	                selectedSwitch.showVLANInterfaces();
+	                break;
 	            case 5:
 	                break;
 	            default:

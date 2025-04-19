@@ -48,7 +48,7 @@ public abstract class Switch extends Device{
     	macTable.put(device.getMacAddress(), port);
     }
     
-    public abstract void assignPortToVLAN(String port, int vlanId);
+    public abstract void assignPortToVLAN(String port, int vlanId, Topology topology);
     	
     public abstract void configureVLAN(int vlanId, String vlanName);
     

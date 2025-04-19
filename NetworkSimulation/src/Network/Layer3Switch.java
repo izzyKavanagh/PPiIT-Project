@@ -1,6 +1,6 @@
 package Network;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Map;
 import java.util.Scanner;
 
@@ -8,9 +8,7 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	
 	private String ipAddress;
 	private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
-	
-	private Map<Integer, String> ipHelper = new HashMap<>();
-	
+		
 	public Layer3Switch(String name, String macAddress) {
 		super(name, macAddress);
 	}
@@ -26,9 +24,20 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	}
 
 	@Override
-	public void assignPortToVLAN(String port, int vlanId) {
+	public void assignPortToVLAN(String port, int vlanId, Topology topology) {
 		getVlanPortMap().put(port, vlanId);
 	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	    
+	    Map<String, Map<String, Device>> fullTopology = topology.getTopology();
+	    Map<String, Device> portMap = fullTopology.get(this.name);
+
+	    if (portMap != null) {
+	        Device connectedDevice = portMap.get(port);
+	        if (connectedDevice != null) {
+	            connectedDevice.setVlanId(vlanId);
+	            System.out.println("Device " + connectedDevice.getName() + " now assigned to VLAN " + vlanId);
+	        }
+	    }
 	}
 	
 	
@@ -47,6 +56,11 @@ public class Layer3Switch extends Switch implements DeviceWithCLI{
 	            System.out.println("VLAN " + entry.getKey() + " - " + entry.getValue());
 	        }
 	    }
+	}
+	
+	public Map<Integer, VLANInterface> getVLANInterfaces()
+	{
+		return vlanInterfaces;
 	}
 
 	 @Override

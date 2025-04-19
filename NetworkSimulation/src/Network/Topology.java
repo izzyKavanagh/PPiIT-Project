@@ -72,6 +72,9 @@ public class Topology {
 
 	    if (source instanceof Switch sw) {
 	        sw.updateMacTable(target, availableSourcePort);
+	        
+	        int vlanId = sw.getVlanPortMap().getOrDefault(availableSourcePort, 1);
+	        target.setVlanId(vlanId);
 	    }
 	    
 	    sourcePorts.put(availableSourcePort, target);
@@ -228,7 +231,11 @@ public class Topology {
         }
     }
 
-	public Map<String, Device> getTopology() {
+	public Map<String, Device> getRegisteredDevices() {
 		return registeredDevices;
+	}
+	
+	public Map<String, Map<String, Device>> getTopology() {
+		return networkTopology;
 	}
 }

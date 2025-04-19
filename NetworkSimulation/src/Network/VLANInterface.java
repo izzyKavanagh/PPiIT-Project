@@ -17,6 +17,10 @@ public class VLANInterface {
         return helperAddress;
     }
     
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
     @Override
     public String toString() {
         return "IP: " + ipAddress + ", Helper: " + helperAddress;
