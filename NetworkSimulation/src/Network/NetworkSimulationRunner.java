@@ -18,10 +18,15 @@ public class NetworkSimulationRunner {
 		
 		topology.setNetworkManager(manager);
 		
+		List<Router> routers = new ArrayList<>();
+		
 		// create instances of router and DHCP
 		Router router0 = new Router("Router0", "00:1A:1B:1C:1D:1E", "192.168.0.1");
+		
+		routers.add(router0);
+		
 		DHCPServer dhcpServer = new DHCPServer("DHCP Server", "00:2A:2B:3C:3D:3E");
-				
+		
 		List<Switch> switches = new ArrayList<>();
 		
 		// ADD IN ERROR CHECKING FOR DEVICE NAMES: USER CANT USE SAME NAME FOR 2 DEVICES
@@ -103,9 +108,10 @@ public class NetworkSimulationRunner {
             System.out.println("2. Create a new IP Pool");
             System.out.println("3. Manage PCs");
             System.out.println("4. Manage Switches");
-            System.out.println("5. Add Connection"); 
-            System.out.println("6. Remove Connection");
-            System.out.println("7. Exit");
+            System.out.println("5. Manage Routers");
+            System.out.println("6. Add Connection"); 
+            System.out.println("7. Remove Connection");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
@@ -125,15 +131,18 @@ public class NetworkSimulationRunner {
                 	SwitchMenu.manageSwitches(switches, scanner, topology);
                 	break; 
                 case 5:
-                	TopologyMenu.addConnection(scanner,topology); 
+                	RouterMenu.manageRouters(routers, scanner, topology); 
                 	break;
                 case 6:
-                	TopologyMenu.removeConnection(scanner,topology); 
+                	TopologyMenu.addConnection(scanner,topology);
                 	break; 
                 case 7:
+                	TopologyMenu.removeConnection(scanner,topology); 
+                	break; 
+                case 8:
                 	break;
             }
-        }while(choice !=7);
+        }while(choice !=8);
 		
 		router0.printAllocations();
 		

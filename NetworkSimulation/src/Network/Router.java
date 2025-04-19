@@ -13,6 +13,8 @@ public class Router extends Device implements DeviceWithCLI{
     private Map<String, String> staticIpAllocations = new HashMap<>();
     
     private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
+    
+    private Map<String, String> portIpAssignments = new HashMap<>();
         
 	public final int totalPorts = 8;
 	private String staticIpPrefix = "266.444.1.";
@@ -22,6 +24,11 @@ public class Router extends Device implements DeviceWithCLI{
 	public Router(String name, String macAddress, String ipAddress) {
 		super(name, macAddress);
 		this.ipAddress = ipAddress;
+		this.portIpAssignments = new HashMap<>();
+		
+		for (int i = 0; i < getTotalPorts(); i++) {
+			portIpAssignments.put("Fa0/" + i, "Empty");  // Default all ports to VLAN 1
+        }
 	}
 	
 	@Override
@@ -38,9 +45,39 @@ public class Router extends Device implements DeviceWithCLI{
 	    
 	    return assignedStaticIp;
 	}
+	
+	public void assignIpToPort(String port, String ipAddress) {
+        portIpAssignments.put(port, ipAddress);
+        System.out.println("Assigned IP " + ipAddress + " to port " + port);
+    }
+	
+	public Map<String, String> getPortIpAssignments() 
+	{
+		return portIpAssignments;
+	}
+
+    public void showPortIPs() {
+    	if (portIpAssignments.isEmpty()) 
+    	{
+            System.out.println("No IPs assigned to ports.");
+        } 
+    	else 
+    	{
+            System.out.println("\n+----------------+--------------------+");
+            System.out.printf("| %-14s | %-18s |\n", "Port", "IP Address");
+            System.out.println("+----------------+--------------------+");
+            
+            for (Map.Entry<String, String> entry : portIpAssignments.entrySet()) 
+            {
+                System.out.printf("| %-14s | %-18s |\n", entry.getKey(), entry.getValue());
+            }
+            
+            System.out.println("+----------------+--------------------+");
+        }
+    }
     
-    public void updateRoutingTable(Device device) {
- 
+    public void updateRoutingTable(Device device) 
+    {
     	if (device.getIpAddress() == null) 
         {
             System.out.println("ERROR: Device does not have an IP address.");
