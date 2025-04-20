@@ -2,6 +2,13 @@ package Network;
 
 import java.util.Map;
 
+import DeviceComponents.VLANInterface;
+import Devices.DHCPServer;
+import Devices.Device;
+import Devices.Layer2Switch;
+import Devices.Layer3Switch;
+import Devices.Router;
+
 public class NetworkManager {
 	private Topology topology;
 	

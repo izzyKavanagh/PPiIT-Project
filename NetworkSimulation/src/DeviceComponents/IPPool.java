@@ -1,0 +1,69 @@
+package DeviceComponents;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import Network.ErrorMessages;
+
+public class IPPool {
+
+	private Set<String> availableIPs = new HashSet<>();
+    private String networkPrefix = "192.168.10."; // Default sub-net
+    private String poolName;
+    private String gatewayIP;
+    private int poolNumber;
+    
+    public String getPoolName() {
+		return poolName;
+	}
+
+	public void setPoolName(String poolName) {
+		this.poolName = poolName;
+	}
+
+	public String getGatewayIP() {
+		return gatewayIP;
+	}
+
+	public void setGatewayIP(String gatewayIP) {
+		this.gatewayIP = gatewayIP;
+	}
+
+	public int getPoolNumber() {
+		return poolNumber;
+	}
+
+	public void setPoolNumber(int poolNumber) {
+		this.poolNumber = poolNumber;
+	}
+
+	// Method to set an IP pool range 
+    public IPPool(String poolName, int poolNumber, String gatewayIP) {
+    	this.poolName = poolName;
+        this.poolNumber = poolNumber;
+        this.gatewayIP = gatewayIP;
+    }
+    
+    public void setIpPoolRange(int start, int end) {
+        availableIPs.clear();
+        
+        for (int i = start; i <= end; i++) {
+            availableIPs.add(networkPrefix + i);
+        }
+        System.out.println("IP Pool set: " + networkPrefix + start + " to " + networkPrefix + end);;
+    }
+    
+    public Set<String> getAvailableIPs()
+    {
+    	return availableIPs;
+    }
+    
+    public ErrorMessages checkIP(int startIP, int endIP) {
+        if (startIP == 0) return ErrorMessages.INVALID_IP_START_ZERO;
+        if (startIP == 1) return ErrorMessages.INVALID_IP_START_ONE;
+        if (startIP > 254 || startIP < 0) return ErrorMessages.INVALID_IP_OUT_OF_BOUNDS;
+        if (endIP > 254 || endIP < 0) return ErrorMessages.INVALID_IP_OUT_OF_BOUNDS;
+        if (endIP < startIP) return ErrorMessages.INVALID_IP_RANGE;
+        return null;
+    }
+}

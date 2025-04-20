@@ -4,6 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.Layer2Switch;
+import Devices.Layer3Switch;
+import Devices.Router;
+import Devices.Switch;
+import Menus.PCMenu;
+import Menus.RouterMenu;
+import Menus.SwitchMenu;
+import Menus.TopologyMenu;
+
 public class NetworkSimulationRunner {
 	
 	public static void main(String[] args) {
@@ -142,6 +153,7 @@ public class NetworkSimulationRunner {
                 case 8:
                 	break;
             }
+            
         }while(choice !=8);
 		
 		router0.printAllocations();

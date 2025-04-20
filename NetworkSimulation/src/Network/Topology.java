@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import Devices.Device;
+import Devices.Switch;
+
 public class Topology {
 	
 	private Map<String, Map<String, Device>> networkTopology = new HashMap<>();
