@@ -1,0 +1,31 @@
+package Devices;
+
+// Class for representing computer
+public class Computer extends Device{
+	
+	private final int totalPorts = 1;
+	
+	public Computer(String name, String macAddress) {
+		super(name,macAddress);
+	}
+	
+	@Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+	
+	String destMac = lookupMac(destinationIp);
+    if (destMac == null) {
+        System.out.println(name + " doesn’t know MAC for " + destinationIp + ". Sending ARP request...");
+        arpRequest(destinationIp, topology);
+        destMac = lookupMac(destinationIp);
+        if (destMac == null) {
+            System.out.println("Could not resolve MAC. Message dropped.");
+            return;
+        }
+    }
+
+    System.out.println(name + " sending message to " + destIp + " (" + destMac + "): " + message);
+}
+

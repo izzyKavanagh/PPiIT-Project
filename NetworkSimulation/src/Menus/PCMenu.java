@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.List;
+import java.util.List; 
 import java.util.Map;
 import java.util.Scanner;
 
@@ -8,6 +8,7 @@ import DeviceComponents.IPPool;
 import Devices.Computer;
 import Devices.DHCPServer;
 import Network.NetworkManager;
+import Network.Topology;
 
 public class PCMenu {
 	
@@ -57,11 +58,11 @@ public class PCMenu {
 	         }
 
 	         Computer selectedPC = computers.get(pcChoice - 1);
-	         configurePC(scanner, dhcpServer, selectedPC, manager);
+	         configurePC(scanner, dhcpServer, computers, selectedPC, manager);
 	     }
 	}
 
-	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, Computer pc, NetworkManager manager) {
+	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers, Computer pc, NetworkManager manager) {
 		
 		System.out.println("\nManaging " + pc.getName());
 		
@@ -86,25 +87,64 @@ public class PCMenu {
 		    System.out.println("No");
 		}
 
-       System.out.println("1. Enable DHCP");
-       System.out.println("2. Disable DHCP (Use Static IP)");
-       System.out.println("3. Return to PC Menu");
-       System.out.print("Enter your choice: ");
+		System.out.println("1. Send Message");
+		System.out.println("2. Enable DHCP");
+	    System.out.println("3. Disable DHCP (Use Static IP)");
+	    System.out.println("4. Return to PC Menu");
+	    System.out.print("Enter your choice: ");
+	    
+	    int choice = scanner.nextInt();
+	    scanner.nextLine(); // Consume newline
+	    
+	    switch (choice) {
+	    case 1:
+	    	for (int i = 0; i < computers.size(); i++) {
+		        System.out.println((i + 1) + ". " + computers.get(i).getName());
+		    }
+		    
+		    System.out.print("Select PC to send Message to: ");
+		    int computerChoice = scanner.nextInt() - 1;
+		    scanner.nextLine();
 
-       int choice = scanner.nextInt();
-       scanner.nextLine(); // Consume newline
+		    if (computerChoice < 0 || computerChoice >= computers.size()) {
+		        System.out.println("Invalid selection.");
+		        return;
+		    }
 
-       switch (choice) {
-           case 1:
-           	Map<String, IPPool> pools = dhcpServer.getPools(); // Assuming this method exists
+		    Computer selectedComputer = computers.get(computerChoice);
+		    
+		    Topology topology = manager.getTopology();
+		    
+		    if(topology.findConnectedDeviceByName(pc, selectedComputer.getName()) == null) 
+		    {
+		    	System.out.println("ERROR: " + pc.getName() + " and " + selectedComputer.getName() + " are not connected to the same network.");
+		    	return;
+		    }
+		    
+		    String destinationIP = selectedComputer.getIpAddress();
 
-               if (pools.isEmpty()) 
-               {
-                   System.out.println("No available IP Pools.");
-                   return;
-               }
-               
-           	String helperIP = manager.findLayer3Device(pc);
+		    if(destinationIP == null)
+		    {
+		    	System.out.println("ERROR: " + selectedComputer.getName() + "'s IP address is NULL");
+		    	return;
+		    }
+		    
+	        System.out.print("Enter message: ");
+	        String message = scanner.nextLine();
+	        
+	        pc.sendMessage(destinationIP, message, topology);
+	        
+	        break;
+        case 2:
+        	Map<String, IPPool> pools = dhcpServer.getPools(); // Assuming this method exists
+
+            if (pools.isEmpty()) 
+            {
+                System.out.println("No available IP Pools.");
+                return;
+            }
+	               
+            String helperIP = manager.findLayer3Device(pc);
            	
            	if(helperIP == null)
            	{
@@ -113,23 +153,21 @@ public class PCMenu {
            	
            	manager.findDHCPServer(pc, pc.getGatewayIp(), helperIP);
                
-               pc.staticIP = false;
+            pc.staticIP = false;
                
-               System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
-               break;
+            System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
+            break;
+        case 3:
+        	pc.staticIP = true;
+       		manager.useStaticIpAllocation(pc);
+       		System.out.println(pc.getName() + " is now using Static IP.");
+       		break;
+        case 4:
+            return;
 
-           case 2:
-           	pc.staticIP = true;
-           	manager.useStaticIpAllocation(pc);
-               System.out.println(pc.getName() + " is now using Static IP.");
-               break;
-
-           case 3:
-               return;
-
-           default:
-               System.out.println("Invalid choice! Try again.");
-       }
-		
-	}
+        default:
+            System.out.println("Invalid choice! Try again.");
+    }
+			
+		}
 }

@@ -184,11 +184,57 @@ public class Topology {
 	    	
 	    	// remove first device from nextDevices queue and place into currentDevice variable 
 	        String currentDeviceName = nextDevices.poll();
-	        // get current device object from map containing all connected devices
+	        // get current device object from map containing all devices
 	        Device currentDeviceType = registeredDevices.get(currentDeviceName);
 	        
 	        // check if the current device is the targetType device (and is not the start device)
 	        if (targetType.isInstance(currentDeviceType) && !currentDeviceType.equals(startDevice)) {
+	        	// if yes, return the currentDevice
+	            return currentDeviceType; 
+	        }
+	        
+	        // get currentDevice's adjacency list, i.e., all the devices that its directly connected to
+	        List<String> connectedDevicesList = adjacencyList.get(currentDeviceName);
+	        
+	        // check that currentDevice is connected to the network
+	        if (connectedDevicesList != null) {
+	        	// loop through every device in currentDevice's list of connected devices
+	            for (String connectedDevice : connectedDevicesList) {
+	            	
+	            	// check that the connected device hasn't already been visited
+	                if (!visitedDevices.contains(connectedDevice)) {
+	                	// if not already visited, add it to visited
+	                	visitedDevices.add(connectedDevice);
+	                	// also add it to nextDevices -> it is added to the queue to have its own connected devices checked 
+	                	nextDevices.add(connectedDevice);
+	                }
+	            }
+	        }
+	    }
+	    // if nothing was found, return null
+	    return null;
+	}
+	
+	public Device findConnectedDeviceByName(Device startDevice, String targetDeviceName) {
+		// set to track visited devices -> to ensure same device isn't revisited multiple times
+	    Set<String> visitedDevices = new HashSet<>();
+	    // queue to store next devices to visit
+	    Queue<String> nextDevices = new LinkedList<>();
+	    
+	    // add startDevice to queue and mark it as visited (so its not revisited)
+	    nextDevices.add(startDevice.getName());
+	    visitedDevices.add(startDevice.getName());
+
+	    // loop through devicesToVisit until all devices have been visited
+	    while (!nextDevices.isEmpty()) {
+	    	
+	    	// remove first device from nextDevices queue and place into currentDevice variable 
+	        String currentDeviceName = nextDevices.poll();
+	        // get current device object from map containing all devices
+	        Device currentDeviceType = registeredDevices.get(currentDeviceName);
+	        
+	        // check if the current device is the targetType device (and is not the start device)
+	        if (currentDeviceName.equals(targetDeviceName) && !currentDeviceType.equals(startDevice)) {
 	        	// if yes, return the currentDevice
 	            return currentDeviceType; 
 	        }
@@ -240,5 +286,14 @@ public class Topology {
 	
 	public Map<String, Map<String, Device>> getTopology() {
 		return networkTopology;
+	}
+	
+	public Device getDeviceByIp(String ipAddress) {
+	    for (Device device : registeredDevices.values()) {
+	        if (ipAddress.equals(device.getIpAddress())) {
+	            return device;
+	        }
+	    }
+	    return null;
 	}
 }

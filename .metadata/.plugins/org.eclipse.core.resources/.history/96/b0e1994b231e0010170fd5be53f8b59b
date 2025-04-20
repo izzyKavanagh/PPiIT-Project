@@ -1,0 +1,53 @@
+package Devices;
+
+import Network.Topology;
+
+// Class for representing computer
+public class Computer extends Device{
+	
+	private final int totalPorts = 1;
+	
+	public Computer(String name, String macAddress) {
+		super(name,macAddress);
+	}
+	
+	@Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+	
+	public void sendMessage(String destinationIP, String message, Topology topology) {
+		String destMac = lookupMac(destinationIP);
+	    if (destMac == null) 
+	    {
+	        System.out.println(name + " doesn’t know MAC for " + destinationIP + ". Sending ARP request...");
+	        arpRequest(destinationIP, topology);
+	        destMac = lookupMac(destinationIP);
+	        
+	        if (destMac == null) 
+	        {
+	            System.out.println("Could not resolve MAC. Message dropped.");
+	            return;
+	        }
+	    }
+
+	    System.out.println(name + " sending message to " + destinationIP + " (" + destMac + "): " + message);
+	}
+
+	private void arpRequest(String destinationIP, Topology topology) {
+		Map<String, Map<String, Device>> connections = topology.getTopology();
+	    Map<String, Device> myPorts = connections.get(this.name);
+
+	    if (myPorts == null) return;
+
+	    for (Device neighbor : myPorts.values()) {
+	        if (neighbor.getIpAddress() != null && neighbor.getIpAddress().equals(targetIp)) {
+	            addArpEntry(targetIp, neighbor.getMacAddress());
+	            System.out.println("Received ARP reply: " + neighbor.getMacAddress());
+	            return;
+	        }
+	    }
+	}
+}
+

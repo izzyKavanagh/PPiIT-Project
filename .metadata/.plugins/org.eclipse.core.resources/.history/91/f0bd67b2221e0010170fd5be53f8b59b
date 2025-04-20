@@ -1,0 +1,67 @@
+package Devices;
+
+import DeviceComponents.Packet;
+
+public abstract class Device {
+
+	protected String name;
+    protected String macAddress;
+    public String ipAddress;
+    protected String gatewayIP;
+    protected Router connectedRouter;
+	protected Switch connectedSwitch;
+	public boolean staticIP; // default is static IP
+	protected int totalPorts;
+	protected int vlanId;
+
+    public int getVlanId() {
+		return vlanId;
+	}
+
+	public void setVlanId(int vlandId) {
+		this.vlanId = vlandId;
+	}
+
+	public Device(String name, String macAddress) {
+        this.name = name;
+        this.macAddress = macAddress;
+        this.ipAddress = null; // Assigned by DHCP
+        this.staticIP = true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
+    public void setGatewayIp(String gatewayIP) {
+        this.gatewayIP = gatewayIP;
+    }
+    
+    public String getGatewayIp() {
+        return gatewayIP;
+    }
+    
+    public int getTotalPorts() {
+	    return totalPorts;
+	}
+    
+    public void sendMessage(String message, String destinationIp) {
+		// Method for sending messages to other devices (through router)
+	}
+	
+	public void receiveMessage(Packet packet) {
+		// method for receiving messages from other devices
+	}
+}
