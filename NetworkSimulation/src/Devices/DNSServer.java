@@ -1,0 +1,37 @@
+package Devices;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DNSServer extends Device{
+	
+	private Map<String, String> dnsRecords;
+	private final int totalPorts = 8;
+	
+    public DNSServer(String name, String macAddress) {
+        super(name, macAddress);
+        dnsRecords = new HashMap<>();
+    }
+    
+    @Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+
+    public void addRecord(String domainName, String webServerIp) {
+        dnsRecords.put(domainName, webServerIp);
+    }
+
+    public String resolveDomain(String domainName) {
+        return dnsRecords.get(domainName);
+    }
+
+	public void printDnsRecords() {
+		System.out.println("\nDNS Records:");
+        for (Map.Entry<String, String> entry : dnsRecords.entrySet()) 
+        {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+	}
+}

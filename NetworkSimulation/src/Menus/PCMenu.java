@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.List; 
+import java.util.List;  
 import java.util.Map;
 import java.util.Scanner;
 
@@ -29,6 +29,17 @@ public class PCMenu {
 	        	 else 
 	        	 {
 	        		 System.out.print(pc.getIpAddress());
+	        	 }
+	        	 
+	        	 System.out.print(", DNS: ");
+	        	 
+	        	 if (pc.getDnsServerIP() == null) 
+	        	 {
+	        		    System.out.print("Not Assigned");
+	        	 } 
+	        	 else 
+	        	 {
+	        		 System.out.print(pc.getDnsServerIP());
 	        	 }
 	        	 
 	        	 System.out.print(", DHCP: ");
@@ -64,6 +75,8 @@ public class PCMenu {
 
 	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers, Computer pc, NetworkManager manager) {
 		
+		Topology topology = manager.getTopology();
+		
 		System.out.println("\nManaging " + pc.getName());
 		
 		System.out.print("Current IP: ");
@@ -88,9 +101,14 @@ public class PCMenu {
 		}
 
 		System.out.println("1. Send Message");
-		System.out.println("2. Enable DHCP");
-	    System.out.println("3. Disable DHCP (Use Static IP)");
-	    System.out.println("4. Return to PC Menu");
+		System.out.println("2. Open web browser");
+		System.out.println("3. Enable DHCP");
+	    System.out.println("4. Disable DHCP (Use Static IP)");
+	    if(pc.staticIP) 
+	    {
+	    	System.out.println("5. Add DNS server");
+	    }
+	    System.out.println("6. Return to PC Menu");
 	    System.out.print("Enter your choice: ");
 	    
 	    int choice = scanner.nextInt();
@@ -113,8 +131,6 @@ public class PCMenu {
 
 		    Computer selectedComputer = computers.get(computerChoice);
 		    
-		    Topology topology = manager.getTopology();
-		    
 		    if(topology.findConnectedDeviceByName(pc, selectedComputer.getName()) == null) 
 		    {
 		    	System.out.println("ERROR: " + pc.getName() + " and " + selectedComputer.getName() + " are not connected to the same network.");
@@ -135,7 +151,18 @@ public class PCMenu {
 	        pc.sendMessage(destinationIP, message, topology);
 	        
 	        break;
-        case 2:
+	    case 2: 
+	    	System.out.print("Enter the domain name you want to search for: ");
+		    String domain = scanner.nextLine();
+		    
+		    if(pc.getDnsServerIP() == null) {
+		    	System.out.println("ERROR: " + pc.getName() + " does not have a DNS server");
+		    }
+		    
+		    pc.visitDomain(topology, domain, pc);
+	    	
+	    	break;
+        case 3:
         	Map<String, IPPool> pools = dhcpServer.getPools(); // Assuming this method exists
 
             if (pools.isEmpty()) 
@@ -157,12 +184,17 @@ public class PCMenu {
                
             System.out.println(pc.getName() + " is now using DHCP with IP: " + pc.getIpAddress());
             break;
-        case 3:
+        case 4:
         	pc.staticIP = true;
        		manager.useStaticIpAllocation(pc);
        		System.out.println(pc.getName() + " is now using Static IP.");
        		break;
-        case 4:
+        case 5:
+        	System.out.print("Enter DNS server IP: ");
+        	String dnsIP = scanner.nextLine();
+        	pc.setDnsServerIP(dnsIP);
+            return;
+        case 6:
             return;
 
         default:

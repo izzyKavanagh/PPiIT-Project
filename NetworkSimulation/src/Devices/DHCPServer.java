@@ -37,11 +37,15 @@ public class DHCPServer extends Device{
  		System.out.print("Enter the gateway IP for the pool: ");
         gatewayIP = scanner.nextLine();
         
-     // Auto-assign pool number
+        System.out.print("Enter the DNS server IP for the pool (leave blank if none): ");
+        String dnsIP = scanner.nextLine();
+        
+        // Auto-assign pool number
         int assignedPoolNumber = nextPoolNumber++;
         
         IPPool newPool = new IPPool(poolName, assignedPoolNumber, gatewayIP);
         
+        newPool.setDnsServerIP(dnsIP);
         
         do {
             System.out.print("Enter the start of the IP pool: ");
@@ -69,7 +73,7 @@ public class DHCPServer extends Device{
 	
 	// Method to assign an IP to a device
 	// edit method so that available IPs for that pool are retrieved based on pool name
-    public String assignIp(String gatewayIP, String macAddress) {
+    public String assignIp(String gatewayIP, String macAddress, Device device) {
     	
     	//retrieve correct IP pool from ipPools Map
     	IPPool pool = ipPools.get(gatewayIP);
@@ -94,6 +98,8 @@ public class DHCPServer extends Device{
         String assignedIp = availableIPs.iterator().next();
         availableIPs.remove(assignedIp);
         ipAllocations.put(macAddress, assignedIp);
+        
+        device.setDnsServerIP(pool.getDnsServerIP());
 
         return assignedIp;
     }

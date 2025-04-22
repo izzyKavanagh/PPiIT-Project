@@ -1,9 +1,7 @@
 package Devices;
 
-import java.util.HashMap;
+import java.util.HashMap; 
 import java.util.Map;
-
-import DeviceComponents.Packet;
 
 public abstract class Device {
 
@@ -11,6 +9,7 @@ public abstract class Device {
     protected String macAddress;
     public String ipAddress;
     protected String gatewayIP;
+    protected String dnsServerIP;
     protected Router connectedRouter;
 	protected Switch connectedSwitch;
 	public boolean staticIP; // default is static IP
@@ -33,6 +32,14 @@ public abstract class Device {
 
 	public void setVlanId(int vlandId) {
 		this.vlanId = vlandId;
+	}
+	
+	public void setDnsServerIP(String dnsServerIP) {
+	    this.dnsServerIP = dnsServerIP;
+	}
+
+	public String getDnsServerIP() {
+	    return dnsServerIP;
 	}
 
 	public Device(String name, String macAddress) {
@@ -68,14 +75,6 @@ public abstract class Device {
     
     public int getTotalPorts() {
 	    return totalPorts;
-	}
-    
-    public void sendMessage(String message, String destinationIp) {
-		// Method for sending messages to other devices (through router)
-	}
-	
-	public void receiveMessage(Packet packet) {
-		// method for receiving messages from other devices
 	}
 	
 	public void printArpTable() {

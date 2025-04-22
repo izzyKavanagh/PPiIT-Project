@@ -11,6 +11,7 @@ public class IPPool {
     private String networkPrefix = "192.168.10."; // Default sub-net
     private String poolName;
     private String gatewayIP;
+    private String dnsServerIP;
     private int poolNumber;
     
     public String getPoolName() {
@@ -27,6 +28,14 @@ public class IPPool {
 
 	public void setGatewayIP(String gatewayIP) {
 		this.gatewayIP = gatewayIP;
+	}
+	
+	public String getDnsServerIP() {
+	    return dnsServerIP;
+	}
+
+	public void setDnsServerIP(String dnsServerIP) {
+	    this.dnsServerIP = dnsServerIP;
 	}
 
 	public int getPoolNumber() {

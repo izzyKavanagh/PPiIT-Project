@@ -1,0 +1,87 @@
+package Devices;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import DeviceComponents.Packet;
+
+public abstract class Device {
+
+	protected String name;
+    protected String macAddress;
+    public String ipAddress;
+    protected String gatewayIP;
+    protected Router connectedRouter;
+	protected Switch connectedSwitch;
+	public boolean staticIP; // default is static IP
+	protected int totalPorts;
+	protected int vlanId;
+	
+	protected Map<String, String> arpTable = new HashMap<>();
+
+	public void addArpEntry(String ip, String mac) {
+	    arpTable.put(ip, mac);
+	}
+
+	public String lookupMac(String ip) {
+	    return arpTable.get(ip);
+	}
+
+    public int getVlanId() {
+		return vlanId;
+	}
+
+	public void setVlanId(int vlandId) {
+		this.vlanId = vlandId;
+	}
+
+	public Device(String name, String macAddress) {
+        this.name = name;
+        this.macAddress = macAddress;
+        this.ipAddress = null; // Assigned by DHCP
+        this.staticIP = true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
+    public void setGatewayIp(String gatewayIP) {
+        this.gatewayIP = gatewayIP;
+    }
+    
+    public String getGatewayIp() {
+        return gatewayIP;
+    }
+    
+    public int getTotalPorts() {
+	    return totalPorts;
+	}
+	
+	public void printArpTable() {
+	    System.out.println("\nARP Table for " + name);
+	    if (arpTable.isEmpty()) {
+	        System.out.println("No entries.");
+	    } else {
+	        System.out.println("+----------------+-------------------+");
+	        System.out.println("|   IP Address   |    MAC Address    |");
+	        System.out.println("+----------------+-------------------+");
+	        for (Map.Entry<String, String> entry : arpTable.entrySet()) {
+	            System.out.printf("| %-14s | %-17s |\n", entry.getKey(), entry.getValue());
+	        }
+	        System.out.println("+----------------+-------------------+");
+	    }
+	}
+}

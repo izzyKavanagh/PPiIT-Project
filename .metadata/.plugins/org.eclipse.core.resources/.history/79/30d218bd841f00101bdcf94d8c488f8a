@@ -1,0 +1,18 @@
+package Devices;
+
+public class WebServer {
+
+	private String websiteContent;
+
+    public WebServer(String name, String macAddress, String websiteContent) {
+        super(name, macAddress);
+        this.websiteContent = websiteContent;
+    }
+
+    public void serveWebsite() {
+        System.out.println("===== " + this.getName() + " Web Page =====");
+        System.out.println(websiteContent);
+        System.out.println("=============================");
+    }
+    
+}

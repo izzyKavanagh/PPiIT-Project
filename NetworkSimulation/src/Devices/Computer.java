@@ -1,7 +1,6 @@
 package Devices;
 
 import java.util.Map;
-
 import Network.Topology;
 
 // Class for representing computer
@@ -71,6 +70,32 @@ public class Computer extends Device{
 	            return;
 	        }
 	    }
+	}
+	
+	public void visitDomain(Topology topology, String domain, Computer pc) {
+        
+		Device device1 = topology.findConnectedDeviceByIP(pc, pc.getDnsServerIP());
+	    
+	    if (!(device1 instanceof DNSServer)) 
+	    {
+	    	System.out.println("ERROR: The specified DNS server IP does not belong to a DNS server device");
+	    	return;
+	    } 
+	    
+	    DNSServer dnsServer = (DNSServer) device1;
+        String webServerIP = dnsServer.resolveDomain(domain);
+        
+        Device device2 = topology.findConnectedDeviceByIP(pc, webServerIP);
+	    
+        if (!(device2 instanceof WebServer)) 
+	    {
+	    	System.out.println("ERROR: The specified Web server IP does not belong to a Web server device");
+	    	return;
+	    } 
+        
+        WebServer webServer = (WebServer) device2;
+        
+        webServer.serveWebsite();
 	}
 }
 

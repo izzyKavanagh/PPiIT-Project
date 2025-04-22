@@ -6,12 +6,15 @@ import java.util.Scanner;
 
 import Devices.Computer;
 import Devices.DHCPServer;
+import Devices.DNSServer;
 import Devices.Layer2Switch;
 import Devices.Layer3Switch;
 import Devices.Router;
 import Devices.Switch;
+import Devices.WebServer;
 import Menus.PCMenu;
 import Menus.RouterMenu;
+import Menus.ServerMenu;
 import Menus.SwitchMenu;
 import Menus.TopologyMenu;
 
@@ -37,6 +40,10 @@ public class NetworkSimulationRunner {
 		routers.add(router0);
 		
 		DHCPServer dhcpServer = new DHCPServer("DHCP Server", "00:2A:2B:3C:3D:3E");
+		
+		DNSServer dnsServer = new DNSServer("DNS Server", "00:4A:4B:4C:4D:4E");
+		
+		WebServer webServer = new WebServer("Web Server", "00:5A:5B:5C:5D:5E", "Hello From Google.com");
 		
 		List<Switch> switches = new ArrayList<>();
 		
@@ -79,6 +86,8 @@ public class NetworkSimulationRunner {
 		topology.registerDevice(pc3);
 		topology.registerDevice(pc4); 
 		topology.registerDevice(dhcpServer);
+		topology.registerDevice(dnsServer);
+		topology.registerDevice(webServer);
 		
 		//connect main switch to router
 		topology.connectDevices(coreSwitch, router0);
@@ -97,8 +106,14 @@ public class NetworkSimulationRunner {
 		topology.connectDevices(pc3, switch1);
 		
 		topology.connectDevices(dhcpServer, switch2);
+		topology.connectDevices(dnsServer, switch2);
+		topology.connectDevices(webServer, switch2);
 		
 		dhcpServer.setIpAddress("192.168.0.5");
+		
+		dnsServer.setIpAddress("192.168.0.100");
+		
+		webServer.setIpAddress("192.168.0.50");
 		
 		System.out.println(dhcpServer.getIpAddress());
 		
@@ -120,9 +135,10 @@ public class NetworkSimulationRunner {
             System.out.println("3. Manage PCs");
             System.out.println("4. Manage Switches");
             System.out.println("5. Manage Routers");
-            System.out.println("6. Add Connection"); 
-            System.out.println("7. Remove Connection");
-            System.out.println("8. Exit");
+            System.out.println("6. Manage DNS server");
+            System.out.println("7. Add Connection"); 
+            System.out.println("8. Remove Connection");
+            System.out.println("9. Exit");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
@@ -145,12 +161,15 @@ public class NetworkSimulationRunner {
                 	RouterMenu.manageRouters(routers, scanner, topology); 
                 	break;
                 case 6:
+                	ServerMenu.manageDnsRecords(scanner, dnsServer);
+                	break;
+                case 7:
                 	TopologyMenu.addConnection(scanner,topology);
                 	break; 
-                case 7:
+                case 8:
                 	TopologyMenu.removeConnection(scanner,topology); 
                 	break; 
-                case 8:
+                case 9:
                 	break;
             }
             

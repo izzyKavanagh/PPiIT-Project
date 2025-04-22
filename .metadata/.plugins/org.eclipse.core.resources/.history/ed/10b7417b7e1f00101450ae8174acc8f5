@@ -1,0 +1,21 @@
+package Devices;
+
+import java.util.Map;
+
+public class DNSServer extends Device{
+	
+	private Map<String, String> dnsRecords;
+
+    public DNSServer(String name, String macAddress) {
+        super(name, macAddress);
+        dnsRecords = new HashMap<>();
+    }
+
+    public void addRecord(String domain, String ip) {
+        dnsRecords.put(domain, ip);
+    }
+
+    public String resolveDomain(String domain) {
+        return dnsRecords.get(domain);
+    }
+}

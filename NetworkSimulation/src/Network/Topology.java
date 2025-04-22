@@ -260,6 +260,52 @@ public class Topology {
 	    // if nothing was found, return null
 	    return null;
 	}
+	
+	public Device findConnectedDeviceByIP(Device startDevice, String targetDeviceIP) {
+		// set to track visited devices -> to ensure same device isn't revisited multiple times
+	    Set<String> visitedDevices = new HashSet<>();
+	    // queue to store next devices to visit
+	    Queue<Device> nextDevices = new LinkedList<>();
+	    
+	    // add startDevice to queue and mark it as visited (so its not revisited)
+	    nextDevices.add(startDevice);
+	    visitedDevices.add(startDevice.getIpAddress());
+
+	    // loop through devicesToVisit until all devices have been visited
+	    while (!nextDevices.isEmpty()) {
+	    	
+	    	// remove first device from nextDevices queue and place into currentDevice variable 
+	        Device currentDevice = nextDevices.poll();
+	        
+	        // check if the current device is the targetType device (and is not the start device)
+	        if (targetDeviceIP.equals(currentDevice.getIpAddress()) && !currentDevice.equals(startDevice)) {
+	        	// if yes, return the currentDevice
+	            return currentDevice; 
+	        }
+	        
+	        // get currentDevice's adjacency list, i.e., all the devices that its directly connected to
+	        List<String> connectedDevicesList = adjacencyList.get(currentDevice.getName());
+	        
+	        // check that currentDevice is connected to the network
+	        if (connectedDevicesList != null) {
+	        	// loop through every device in currentDevice's list of connected devices
+	            for (String connectedDeviceName : connectedDevicesList) {
+	            	
+	            	// check that the connected device hasn't already been visited
+	                if (!visitedDevices.contains(connectedDeviceName)) {
+	                	// if not already visited, add it to visited
+	                	visitedDevices.add(connectedDeviceName);
+	                	// get the connectedDeviceName's device object from the registeredDevices map
+	                	Device connectedDevice = registeredDevices.get(connectedDeviceName);
+	                	// also add it to nextDevices -> it is added to the queue to have its own connected devices checked 
+	                	nextDevices.add(connectedDevice);
+	                }
+	            }
+	        }
+	    }
+	    // if nothing was found, return null
+	    return null;
+	}
 
 	public void printNetworkTopology() {
         System.out.println("\nNetwork Topology (Port Connections):");
