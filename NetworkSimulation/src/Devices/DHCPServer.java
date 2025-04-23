@@ -17,7 +17,7 @@ public class DHCPServer extends Device{
 
 	private Map<String, String> ipAllocations = new HashMap<>();
 	private Map<String, IPPool> ipPools = new HashMap<>();
-	private final int totalPorts = 8;
+	private final int totalPorts = 1;
 	private int nextPoolNumber = 0;
 	
 	@Override

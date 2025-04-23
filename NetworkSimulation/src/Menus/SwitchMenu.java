@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.ArrayList;  
+import java.util.ArrayList;   
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,8 +47,9 @@ public class SwitchMenu {
 	        System.out.println("1. View VLANs");
 	        System.out.println("2. Create VLAN");
 	        System.out.println("3. Assign VLAN to Port");
-	        System.out.println("4. View Current Port Assignments");
-	        System.out.println("5. Return to Main Menu");
+	        System.out.println("4. View VLAN Port Assignments");
+	        System.out.println("5. View port connections");
+	        System.out.println("6. Return to Main Menu");
 	        System.out.print("Choice: ");
 	        choice = scanner.nextInt();
 	        
@@ -104,6 +105,8 @@ public class SwitchMenu {
             	selectedSwitch.printPortVLANAssignments();
                 break;
             case 5:
+            	topology.printPortConnections(selectedSwitch);
+            case 6:
             	break;
             default:
                 System.out.println("Invalid choice.");
@@ -117,19 +120,24 @@ public class SwitchMenu {
 
 	    do {
 	        System.out.println("\nManaging Layer 3 Switch: " + selectedSwitch.getName());
-	        System.out.println("1. Manage VLANs");
-	        System.out.println("2. Manage VLAN Interfaces (SVIs)");
-	        System.out.println("3. Configure IP Helper Address");
-	        System.out.println("4. View VLAN Interfaces (SVIs)");
-	        System.out.println("5. Return to Previous Menu");
+	        System.out.println("1. Configure Switch IP Address");
+	        System.out.println("2. Manage VLANs");
+	        System.out.println("3. Manage VLAN Interfaces (SVIs)");
+	        System.out.println("4. Configure IP Helper Address");
+	        System.out.println("5. View VLAN Interfaces (SVIs)");
+	        System.out.println("6. View port connections");
+	        System.out.println("7. Return to Previous Menu");
 	        System.out.print("Choice: ");
 	        choice = scanner.nextInt();
 
 	        switch (choice) {
-	            case 1:
+	        	case 1: 
+	        		configureSwitchIpAddress(scanner, selectedSwitch);
+	        		break;
+	            case 2:
 	            	manageVLANS(selectedSwitch, scanner, topology); // Layer 3 inherits Layer 2 capabilities
 	                break;
-	            case 2:
+	            case 3:
 	                System.out.print("Enter VLAN ID for the interface: ");
 	                int vlanId = scanner.nextInt();
 	                scanner.nextLine();
@@ -137,7 +145,7 @@ public class SwitchMenu {
 	                String ipAddress = scanner.nextLine();
 	                selectedSwitch.configureVLANInterface(vlanId, ipAddress);
 	                break;
-	            case 3:
+	            case 4:
 	                System.out.print("Enter VLAN ID to configure IP Helper for: ");
 	                int helperVlanId = scanner.nextInt();
 	                scanner.nextLine();
@@ -145,15 +153,33 @@ public class SwitchMenu {
 	                String helperIp = scanner.nextLine();
 	                selectedSwitch.configureIpHelper(helperVlanId, helperIp);
 	                break;
-	            case 4:
+	            case 5:
 	                selectedSwitch.showVLANInterfaces();
 	                break;
-	            case 5:
+	            case 6:
 	                break;
 	            default:
 	                System.out.println("Invalid choice.");
 	        }
 	    } while (choice != 5);
 		
+	}
+	
+	private static void configureSwitchIpAddress(Scanner scanner, Layer3Switch switchDevice) {
+	    String currentIp = switchDevice.getIpAddress();
+	    if (currentIp == null || currentIp.isEmpty()) {
+	        System.out.println("Current IP Address: IP not set");
+	    } else {
+	        System.out.println("Current IP Address: " + currentIp);
+	    }
+
+	    System.out.print("Would you like to set a new IP address? (Y/N): ");
+	    String response = scanner.nextLine().trim().toLowerCase();
+	    if (response.equalsIgnoreCase("Y")) {
+	        System.out.print("Enter new IP address: ");
+	        String newIp = scanner.nextLine();
+	        switchDevice.setIpAddress(newIp);
+	        System.out.println("IP address updated to: " + newIp);
+	    }
 	}
 }

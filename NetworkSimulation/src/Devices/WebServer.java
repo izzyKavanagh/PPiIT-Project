@@ -3,11 +3,11 @@ package Devices;
 public class WebServer extends Device{
 
 	private String websiteContent;
-	private final int totalPorts = 8;
+	private final int totalPorts = 1;
 
-    public WebServer(String name, String macAddress, String websiteContent) {
+    public WebServer(String name, String macAddress) {
         super(name, macAddress);
-        this.websiteContent = websiteContent;
+        this.websiteContent = "";
     }
     
     @Override
@@ -15,6 +15,10 @@ public class WebServer extends Device{
    	{
    		return totalPorts;
    	}
+    
+    public void setWebsiteContent(String websiteContent) {
+        this.websiteContent = websiteContent;
+    }
 
     public void serveWebsite() {
         System.out.println("===== " + this.getName() + " Web Page =====");

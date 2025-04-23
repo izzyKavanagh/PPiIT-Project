@@ -1,0 +1,90 @@
+package Menus;
+
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Device;
+import Devices.Layer2Switch;
+import Devices.Layer3Switch;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Network.Topology;
+
+public class DeviceCreationMenu {
+
+	public static void createDevice(Scanner scanner, Topology topology, List<Router> routers, List<Computer> computers,
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers)
+	{
+		System.out.println("\n=== Device Creation Menu ===");
+	    System.out.println("1. Router");
+	    System.out.println("2. Layer 2 Switch");
+	    System.out.println("3. Layer 3 Switch");
+	    System.out.println("4. DHCP Server");
+	    System.out.println("5. DNS Server");
+	    System.out.println("6. Web Server");
+	    System.out.println("7. Computer (PC)");
+	    System.out.println("8. Exit");
+	    System.out.print("Choose a device to create: ");
+	    int choice = scanner.nextInt();
+	    scanner.nextLine();
+		
+	    System.out.print("Enter the name of the device: ");
+	    String name = scanner.nextLine();
+	    String macAddress;
+	    
+	    if (topology.getRegisteredDevices().containsKey(name)) 
+	    {
+            System.out.println("Error: A device with that name already exists.");
+            return;
+        }
+	    
+	    Device newDevice = null;
+	        
+		switch(choice) 
+		{
+			case 1: 
+				String macAddress = Device.generateUniqueMacAddress();
+				newDevice = new Router(name, macAddress);
+				routers.add((Router) newDevice);
+				break;
+			case 2: 
+				newDevice = new Layer2Switch(name, macAddress);
+				switches.add((Layer2Switch) newDevice);
+				break;
+			case 3: 
+				newDevice = new Layer3Switch(name, macAddress);
+				switches.add((Layer3Switch) newDevice);
+				break;
+			case 4:
+				newDevice = new DHCPServer(name, macAddress);
+				dhcpServers.add((DHCPServer) newDevice);
+				break;
+			case 5: 
+				newDevice = new DNSServer(name, macAddress);
+				dnsServers.add((DNSServer) newDevice);
+				break;
+			case 6: 
+				newDevice = new WebServer(name, macAddress);
+				webServers.add((WebServer) newDevice);
+				break;
+			case 7: 
+				newDevice = new Computer(name, macAddress);
+				computers.add((Computer) newDevice);
+				break;
+			case 8: 
+				break;
+			default:
+				System.out.println("ERROR: Invalid choice entered. Try again.");
+				break;
+		}
+		
+		if (newDevice != null) {
+            topology.registerDevice(newDevice);
+            System.out.println("Device '" + name + "' successfully created and added to network!");
+        }
+	}
+}

@@ -3,10 +3,11 @@ package Menus;
 import java.util.List;
 import java.util.Scanner;
 import Devices.DNSServer;
+import Network.Topology;
 
 public class DNSServerMenu {
 	
-	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers) {
+	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers, Topology topology) {
         if (dnsServers.isEmpty()) {
             System.out.println("No DNS servers available.");
             return;
@@ -32,31 +33,39 @@ public class DNSServerMenu {
             }
 
             DNSServer selectedServer = dnsServers.get(serverChoice - 1);
-            manageSingleDNSServer(scanner, selectedServer);
+            manageSingleDNSServer(scanner, selectedServer, topology);
         }
     }
 
-    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer) {
+    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer, Topology topology) {
     	int choice;
     	
     	do
     	{
             System.out.println("\n--- Managing DNS Server: " + dnsServer.getName() + " ---");
-            System.out.println("1. Add DNS Record");
-            System.out.println("2. View All Records");
-            System.out.println("3. Return to DNS Server List");
+            System.out.println("1. Configure Server IP Address");
+            System.out.println("2. Add DNS Record");
+            System.out.println("3. View All Records");
+            System.out.println("4. View port connections");
+            System.out.println("5. Return to DNS Server List");
             System.out.print("Select an option: ");
 
             choice = scanner.nextInt();
 
             switch (choice) {
-                case 1:
-                    addDnsRecord(scanner, dnsServer);
-                    break;
+            	case 1:
+            		configureDNSServerIpAddress(scanner, dnsServer);
+            		break;
                 case 2:
-                    dnsServer.printDnsRecords();
+                	dnsServer.addDnsRecord(scanner,dnsServer);
                     break;
                 case 3:
+                    dnsServer.printDnsRecords();
+                    break;
+                case 4:
+                	topology.printPortConnections(dnsServer);
+                case 5:
+                	System.out.println("Exiting DNS Server Menu...");
                     return;
                 default:
                     System.out.println("Invalid option. Please try again.");
@@ -64,43 +73,22 @@ public class DNSServerMenu {
         }while(choice!=3);
 		
 	}
+    
+    private static void configureDNSServerIpAddress(Scanner scanner, DNSServer dnsServer) {
+	    String currentIp = dnsServer.getIpAddress();
+	    if (currentIp == null || currentIp.isEmpty()) {
+	        System.out.println("Current IP Address: IP not set");
+	    } else {
+	        System.out.println("Current IP Address: " + currentIp);
+	    }
 
-	public static void manageDnsRecords(Scanner scanner, DNSServer dnsServer) {
-		int choice;
-		
-		do
-		{
-            System.out.println("\n--- Record Management ---");
-            System.out.println("1. Add DNS Record");
-            System.out.println("2. View All Records");
-            System.out.println("3. Exit DNS Server Menu");
-            System.out.print("Select an option: ");
-
-            choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    addDnsRecord(scanner,dnsServer);
-                    break;
-                case 2:
-                	dnsServer.printDnsRecords();
-                    break;
-                case 3:
-                    System.out.println("Exiting DNS Server Menu...");
-                    return;
-                default:
-                    System.out.println("Invalid option. Please try again.");
-            }
-        }while(choice!=3);
-    }
-
-    private static void addDnsRecord(Scanner scanner, DNSServer dnsServer) {
-        System.out.println("Enter domain name:");
-        String domainName = scanner.nextLine();
-        System.out.println("Enter IP address:");
-        String ipAddress = scanner.nextLine();
-
-        dnsServer.addRecord(domainName, ipAddress);
-        System.out.println("Record added: " + domainName + " -> " + ipAddress);
-    }
+	    System.out.print("Would you like to set a new IP address? (Y/N): ");
+	    String response = scanner.nextLine().trim().toLowerCase();
+	    if (response.equalsIgnoreCase("Y")) {
+	        System.out.print("Enter new IP address: ");
+	        String newIp = scanner.nextLine();
+	        dnsServer.setIpAddress(newIp);
+	        System.out.println("IP address updated to: " + newIp);
+	    }
+	}
 }

@@ -2,11 +2,12 @@ package Devices;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class DNSServer extends Device{
 	
 	private Map<String, String> dnsRecords;
-	private final int totalPorts = 8;
+	private final int totalPorts = 1;
 	
     public DNSServer(String name, String macAddress) {
         super(name, macAddress);
@@ -19,10 +20,6 @@ public class DNSServer extends Device{
 		return totalPorts;
 	}
 
-    public void addRecord(String domainName, String webServerIp) {
-        dnsRecords.put(domainName, webServerIp);
-    }
-
     public String resolveDomain(String domainName) {
         return dnsRecords.get(domainName);
     }
@@ -34,4 +31,15 @@ public class DNSServer extends Device{
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
 	}
+	
+	public void addDnsRecord(Scanner scanner, DNSServer dnsServer) {
+        System.out.println("Enter domain name:");
+        String domainName = scanner.nextLine();
+        
+        System.out.println("Enter IP address of web server domain is hosted on:");
+        String webServerIp = scanner.nextLine();
+
+        dnsRecords.put(domainName, webServerIp);
+        System.out.println("Record added: " + domainName + " -> " + webServerIp);
+    }
 }

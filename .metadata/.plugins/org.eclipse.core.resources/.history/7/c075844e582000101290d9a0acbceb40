@@ -1,0 +1,64 @@
+package Menus;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Device;
+import Network.Topology;
+
+public class TopologyMenu {
+	
+	public static void addConnection(Scanner scanner,Topology topology) {
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
+	    
+	    System.out.println("\n===== Network Devices =====");
+	    
+	    // print devices
+	    for(int i = 0;i<devices.size();i++) {
+	    	System.out.println((i + 1) + ". " + devices.get(i));
+	    }
+	    
+	    System.out.println("Enter device you wish to form a connection on: ");
+	    int sourceDeviceIndex = scanner.nextInt() - 1;
+	    
+	    System.out.println("Enter device you wish to connect to : ");
+	    int targetDeviceIndex = scanner.nextInt() - 1;
+	    
+	    String sourceDevice = devices.get(sourceDeviceIndex); 
+	    String targetDevice = devices.get(targetDeviceIndex);
+	    
+	    Device source = topology.getRegisteredDevices().get(sourceDevice);
+        Device target = topology.getRegisteredDevices().get(targetDevice);
+        
+        topology.connectDevices(source, target);
+	}
+	
+	public static void removeConnection(Scanner scanner,Topology topology) {
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
+	    
+	    System.out.println("\n===== Network Devices =====");
+	    
+	    // print devices
+	    for(int i = 0;i<devices.size();i++) {
+	    	System.out.println((i + 1) + ". " + devices.get(i));
+	    }
+	    
+	    System.out.println("Enter device you wish to delete a connection from: ");
+	    int sourceDeviceIndex = scanner.nextInt() - 1;
+	    
+	    // show user list of devices connected to selected source device
+	    
+	    System.out.println("Enter device you wish to disconnect: ");
+	    int targetDeviceIndex = scanner.nextInt() - 1;
+	    
+	    String sourceDevice = devices.get(sourceDeviceIndex); 
+	    String targetDevice = devices.get(targetDeviceIndex);
+	    
+	    Device source = topology.getRegisteredDevices().get(sourceDevice);
+        Device target = topology.getRegisteredDevices().get(targetDevice);
+        
+        topology.disconnectDevices(source, target);
+	}
+	
+}

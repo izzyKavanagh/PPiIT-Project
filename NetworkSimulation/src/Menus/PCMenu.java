@@ -104,7 +104,8 @@ public class PCMenu {
 	    {
 	    	System.out.println("5. Add DNS server");
 	    }
-	    System.out.println("6. Return to PC Menu");
+	    System.out.println("6. View port connections");
+	    System.out.println("7. Return to PC Menu");
 	    System.out.print("Enter your choice: ");
 	    
 	    int choice = scanner.nextInt();
@@ -183,6 +184,8 @@ public class PCMenu {
         	pc.setDnsServerIP(dnsIP);
             return;
         case 6:
+        	topology.printPortConnections(pc);
+        case 7:
             return;
 
         default:

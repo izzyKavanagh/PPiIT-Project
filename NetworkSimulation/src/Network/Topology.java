@@ -36,13 +36,19 @@ public class Topology {
 	    }
 	}
 
-	public boolean connectDevices(Device source, Device target) {
+	public void connectDevices(Device source, Device target) {
+		
+		if (source.equals(target)) {
+	        System.out.println("ERROR: A device cannot connect to itself.");
+	        return;
+	    }
+		
 		Map<String, Device> sourcePorts = networkTopology.get(source.getName());
 	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
 	    
 	    if (sourcePorts == null || targetPorts == null) {
 	        System.out.println("One or both devices are not registered.");
-	        return false;
+	        return;
 	    }
 	    
 	    String availableSourcePort = null;
@@ -64,18 +70,16 @@ public class Topology {
 	    
 	    if (availableSourcePort == null) {
 	        System.out.println(source.getName() + " has no available ports.");
-	        return false;
+	        return;
 	    }
 	    
 	    if (availableTargetPort == null) {
 	        System.out.println(target.getName() + " has no available ports.");
-	        return false;
+	        return;
 	    }
 	    
 
 	    if (source instanceof Switch sw) {
-	        sw.updateMacTable(target, availableSourcePort);
-	        
 	        int vlanId = sw.getVlanPortMap().getOrDefault(availableSourcePort, 1);
 	        target.setVlanId(vlanId);
 	    }
@@ -89,7 +93,7 @@ public class Topology {
 	    
 	    System.out.println(target.getName() + " connected to " + source.getName() + " on Port " + availableSourcePort);
 	    
-	    return true;
+	    return;
 	}
 	
 	public boolean disconnectDevices(Device source, Device target) {
@@ -122,12 +126,6 @@ public class Topology {
 	    }
 	    
 	    updateAdjacencyList();
-
-	    /* add functionality to delete connections from mac table 
-	    if (source instanceof Switch sw) {
-	        sw.updateMacTable(target, availableSourcePort);
-	    }
-	    */
 	    
 	    if (!disconnected) {
 	        System.out.println("No connection found between these devices.");
@@ -306,24 +304,27 @@ public class Topology {
 	    // if nothing was found, return null
 	    return null;
 	}
+	
+	public void printPortConnections(Device device) {
+		String deviceName = device.getName();
+	    Map<String, Device> ports = networkTopology.get(deviceName); 
 
-	public void printNetworkTopology() {
-        System.out.println("\nNetwork Topology (Port Connections):");
-        for (Map.Entry<String, Map<String, Device>> entry : networkTopology.entrySet()) {
-            String deviceName = entry.getKey();
-            Map<String, Device> ports = entry.getValue();
-            System.out.println("\nDevice: " + deviceName);
-            System.out.println("+--------+-------------------+");
-            System.out.println("| Port   | Connected Device   |");
-            System.out.println("+--------+-------------------+");
-            for (Map.Entry<String, Device> portEntry : ports.entrySet()) {
-                String port = portEntry.getKey();
-                Device connectedDevice = portEntry.getValue();
-                String connectedName = (connectedDevice != null) ? connectedDevice.getName() : "Empty";
-                System.out.printf("| %-6s | %-17s |\n", port, connectedName);
-            }
-            System.out.println("+--------+-------------------+\n");
+	    if (ports == null) {
+	        System.out.println("Device not found in topology.");
+	        return;
+	    }
+	    
+        System.out.println("\nConnections on device: " + deviceName);
+        System.out.println("+--------+-------------------+");
+        System.out.println("| Port   | Connected Device   |");
+        System.out.println("+--------+-------------------+");
+        for (Map.Entry<String, Device> portEntry : ports.entrySet()) {
+            String port = portEntry.getKey();
+            Device connectedDevice = portEntry.getValue();
+            String connectedName = (connectedDevice != null) ? connectedDevice.getName() : "Empty";
+            System.out.printf("| %-6s | %-17s |\n", port, connectedName);
         }
+        System.out.println("+--------+-------------------+\n");
     }
 
 	public Map<String, Device> getRegisteredDevices() {

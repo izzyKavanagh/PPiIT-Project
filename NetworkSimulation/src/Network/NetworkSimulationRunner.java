@@ -13,6 +13,7 @@ import Devices.WebServer;
 import Menus.DeviceCreationMenu;
 import Menus.PCMenu;
 import Menus.RouterMenu;
+import Menus.DHCPServerMenu;
 import Menus.DNSServerMenu;
 import Menus.SwitchMenu;
 import Menus.TopologyMenu;
@@ -41,7 +42,7 @@ public class NetworkSimulationRunner {
 		topology.updateAdjacencyList();
 
         // Display network topology
-     	topology.printNetworkTopology();
+     	//topology.printNetworkTopology();
      	topology.printAdjacencyList();
      		
         int choice;
@@ -77,16 +78,13 @@ public class NetworkSimulationRunner {
                 	RouterMenu.manageRouters(routers, scanner, topology); 
                 	break;
                 case 5:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers);
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
                 	break;
                 case 6:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers);
-                	// put methods in ServerMenu class
-                	//dhcpServer.printPools();
-                	//dhcpServer.configureIpPool(scanner);
+                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
                 	break;
                 case 7:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers);
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
                 	break;
                 case 8:
                 	TopologyMenu.addConnection(scanner,topology);

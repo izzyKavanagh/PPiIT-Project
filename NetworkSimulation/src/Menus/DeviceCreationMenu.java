@@ -41,8 +41,8 @@ public class DeviceCreationMenu {
             return;
         }
 	    
-	    System.out.print("Enter the MAC address of the device: ");
-	    String macAddress = scanner.nextLine();
+	    // generate unique MAC address to avoid duplicates
+	    String macAddress = Device.generateUniqueMacAddress();
 	    
 	    Device newDevice = null;
 	        
@@ -69,7 +69,7 @@ public class DeviceCreationMenu {
 				dnsServers.add((DNSServer) newDevice);
 				break;
 			case 6: 
-				newDevice = new WebServer(name, macAddress,"");
+				newDevice = new WebServer(name, macAddress);
 				webServers.add((WebServer) newDevice);
 				break;
 			case 7: 

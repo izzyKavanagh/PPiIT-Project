@@ -1,7 +1,10 @@
 package Devices;
 
-import java.util.HashMap; 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public abstract class Device {
 
@@ -17,6 +20,8 @@ public abstract class Device {
 	protected int vlanId;
 	
 	protected Map<String, String> arpTable = new HashMap<>();
+	private static final Set<String> usedMacs = new HashSet<>();
+	private static Random random = new Random();
 
 	public void addArpEntry(String ip, String mac) {
 	    arpTable.put(ip, mac);
@@ -90,5 +95,20 @@ public abstract class Device {
 	        }
 	        System.out.println("+----------------+-------------------+");
 	    }
+	}
+
+	public static String generateUniqueMacAddress() {
+	    String mac;
+	    do {
+	        mac = String.format("02:%02X:%02X:%02X:%02X:%02X",
+	            random.nextInt(256),
+	            random.nextInt(256),
+	            random.nextInt(256),
+	            random.nextInt(256),
+	            random.nextInt(256));
+	    } while (usedMacs.contains(mac));
+	    
+	    usedMacs.add(mac);
+	    return mac;
 	}
 }
