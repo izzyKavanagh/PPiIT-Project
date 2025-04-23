@@ -10,13 +10,8 @@ import Devices.DNSServer;
 import Devices.Router;
 import Devices.Switch;
 import Devices.WebServer;
-import Menus.DeviceCreationMenu;
-import Menus.PCMenu;
-import Menus.RouterMenu;
-import Menus.DHCPServerMenu;
-import Menus.DNSServerMenu;
-import Menus.SwitchMenu;
-import Menus.TopologyMenu;
+import Menus.FreeModeMenu;
+import Menus.GuidedModeMenu;
 
 public class NetworkSimulationRunner {
 	
@@ -40,71 +35,35 @@ public class NetworkSimulationRunner {
 		List<Computer> computers = new ArrayList<>();
 		
 		topology.updateAdjacencyList();
-
-        // Display network topology
-     	//topology.printNetworkTopology();
-     	topology.printAdjacencyList();
      		
         int choice;
         
         do{
-        	System.out.println("\n===== Main Menu =====");
-        	System.out.println("1. Create new device");
-            System.out.println("2. Manage PCs");
-            System.out.println("3. Manage Switches");
-            System.out.println("4. Manage Routers");
-            System.out.println("5. Manage DHCP servers");
-            System.out.println("6. Manage DNS servers");
-            System.out.println("7. Manage Web servers");
-            System.out.println("8. Add Connection"); 
-            System.out.println("9. Remove Connection");
-            System.out.println("10. Exit");
+        	
+        	System.out.println("=== Network Simulation ===");
+            System.out.println("Choose Mode:");
+            System.out.println("1. Free Mode");
+            System.out.println("2. Guided Mode");
+            System.out.println("3. Close Simulation");
             System.out.print("Enter your choice: ");
-
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
-                	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                	FreeModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers);
                     break;
                 case 2:
-                	PCMenu.managePCs(scanner, computers, manager);
+                	GuidedModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers);;
                 	break;
                 case 3:
-                	SwitchMenu.manageSwitches(switches, scanner, topology);
                 	break; 
-                case 4:
-                	RouterMenu.manageRouters(routers, scanner, topology); 
-                	break;
-                case 5:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
-                	break;
-                case 6:
-                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
-                	break;
-                case 7:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
-                	break;
-                case 8:
-                	TopologyMenu.addConnection(scanner,topology);
-                	break; 
-                case 9:
-                	TopologyMenu.removeConnection(scanner,topology); 
-                	break; 
-                case 10:
+                default: System.out.println("ERROR: Invalid choice. Please try again.");
                 	break;
             }
             
-        }while(choice !=8);
-		
-		//router0.printAllocations();
-		
-		//switch0.printMacTable();
-		
-		//dhcpServer.printPools();
+        }while(choice !=3);
 		
 		scanner.close();
-		
     }
 }

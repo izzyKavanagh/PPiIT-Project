@@ -51,7 +51,9 @@ public class SwitchMenu {
 	        System.out.println("5. View port connections");
 	        System.out.println("6. Return to Main Menu");
 	        System.out.print("Choice: ");
+	        
 	        choice = scanner.nextInt();
+	        scanner.nextLine();
 	        
 	        switch (choice) {
             case 1:
@@ -111,7 +113,7 @@ public class SwitchMenu {
             default:
                 System.out.println("Invalid choice.");
 	        }
-	    } while (choice != 5);
+	    } while (choice != 6);
 		
 	}
 

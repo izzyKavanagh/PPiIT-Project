@@ -1,0 +1,8 @@
+package Menus;
+
+public class GuidedModeMenu {
+
+	public static void mainMenu() {
+		
+	}
+}

@@ -1,0 +1,96 @@
+package Network;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Menus.DeviceCreationMenu;
+import Menus.MainMenu;
+import Menus.PCMenu;
+import Menus.RouterMenu;
+import Menus.DHCPServerMenu;
+import Menus.DNSServerMenu;
+import Menus.SwitchMenu;
+import Menus.TopologyMenu;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// initialize scanner object for reading in data
+		Scanner scanner = new Scanner(System.in);
+		
+		// New Topology instance to keep track of connections
+		Topology topology = new Topology();
+		
+		// create network manager instance to manage connecting devices
+		NetworkManager manager = new NetworkManager(topology);
+		
+		topology.setNetworkManager(manager);
+		
+		List<Router> routers = new ArrayList<>();
+		List<Switch> switches = new ArrayList<>();
+		List<DHCPServer> dhcpServers = new ArrayList<>();
+		List<DNSServer> dnsServers = new ArrayList<>();
+		List<WebServer> webServers = new ArrayList<>();
+		List<Computer> computers = new ArrayList<>();
+		
+		topology.updateAdjacencyList();
+     		
+        int choice;
+        
+        do{
+        	MainMenu.menu();
+
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                    break;
+                case 2:
+                	PCMenu.managePCs(scanner, computers, manager);
+                	break;
+                case 3:
+                	SwitchMenu.manageSwitches(switches, scanner, topology);
+                	break; 
+                case 4:
+                	RouterMenu.manageRouters(routers, scanner, topology); 
+                	break;
+                case 5:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	break;
+                case 6:
+                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
+                	break;
+                case 7:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	break;
+                case 8:
+                	TopologyMenu.addConnection(scanner,topology);
+                	break; 
+                case 9:
+                	TopologyMenu.removeConnection(scanner,topology); 
+                	break; 
+                case 10:
+                	break;
+            }
+            
+        }while(choice !=8);
+		
+		//router0.printAllocations();
+		
+		//switch0.printMacTable();
+		
+		//dhcpServer.printPools();
+		
+		scanner.close();
+		
+    }
+}

@@ -1,0 +1,59 @@
+package Menus;
+
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Network.NetworkManager;
+import Network.Topology;
+
+public class GuidedModeMenu {
+
+	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers) 
+	{
+		
+		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building ===");
+		
+		GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
+				"Navigate to 'Create New Device' and create a new router with the name 'Router0'");
+		
+		MainMenu.printMainMenu();
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        switch (choice) {
+        	case 1:
+        		DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+        		break;
+        	default:
+        		System.out.println("Please Select 'Create New Device' option from the menu");
+        		break;
+        }
+        
+        GuidedModeUtils.printStepBox("\nStep 2: Create a give Router0 an IP address",
+        		"\nNavigate to 'Manage Routers' and give Router0 an the IP address: 192.168.0.1");
+        		
+		System.out.println("\nTIP: IP addresses ending in 1 (192.168.0.1) are reserved for routers");
+		
+		MainMenu.printMainMenu();
+        choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        
+        switch (choice) {
+        	case 4:
+        		RouterMenu.manageRouters(routers, scanner, topology);
+        		break;
+        	default:
+        		System.out.println("Please Select 'Manage Routers' option from the menu");
+        		break;
+        }
+		
+		
+	}
+}

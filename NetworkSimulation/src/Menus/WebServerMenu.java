@@ -51,6 +51,7 @@ public class WebServerMenu {
             System.out.print("Select an option: ");
 
             choice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choice) {
             	case 1:
@@ -73,7 +74,7 @@ public class WebServerMenu {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }while(choice!=3);
+        }while(choice!=5);
 		
 	}
     

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import Devices.Computer;
 import Devices.Device;
 import Devices.Switch;
 
@@ -89,7 +90,10 @@ public class Topology {
 	    
 	    updateAdjacencyList();
 	    
-	    manager.useStaticIpAllocation(source);
+	    if (source instanceof Computer) 
+	    {
+		    manager.useStaticIpAllocation(source);
+	    }
 	    
 	    System.out.println(target.getName() + " connected to " + source.getName() + " on Port " + availableSourcePort);
 	    

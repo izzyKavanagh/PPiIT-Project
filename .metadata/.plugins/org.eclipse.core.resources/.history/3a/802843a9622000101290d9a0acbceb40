@@ -1,0 +1,67 @@
+package Menus;
+
+public class FreeModeMenu {
+
+	public static void menu() 
+	{
+		int choice;
+		System.out.println("\n===== Main Menu =====");
+    	System.out.println("1. Create new device");
+        System.out.println("2. Manage PCs");
+        System.out.println("3. Manage Switches");
+        System.out.println("4. Manage Routers");
+        System.out.println("5. Manage DHCP servers");
+        System.out.println("6. Manage DNS servers");
+        System.out.println("7. Manage Web servers");
+        System.out.println("8. Add Connection"); 
+        System.out.println("9. Remove Connection");
+        System.out.println("10. Exit");
+        System.out.print("Enter your choice: ");
+        
+        do{
+        	MainMenu.menu();
+        	
+        	System.out.println("=== Network Simulation ===");
+            System.out.println("Choose Mode:");
+            System.out.println("1. Free Mode");
+            System.out.println("2. Guided Mode");
+            System.out.print("Enter your choice: ");
+            
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                    break;
+                case 2:
+                	PCMenu.managePCs(scanner, computers, manager);
+                	break;
+                case 3:
+                	SwitchMenu.manageSwitches(switches, scanner, topology);
+                	break; 
+                case 4:
+                	RouterMenu.manageRouters(routers, scanner, topology); 
+                	break;
+                case 5:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	break;
+                case 6:
+                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
+                	break;
+                case 7:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	break;
+                case 8:
+                	TopologyMenu.addConnection(scanner,topology);
+                	break; 
+                case 9:
+                	TopologyMenu.removeConnection(scanner,topology); 
+                	break; 
+                case 10:
+                	break;
+            }
+            
+        }while(choice !=8);
+	}
+}

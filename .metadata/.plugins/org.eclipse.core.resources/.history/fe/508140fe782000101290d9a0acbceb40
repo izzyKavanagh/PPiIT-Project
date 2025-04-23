@@ -1,0 +1,10 @@
+package Menus;
+
+public class GuidedModeMenu {
+
+	public static void mainMenu() {
+		
+		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building===");
+		
+	}
+}

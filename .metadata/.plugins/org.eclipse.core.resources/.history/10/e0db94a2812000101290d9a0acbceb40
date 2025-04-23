@@ -1,0 +1,30 @@
+package Menus;
+
+public class GuidedModeUtils {
+	public static void printStepBox(String title, String... lines) {
+        int indent = 8; // Number of spaces to indent the box
+        String padding = " ".repeat(indent);
+        int width = Math.max(title.length(), getMaxLineLength(lines)) + 6;
+
+        String horizontalBorder = padding + "╔" + "═".repeat(width - 2) + "╗";
+        String bottomBorder = padding + "╚" + "═".repeat(width - 2) + "╝";
+
+        System.out.println();
+        System.out.println(horizontalBorder);
+        System.out.printf(padding + "║ %-"+(width-4)+"s ║\n", title);
+        System.out.println(padding + "╟" + "─".repeat(width - 2) + "╢");
+        for (String line : lines) {
+            System.out.printf(padding + "║ %-"+(width-4)+"s ║\n", line);
+        }
+        System.out.println(bottomBorder);
+        System.out.println(); 
+    }
+
+    private static int getMaxLineLength(String[] lines) {
+        int max = 0;
+        for (String line : lines) {
+            max = Math.max(max, line.length());
+        }
+        return max;
+    }
+}

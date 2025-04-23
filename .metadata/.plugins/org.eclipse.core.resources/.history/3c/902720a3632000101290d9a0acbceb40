@@ -1,0 +1,84 @@
+package Network;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Menus.DeviceCreationMenu;
+import Menus.FreeModeMenu;
+import Menus.GuidedModeMenu;
+import Menus.MainMenu;
+import Menus.PCMenu;
+import Menus.RouterMenu;
+import Menus.DHCPServerMenu;
+import Menus.DNSServerMenu;
+import Menus.SwitchMenu;
+import Menus.TopologyMenu;
+
+public class NetworkSimulationRunner {
+	
+	public static void main(String[] args) {
+		// initialize scanner object for reading in data
+		Scanner scanner = new Scanner(System.in);
+		
+		// New Topology instance to keep track of connections
+		Topology topology = new Topology();
+		
+		// create network manager instance to manage connecting devices
+		NetworkManager manager = new NetworkManager(topology);
+		
+		topology.setNetworkManager(manager);
+		
+		List<Router> routers = new ArrayList<>();
+		List<Switch> switches = new ArrayList<>();
+		List<DHCPServer> dhcpServers = new ArrayList<>();
+		List<DNSServer> dnsServers = new ArrayList<>();
+		List<WebServer> webServers = new ArrayList<>();
+		List<Computer> computers = new ArrayList<>();
+		
+		topology.updateAdjacencyList();
+     		
+        int choice;
+        
+        do{
+        	
+        	System.out.println("=== Network Simulation ===");
+            System.out.println("Choose Mode:");
+            System.out.println("1. Free Mode");
+            System.out.println("2. Guided Mode");
+            System.out.println("3. Close Simulation");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                	FreeModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                    break;
+                case 2:
+                	GuidedModeMenu.mainMenu();
+                	break;
+                case 3:
+                	break; 
+                default: System.out.println("ERROR: Invalid choice. Please try again.");
+                	break;
+            }
+            
+        }while(choice !=3);
+		
+		//router0.printAllocations();
+		
+		//switch0.printMacTable();
+		
+		//dhcpServer.printPools();
+		
+		scanner.close();
+		
+    }
+}

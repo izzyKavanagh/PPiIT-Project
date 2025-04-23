@@ -32,6 +32,10 @@ public class DeviceCreationMenu {
 	    int choice = scanner.nextInt();
 	    scanner.nextLine();
 		
+	    if(choice == 8) 
+	    {
+	    	return;
+	    }
 	    System.out.print("Enter the name of the device: ");
 	    String name = scanner.nextLine();
 	    

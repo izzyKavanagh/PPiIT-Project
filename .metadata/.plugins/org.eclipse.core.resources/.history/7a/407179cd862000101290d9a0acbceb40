@@ -1,0 +1,90 @@
+package Menus;
+
+import java.util.List;
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Network.NetworkManager;
+import Network.Topology;
+
+public class GuidedModeMenu {
+
+	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers) 
+	{
+		
+		int choice;
+		
+		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building ===");
+		
+		GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
+				"Navigate to 'Create New Device' and create a new router with the name 'Router0'");
+		
+		do {
+			MainMenu.printMainMenu();
+	        choice = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
+	        
+	        switch (choice) {
+	        	case 1:
+	        		DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+	        		break;
+	        	default:
+	        		System.out.println("Please Select 'Create New Device' option from the menu");
+	        		break;
+	        }
+			
+		}while (choice!=1);
+		
+		
+        GuidedModeUtils.printStepBox("Step 2: Give Router0 an IP address",
+        		"Navigate to 'Manage Routers' and give Router0 an the IP address: 192.168.0.1");
+        	
+        GuidedModeUtils.printTipBox("IP addresses ending in 1 (192.168.0.1) are reserved for routers");
+		
+		do
+		{
+			MainMenu.printMainMenu();
+	        choice = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
+	        
+	        switch (choice) {
+	        	case 4:
+	        		RouterMenu.manageRouters(routers, scanner, topology);
+	        		break;
+	        	default:
+	        		System.out.println("Please Select 'Manage Routers' option from the menu");
+	        		break;
+	        }
+	        
+		}while (choice!=4);
+		
+		GuidedModeUtils.printStepBox("Step 3: Create a Layer 3 Switch",
+        		"Navigate to 'Create New Device' and create a layer 3 switch named 'coreSwitch'");
+        	
+        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interface!");
+        
+		do
+		{
+			MainMenu.printMainMenu();
+	        choice = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
+	        
+	        switch (choice) {
+	        	case 1:
+	        		SwitchMenu.manageRouters(routers, scanner, topology);
+	        		break;
+	        	default:
+	        		System.out.println("Please Select 'Create New Device' option from the menu");
+	        		break;
+	        }
+	        
+		}while (choice!=4);
+		
+	}
+}

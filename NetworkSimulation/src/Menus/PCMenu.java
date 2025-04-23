@@ -111,7 +111,8 @@ public class PCMenu {
 	    int choice = scanner.nextInt();
 	    scanner.nextLine(); // Consume newline
 	    
-	    switch (choice) {
+	    switch (choice) 
+	    {
 	    case 1:
 	    	for (int i = 0; i < computers.size(); i++) {
 		        System.out.println((i + 1) + ". " + computers.get(i).getName());
@@ -190,7 +191,7 @@ public class PCMenu {
 
         default:
             System.out.println("Invalid choice! Try again.");
-    }
+	    }
 			
-		}
+	}
 }
