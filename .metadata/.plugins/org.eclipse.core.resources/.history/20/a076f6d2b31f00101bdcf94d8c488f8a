@@ -1,0 +1,124 @@
+package Network;
+
+import javax.swing.*;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Color;
+import java.util.*;
+import Devices.Device;
+
+public class TopologyVisualiser extends JFrame {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Topology topology;
+
+    public TopologyVisualiser(Topology topology) {
+        this.topology = topology;
+        setTitle("Network Topology Viewer");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        add(new TopologyPanel());
+        setLocationRelativeTo(null); // Center window
+        setVisible(true);
+    }
+
+    // Custom panel for drawing topology
+    class TopologyPanel extends JPanel {
+        /**
+		 * 
+		 */
+    	public TopologyPanel(Topology topology) {
+            this.topology = topology;
+            this.devicePositions = new HashMap<>();
+            setBackground(Color.WHITE);
+            assignPositions();
+        }
+
+        private void assignPositions() {
+            int width = 700;
+            int height = 500;
+
+            int routerX = width / 2 - 50;
+            int routerY = 50;
+
+            int switchY = 200;
+            int pcY = 350;
+            int serverY = 450;
+
+            int switchSpacing = 150;
+            int pcSpacing = 100;
+            int serverSpacing = 100;
+
+            int switchX = 100;
+            int pcX = 50;
+            int serverX = 50;
+
+            // Position Router(s)
+            for (Device device : topology.getDevices()) {
+                if (device.getClass().getSimpleName().contains("Router")) {
+                    devicePositions.put(device, new Point(routerX, routerY));
+                }
+            }
+
+            // Position Switches
+            for (Device device : topology.getDevices()) {
+                if (device.getClass().getSimpleName().contains("Switch")) {
+                    devicePositions.put(device, new Point(switchX, switchY));
+                    switchX += switchSpacing;
+                }
+            }
+
+            // Position PCs
+            for (Device device : topology.getDevices()) {
+                if (device.getClass().getSimpleName().equals("Computer")) {
+                    devicePositions.put(device, new Point(pcX, pcY));
+                    pcX += pcSpacing;
+                }
+            }
+
+            // Position Servers
+            for (Device device : topology.getDevices()) {
+                if (device.getClass().getSimpleName().contains("Server")) {
+                    devicePositions.put(device, new Point(serverX, serverY));
+                    serverX += serverSpacing;
+                }
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            Map<String, List<String>> adjacencyList = topology.updateAdjacencyList();
+            Map<String, Device> devices = topology.getRegisteredDevices();v
+
+            // Draw connections (lines)
+            g.setColor(Color.GRAY);
+            for (Map.Entry<String, List<String>> entry : adjacencyList.entrySet()) {
+                String deviceName = entry.getKey();
+                Point p1 = devicePositions.get(deviceName);
+                for (String connectedDevice : entry.getValue()) {
+                    Point p2 = devicePositions.get(connectedDevice);
+                    g.drawLine(p1.x, p1.y, p2.x, p2.y);
+                }
+            }
+
+            // Draw devices (circles)
+            for (Map.Entry<String, Point> entry : devicePositions.entrySet()) {
+                String deviceName = entry.getKey();
+                Point p = entry.getValue();
+
+                g.setColor(Color.CYAN);
+                g.fillOval(p.x - 20, p.y - 20, 40, 40);
+
+                g.setColor(Color.BLACK);
+                g.drawOval(p.x - 20, p.y - 20, 40, 40);
+
+                // Device name label
+                g.drawString(deviceName, p.x - 20, p.y - 25);
+            }
+        }
+    }
+}

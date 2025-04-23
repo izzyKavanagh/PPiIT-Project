@@ -1,0 +1,12 @@
+package Menus;
+
+import java.util.Scanner;
+import Network.Topology;
+
+public class DeviceCreationMenu {
+
+	public static void createDevice(Scanner scanner, Topology topology)
+	{
+		
+	}
+}

@@ -1,18 +1,14 @@
 package Menus;
 
 import java.util.List;  
-import java.util.Map;
 import java.util.Scanner;
-
-import DeviceComponents.IPPool;
 import Devices.Computer;
-import Devices.DHCPServer;
 import Network.NetworkManager;
 import Network.Topology;
 
 public class PCMenu {
 	
-	public static void managePCs(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers, NetworkManager manager) {
+	public static void managePCs(Scanner scanner, List<Computer> computers, NetworkManager manager) {
 		
 		 while (true) {
 			 System.out.println("\n===== PC Management =====");
@@ -69,11 +65,11 @@ public class PCMenu {
 	         }
 
 	         Computer selectedPC = computers.get(pcChoice - 1);
-	         configurePC(scanner, dhcpServer, computers, selectedPC, manager);
+	         configurePC(scanner, computers, selectedPC, manager);
 	     }
 	}
 
-	private static void configurePC(Scanner scanner, DHCPServer dhcpServer, List<Computer> computers, Computer pc, NetworkManager manager) {
+	private static void configurePC(Scanner scanner, List<Computer> computers, Computer pc, NetworkManager manager) {
 		
 		Topology topology = manager.getTopology();
 		
@@ -163,14 +159,6 @@ public class PCMenu {
 	    	
 	    	break;
         case 3:
-        	Map<String, IPPool> pools = dhcpServer.getPools(); // Assuming this method exists
-
-            if (pools.isEmpty()) 
-            {
-                System.out.println("No available IP Pools.");
-                return;
-            }
-	               
             String helperIP = manager.findLayer3Device(pc);
            	
            	if(helperIP == null)

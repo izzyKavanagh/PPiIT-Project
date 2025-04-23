@@ -1,0 +1,38 @@
+package Menus;
+
+import java.util.Scanner;
+import Network.Topology;
+
+public class DeviceCreationMenu {
+
+	public static void createDevice(Scanner scanner, Topology topology)
+	{
+		System.out.println("Select device type to create: ");
+		System.out.println("1. Router");
+		System.out.println("2. Switch");
+		System.out.println("3. Server");
+		System.out.println("4. PC");
+		System.out.println("Enter choice: ");
+		int choice = scanner.nextInt();
+		
+		switch(choice) 
+		{
+			case 1: 
+				createRouter(scanner, topology);
+				break;
+			case 2: 
+				break;
+			case 3: 
+				break;
+			case 4: 
+				break;
+			default: 
+				break;
+		
+		}
+	}
+
+	private static void createRouter(Scanner scanner, Topology topology) {
+		
+	}
+}

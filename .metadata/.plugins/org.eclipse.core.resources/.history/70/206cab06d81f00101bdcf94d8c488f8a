@@ -1,0 +1,103 @@
+package Menus;
+
+import java.util.List;
+import java.util.Scanner;
+import Devices.DNSServer;
+
+public class ServerMenu {
+	
+	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers) {
+        if (dnsServers.isEmpty()) {
+            System.out.println("No DNS servers available.");
+            return;
+        }
+
+        while (true) {
+            System.out.println("\n--- DNS Server List ---");
+            for (int i = 0; i < dnsServers.size(); i++) {
+                System.out.println((i + 1) + ". " + dnsServers.get(i).getName());
+            }
+            System.out.println((dnsServers.size() + 1) + ". Return to Main Menu");
+            System.out.print("Select a DNS server to manage: ");
+
+            int serverChoice = Integer.parseInt(scanner.nextLine());
+
+            if (serverChoice == dnsServers.size() + 1) {
+                return;
+            }
+
+            if (serverChoice < 1 || serverChoice > dnsServers.size()) {
+                System.out.println("Invalid selection. Please try again.");
+                continue;
+            }
+
+            DNSServer selectedServer = dnsServers.get(serverChoice - 1);
+            manageSingleDNSServer(scanner, selectedServer);
+        }
+    }
+
+    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer) {
+    	int choice;
+    	
+    	do
+    	{
+            System.out.println("\n--- Managing DNS Server: " + dnsServer.getName() + " ---");
+            System.out.println("1. Add DNS Record");
+            System.out.println("2. View All Records");
+            System.out.println("3. Return to DNS Server List");
+            System.out.print("Select an option: ");
+
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addDnsRecord(scanner, dnsServer);
+                    break;
+                case 2:
+                    dnsServer.printDnsRecords();
+                    break;
+                case 3:
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }while(choice!=3);
+		
+	}
+
+	public static void manageDnsRecords(Scanner scanner, DNSServer dnsServer) {
+        while (true) {
+            System.out.println("\n--- DNS Server Management ---");
+            System.out.println("1. Add DNS Record");
+            System.out.println("2. View All Records");
+            System.out.println("3. Exit DNS Server Menu");
+            System.out.print("Select an option: ");
+
+            String option = scanner.nextLine();
+
+            switch (option) {
+                case "1":
+                    addDnsRecord(scanner,dnsServer);
+                    break;
+                case "2":
+                	dnsServer.printDnsRecords();
+                    break;
+                case "3":
+                    System.out.println("Exiting DNS Server Menu...");
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void addDnsRecord(Scanner scanner, DNSServer dnsServer) {
+        System.out.println("Enter domain name:");
+        String domainName = scanner.nextLine();
+        System.out.println("Enter IP address:");
+        String ipAddress = scanner.nextLine();
+
+        dnsServer.addRecord(domainName, ipAddress);
+        System.out.println("Record added: " + domainName + " -> " + ipAddress);
+    }
+}

@@ -18,15 +18,16 @@ public class Router extends Device implements DeviceWithCLI{
     private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
     
     private Map<String, String> portIpAssignments = new HashMap<>();
+    
+    public String ipAddress;
         
 	public final int totalPorts = 8;
 	private String staticIpPrefix = "266.444.1.";
 	private int nextIP = 2;
 	private String assignedStaticIp;
 	
-	public Router(String name, String macAddress, String ipAddress) {
+	public Router(String name, String macAddress) {
 		super(name, macAddress);
-		this.ipAddress = ipAddress;
 		this.portIpAssignments = new HashMap<>();
 		
 		for (int i = 0; i < getTotalPorts(); i++) {
@@ -34,6 +35,14 @@ public class Router extends Device implements DeviceWithCLI{
         }
 	}
 	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
 	@Override
 	public int getTotalPorts()
 	{
