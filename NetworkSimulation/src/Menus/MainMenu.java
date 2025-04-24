@@ -6,7 +6,7 @@ public class MainMenu {
 	{
 		System.out.println("\n===== Main Menu =====");
     	System.out.println("1. Create new device");
-        System.out.println("2. Manage PCs");
+        System.out.println("2. Manage Computers");
         System.out.println("3. Manage Switches");
         System.out.println("4. Manage Routers");
         System.out.println("5. Manage DNS servers");

@@ -1,0 +1,126 @@
+package Menus;
+
+import java.util.ArrayList; 
+import java.util.List;
+import java.util.Scanner;
+import Devices.Router;
+import Network.Topology;
+
+public class RouterMenu {
+	
+	public static void manageRouters(List<Router> routers, Scanner scanner, Topology topology, int mode) { 
+		if (routers.isEmpty()) {
+	        System.out.println("No routers available in the network.");
+	        return;
+	    }
+		
+		 System.out.println("\n===== Router Management =====");
+		    for (int i = 0; i < routers.size(); i++) {
+		        System.out.println((i + 1) + ". " + routers.get(i).getName());
+		    }
+		    
+		    System.out.print("Select a router to manage: ");
+		    int routerChoice = scanner.nextInt() - 1;
+
+		    if (routerChoice < 0 || routerChoice >= routers.size()) {
+		        System.out.println("Invalid selection.");
+		        return;
+		    }
+
+		    Router selectedRouter = routers.get(routerChoice);
+		    
+		    configureRouter(selectedRouter, scanner, topology, mode);
+	}
+	
+	private static void configureRouter(Router router, Scanner scanner, Topology topology, int mode) {
+		
+		System.out.println("\nManaging " + router.getName());
+		
+		int choice;
+	    do {
+	        System.out.println("\n===== Router Configuration: " + router.getName() + " =====");
+	        System.out.println("1. Configure IP Address");
+	        System.out.println("2. Configure VLAN Interface");
+	        System.out.println("3. Show VLAN Interfaces");
+	        System.out.println("4. Configure IP Helper Address");
+	        System.out.println("5. Assign IP to Port");
+	        System.out.println("6. Show Port IP Assignments");
+	        System.out.println("7. View port connections");
+	        System.out.println("8. Exit");
+	        System.out.print("Enter your choice: ");
+
+	        choice = scanner.nextInt();
+	        scanner.nextLine();
+
+	        switch (choice) {
+	            case 1:
+	            	configureRouterIpAddress(scanner, router);
+	                break;
+	            case 2:
+	                System.out.print("\"Enter VLAN ID for the interface: ");
+	                int vlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter IP Address for VLAN interface: ");
+	                String ipAddress = scanner.nextLine();
+	                router.configureVLANInterface(vlanId, ipAddress);
+	                break;
+	            case 3:
+	                router.showVLANInterfaces();
+	                break;
+	            case 4:
+	                System.out.print("Enter VLAN ID: ");
+	                int helperVlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter DHCP Server IP Address: ");
+	                String helperIp = scanner.nextLine();
+	                router.configureIpHelper(helperVlanId, helperIp);
+	                break;
+	            case 5:
+	            	System.out.println("Ports:");
+	                List<String> ports = new ArrayList<>(router.getPortIpAssignments().keySet());
+	                for (int j = 0; j < ports.size(); j++) {
+	                    System.out.println((j + 1) + ". " + ports.get(j));
+	                }
+	                
+	                System.out.print("Select port number: ");
+	                int portChoice = scanner.nextInt();
+	                String selectedPort = ports.get(portChoice - 1);
+	                scanner.nextLine();
+
+	                System.out.print("Enter IP Address to assign to " + selectedPort + ": ");
+	                String portIp = scanner.nextLine();
+	                router.assignIpToPort(selectedPort, portIp);
+	                break;
+	            case 6:
+	                router.showPortIPs();
+	                break;
+	            case 7:
+                	topology.printPortConnections(router);
+	            case 8:
+	                break;
+	            default:
+	                System.out.println("Invalid choice.");
+	        }
+
+	    } while (choice != 8 && mode != 2);
+		
+	}
+	
+	private static void configureRouterIpAddress(Scanner scanner, Router router) {
+	    String currentIp = router.getIpAddress();
+	    if (currentIp == null || currentIp.isEmpty()) {
+	        System.out.println("Current IP Address: IP not set");
+	    } else {
+	        System.out.println("Current IP Address: " + currentIp);
+	    }
+
+	    System.out.print("Would you like to set a new IP address? (Y/N): ");
+	    String response = scanner.nextLine().trim().toLowerCase();
+	    if (response.equalsIgnoreCase("Y")) {
+	        System.out.print("Enter new IP address: ");
+	        String newIp = scanner.nextLine();
+	        router.setIpAddress(newIp);
+	        System.out.println("IP address updated to: " + newIp);
+	    }
+	}
+}

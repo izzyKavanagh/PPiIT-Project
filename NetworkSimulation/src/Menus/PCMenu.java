@@ -8,9 +8,12 @@ import Network.Topology;
 
 public class PCMenu {
 	
-	public static void managePCs(Scanner scanner, List<Computer> computers, NetworkManager manager) {
+	public static void managePCs(Scanner scanner, List<Computer> computers, NetworkManager manager, int mode) {
 		
-		 while (true) {
+		int pcChoice;
+		
+		 do
+		 {
 			 System.out.println("\n===== PC Management =====");
 	         for (int i = 0; i < computers.size(); i++) 
 	         {
@@ -53,10 +56,13 @@ public class PCMenu {
 	         System.out.println((computers.size() + 1) + ". Return to Main Menu");
 	         System.out.print("Select a PC to manage: ");
 
-	         int pcChoice = scanner.nextInt();
+	         pcChoice = scanner.nextInt();
 	         scanner.nextLine(); // Consume newline
 
-	         if (pcChoice == computers.size() + 1) return; // Return to main menu
+	         if (pcChoice == computers.size() + 1) 
+	         {
+	        	 return; 
+	         }
 
 	         if (pcChoice < 1 || pcChoice > computers.size()) 
 	         {
@@ -66,7 +72,7 @@ public class PCMenu {
 
 	         Computer selectedPC = computers.get(pcChoice - 1);
 	         configurePC(scanner, computers, selectedPC, manager);
-	     }
+	     }while(pcChoice != (computers.size() + 1) && mode != 2);
 	}
 
 	private static void configurePC(Scanner scanner, List<Computer> computers, Computer pc, NetworkManager manager) {

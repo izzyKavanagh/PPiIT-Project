@@ -7,13 +7,15 @@ import Network.Topology;
 
 public class DHCPServerMenu {
 
-	public static void manageDHCPServers(Scanner scanner, List<DHCPServer> dhcpServers, Topology topology) {
+	public static void manageDHCPServers(Scanner scanner, List<DHCPServer> dhcpServers, Topology topology, int mode) {
         if (dhcpServers.isEmpty()) {
             System.out.println("No DHCP servers available.");
             return;
         }
 
-        while (true) {
+        int serverChoice;
+        
+        do{
             System.out.println("\n--- DHCP Server List ---");
             for (int i = 0; i < dhcpServers.size(); i++) {
                 System.out.println((i + 1) + ". " + dhcpServers.get(i).getName());
@@ -21,7 +23,7 @@ public class DHCPServerMenu {
             System.out.println((dhcpServers.size() + 1) + ". Return to Main Menu");
             System.out.print("Select a DHCP server to manage: ");
 
-            int serverChoice = Integer.parseInt(scanner.nextLine());
+            serverChoice = Integer.parseInt(scanner.nextLine());
 
             if (serverChoice == dhcpServers.size() + 1) {
                 return;
@@ -33,11 +35,12 @@ public class DHCPServerMenu {
             }
 
             DHCPServer selectedServer = dhcpServers.get(serverChoice - 1);
-            manageSingleDHCPServer(scanner, selectedServer, topology);
-        }
+            manageSingleDHCPServer(scanner, selectedServer, topology, mode);
+            
+        }while(serverChoice != (dhcpServers.size() + 1) && mode != 2);
     }
 
-    private static void manageSingleDHCPServer(Scanner scanner, DHCPServer dhcpServer, Topology topology) {
+    private static void manageSingleDHCPServer(Scanner scanner, DHCPServer dhcpServer, Topology topology, int mode) {
     	int choice;
     	
     	do
@@ -72,7 +75,7 @@ public class DHCPServerMenu {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }while(choice!=5);
+        }while(choice!=5 && mode != 2);
 		
 	}
     

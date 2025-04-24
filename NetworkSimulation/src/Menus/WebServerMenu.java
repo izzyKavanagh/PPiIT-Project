@@ -7,13 +7,16 @@ import Network.Topology;
 
 public class WebServerMenu {
 	
-	public static void manageDHCPServers(Scanner scanner, List<WebServer> webServers, Topology topology) {
+	public static void manageWebServers(Scanner scanner, List<WebServer> webServers, Topology topology, int mode) {
         if (webServers.isEmpty()) {
             System.out.println("No Web servers available.");
             return;
         }
+        
+        int serverChoice;
 
-        while (true) {
+        do
+        {
             System.out.println("\n--- Web Server List ---");
             for (int i = 0; i < webServers.size(); i++) {
                 System.out.println((i + 1) + ". " + webServers.get(i).getName());
@@ -21,7 +24,7 @@ public class WebServerMenu {
             System.out.println((webServers.size() + 1) + ". Return to Main Menu");
             System.out.print("Select a Web server to manage: ");
 
-            int serverChoice = Integer.parseInt(scanner.nextLine());
+            serverChoice = Integer.parseInt(scanner.nextLine());
 
             if (serverChoice == webServers.size() + 1) {
                 return;
@@ -33,11 +36,11 @@ public class WebServerMenu {
             }
 
             WebServer selectedServer = webServers.get(serverChoice - 1);
-            manageSingleWebServer(scanner, selectedServer, topology);
-        }
+            manageSingleWebServer(scanner, selectedServer, topology, mode);
+        }while (serverChoice != (webServers.size() + 1) && mode != 2);
     }
 
-    private static void manageSingleWebServer(Scanner scanner, WebServer webServer, Topology topology) {
+    private static void manageSingleWebServer(Scanner scanner, WebServer webServer, Topology topology, int mode) {
     	int choice;
     	
     	do
@@ -74,7 +77,7 @@ public class WebServerMenu {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }while(choice!=5);
+        }while(choice!=5 && mode != 2);
 		
 	}
     

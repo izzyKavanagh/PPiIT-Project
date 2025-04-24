@@ -1,0 +1,212 @@
+package Menus;
+
+import java.util.List; 
+import java.util.Scanner;
+
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Network.NetworkManager;
+import Network.Topology;
+
+public class GuidedModeMenu {
+
+	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers) 
+	{
+		
+		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building ===");
+		
+		// STEP 1 - CREATE ROUTER
+		GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
+				"Navigate to 'Create New Device' and create a new router with the name 'Router0'");
+		
+		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+
+	    // STEP 2 - GIVE ROUTER IP
+        GuidedModeUtils.printStepBox("Step 2: Give Router0 an IP address",
+        		"Navigate to 'Manage Routers' and give Router0 an the IP address: 192.168.0.1");
+        	
+        GuidedModeUtils.printTipBox("IP addresses ending in 1 (192.168.0.1) are reserved for routers");
+		
+        validateUserInput(scanner, 4, "Please Select 'Manage Routers' option from the menu");
+        RouterMenu.manageRouters(routers, scanner, topology);
+		
+		// STEP 3 - CREATE LAYER 3 SWITCH
+		GuidedModeUtils.printStepBox("Step 3: Create a Layer 3 Switch",
+        		"Navigate to 'Create New Device' and create a layer 3 switch named 'coreSwitch'");
+        	
+        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interface!");
+        
+        validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+        SwitchMenu.manageSwitches(switches, scanner, topology);
+		
+        // STEP 4 - CONNECT ROUTER & LAYER 3 SWITCH 
+        
+        GuidedModeUtils.printStepBox("Step 4: Connect Router0 to the coreSwitch",
+        		"Navigate to 'Add Connection' and create a connection between Router0 and coreSwitch");
+        	        
+        validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
+        TopologyMenu.addConnection(scanner, topology);
+        
+		// STEP 5 - CREATE FIRST LAYER 2 SWITCH
+        
+        GuidedModeUtils.printStepBox("Step 5: Create three Layer 2 Switch",
+        		"Navigate to 'Create New Device' and create a layer 2 switch named 'switch1'");
+		
+        GuidedModeUtils.printTipBox("The layer 2 switches will be used to seperate the office building floors into different VLANs");
+        
+        for (int i = 0; i < 3; i++)
+        {
+        	validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+            SwitchMenu.manageSwitches(switches, scanner, topology);
+            if(i < 2)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now create the next switch",
+                 		"Navigate to 'Create New Device' and create a layer 2 switch named 'switch" + (i+2) + "'");
+            }
+        }
+        
+        // STEP 6 - CONNECT THREE 2 LAYER SWITCHES TO CORE SWITCH
+        
+        GuidedModeUtils.printStepBox("Step 6: Connect the three layer 2 switches to the coreSwitch",
+        		"Navigate to 'Add Connection' and create a connection between coreSwitch and switch1");
+        	        
+        for (int i = 0; i < 3; i++)
+        {
+        	validateUserInput(scanner, 1, "Please Select 'Add Connection' option from the menu");
+        	TopologyMenu.addConnection(scanner, topology);
+        	if(i < 2)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now connect the next switch",
+                 		"Navigate to 'Add Connection' and create a connection between coreSwitch and switch" + (i+2));
+            }
+        }
+      
+        
+        // STEP 7 - CREATE PC0 AND PC1
+        
+        GuidedModeUtils.printStepBox("Step 7: Create two computers",
+        		"Navigate to 'Create New Device' and create a computer named 'PC0'");
+		        
+        for (int i = 0; i < 2; i++)
+        {
+        	validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+            PCMenu.managePCs(scanner, computers, manager);
+            if(i < 1)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now create the next computer",
+                 		"Navigate to 'Create New Device' and create a computer named 'PC" + (i+1) + "'");
+            }
+        }
+        
+        // STEP 8 - CONNECT PC0 & PC1 TO SWITCH1
+        
+        GuidedModeUtils.printStepBox("Step 8: Connect PC0 and PC1 to switch1",
+        		"Navigate to 'Add Connection' and create a connection between switch and PC0");
+        	        
+        for (int i = 0; i < 2; i++)
+        {
+        	validateUserInput(scanner, 1, "Please Select 'Add Connection' option from the menu");
+        	TopologyMenu.addConnection(scanner, topology);
+        	if(i < 1)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now connect the next computer",
+                 		"Navigate to 'Add Connection' and create a connection between switch1 and PC" + (i+1));
+            }
+        }
+        
+        // STEP 9 - CREATE PC2 and PC3
+        
+        GuidedModeUtils.printStepBox("Step 9: Create two more computers",
+        		"Navigate to 'Create New Device' and create a computer named 'PC2'");
+		        
+        for (int i = 0; i < 2; i++)
+        {
+        	validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+        	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+            if(i < 1)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now create the next computer",
+                 		"Navigate to 'Create New Device' and create a computer named 'PC" + (i+3) + "'");
+            }
+        }
+        
+        // STEP 10 - CONNECT PC2 & PC3 TO SWITCH2
+        
+        GuidedModeUtils.printStepBox("Step 10: Connect PC2 and PC3 to switch2",
+        		"Navigate to 'Add Connection' and create a connection between switch and PC2");
+        	        
+        for (int i = 0; i < 2; i++)
+        {
+        	validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
+        	TopologyMenu.addConnection(scanner, topology);
+        	if(i < 1)
+            {
+            	 GuidedModeUtils.printStepBox("Great! Now connect the next computer",
+                 		"Navigate to 'Add Connection' and create a connection between switch2 and PC" + (i+3));
+            }
+        }
+        
+        // STEP 11 - CREATE DHCP SERVER
+        
+        GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
+				"Navigate to 'Create New Device' and create a new router with the name 'Router0'");
+		
+		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
+	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+	    
+        // STEP 16 - GIVE DHCP SERVER IP 
+        
+        // STEP 17 - CONNECT DHCP SERVER TO SWITCH3
+        
+        // STEP 18 - CREATE DNS SERVER 
+        
+        // STEP 19 - GIVE DNS SERVER IP 
+        
+        // STEP 20 - CONNECT DNS SERVER TO SWITCH3
+        
+        // STEP 21 - MAKE VLANS ON SWITCHES -> ONE FOR EACH "FLOOR"
+        
+        // STEP 22 - ASSIGN VLANs TO PORTS
+        
+        // STEP 23 - CONFIGURE VLAN INTERFACE ON LAYER 3 SWITCH-> ONE FOR EACH VLAN
+        
+        // STEP 24 - CONFIGURE IP HELPER: DHCP SERVER IP
+        
+        // STEP 25 - CREATE DHCP IP POOLS -> ONE FOR EACH VLAN WHERE GATEWAY IP = VLAN INTERFACE IP & DNS = DNS IP
+        
+        // STEP 26 - SWITCH PCs TO DYNAMIC & CHECK THEY GOT CORRECT IP ADDRESSES
+        
+        // STEP 27 - CREATE WEB SERVER -> NAME IT GOOGLE.COM
+        
+        // STEP 28 - GIVE WEB SERVER IP
+        
+        // STEP 29 - CONNECT WEB SERVER TO SWITCH3
+        
+        // STEP 30 - CREATE DNS RECORD IN DNS SERVER W IP = WEB SERVER & DOMAIN NAME = WWW.GOOGLE.COM
+        
+        // STEP 31 - SET WEB SERVER CONTENT -> "WELCOME TO GOOGLE.COM"
+        
+        
+        
+	}
+	
+	private static void validateUserInput(Scanner scanner, int validOption, String errorMessage) {
+        int choice;
+        
+        do {
+            MainMenu.printMainMenu();
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            
+            if (choice != validOption) {
+                System.out.println(errorMessage);
+            }
+        } while (choice != validOption);
+    }
+}

@@ -7,13 +7,16 @@ import Network.Topology;
 
 public class DNSServerMenu {
 	
-	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers, Topology topology) {
+	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers, Topology topology, int mode) {
         if (dnsServers.isEmpty()) {
             System.out.println("No DNS servers available.");
             return;
         }
 
-        while (true) {
+        int serverChoice;
+        
+        do
+        {
             System.out.println("\n--- DNS Server List ---");
             for (int i = 0; i < dnsServers.size(); i++) {
                 System.out.println((i + 1) + ". " + dnsServers.get(i).getName());
@@ -21,7 +24,7 @@ public class DNSServerMenu {
             System.out.println((dnsServers.size() + 1) + ". Return to Main Menu");
             System.out.print("Select a DNS server to manage: ");
 
-            int serverChoice = Integer.parseInt(scanner.nextLine());
+            serverChoice = Integer.parseInt(scanner.nextLine());
 
             if (serverChoice == dnsServers.size() + 1) {
                 return;
@@ -33,11 +36,12 @@ public class DNSServerMenu {
             }
 
             DNSServer selectedServer = dnsServers.get(serverChoice - 1);
-            manageSingleDNSServer(scanner, selectedServer, topology);
-        }
+            manageSingleDNSServer(scanner, selectedServer, topology, mode);
+            
+        }while(serverChoice != (dnsServers.size()+1) && mode != 2);
     }
 
-    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer, Topology topology) {
+    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer, Topology topology, int mode) {
     	int choice;
     	
     	do
@@ -71,7 +75,7 @@ public class DNSServerMenu {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }while(choice!=5);
+        }while(choice!=5 && mode != 2);
 		
 	}
     

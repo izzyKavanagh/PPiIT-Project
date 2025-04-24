@@ -8,7 +8,7 @@ import Network.ErrorMessages;
 public class IPPool {
 
 	private Set<String> availableIPs = new HashSet<>();
-    private String networkPrefix = "192.168.10."; // Default sub-net
+    private String networkPrefix = "192.168.0."; // Default sub-net
     private String poolName;
     private String gatewayIP;
     private String dnsServerIP;
@@ -53,8 +53,10 @@ public class IPPool {
         this.gatewayIP = gatewayIP;
     }
     
-    public void setIpPoolRange(int start, int end) {
+    public void setIpPoolRange(int start, int end, int subNetwork) {
         availableIPs.clear();
+        
+        this.networkPrefix = "192.168." + subNetwork + ".";
         
         for (int i = start; i <= end; i++) {
             availableIPs.add(networkPrefix + i);
@@ -67,7 +69,8 @@ public class IPPool {
     	return availableIPs;
     }
     
-    public ErrorMessages checkIP(int startIP, int endIP) {
+    public ErrorMessages checkIP(int startIP, int endIP, int subNetwork) {
+    	if (subNetwork > 254 || subNetwork < 0) return ErrorMessages.INVALID_SUB_NETWORK_OUT_OF_BOUNDS;
         if (startIP == 0) return ErrorMessages.INVALID_IP_START_ZERO;
         if (startIP == 1) return ErrorMessages.INVALID_IP_START_ONE;
         if (startIP > 254 || startIP < 0) return ErrorMessages.INVALID_IP_OUT_OF_BOUNDS;

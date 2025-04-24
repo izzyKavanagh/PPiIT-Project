@@ -36,7 +36,7 @@ public class NetworkSimulationRunner {
 		
 		topology.updateAdjacencyList();
      		
-        int choice;
+        int mode;
         
         do{
         	
@@ -46,15 +46,15 @@ public class NetworkSimulationRunner {
             System.out.println("2. Guided Mode");
             System.out.println("3. Close Simulation");
             System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
+            mode = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
-            switch (choice) {
+            switch (mode) {
                 case 1:
-                	FreeModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                	FreeModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers, mode);
                     break;
                 case 2:
-                	GuidedModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers);;
+                	GuidedModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers, mode);
                 	break;
                 case 3:
                 	break; 
@@ -62,7 +62,7 @@ public class NetworkSimulationRunner {
                 	break;
             }
             
-        }while(choice !=3);
+        }while(mode !=3);
 		
 		scanner.close();
     }

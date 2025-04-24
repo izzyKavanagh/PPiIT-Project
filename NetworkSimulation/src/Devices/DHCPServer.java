@@ -27,7 +27,7 @@ public class DHCPServer extends Device{
 	}
 	
 	public void configureIpPool(Scanner scanner) {
-        int startIP, endIP;
+        int startIP, endIP, subNetwork;
         String poolName, gatewayIP;
         ErrorMessages error;
         
@@ -48,13 +48,17 @@ public class DHCPServer extends Device{
         newPool.setDnsServerIP(dnsIP);
         
         do {
+        	
+        	System.out.print("Enter the sub network of the IP pool: ");
+            subNetwork = validateScannerInput(scanner);
+            
             System.out.print("Enter the start of the IP pool: ");
             startIP = validateScannerInput(scanner);
                  
             System.out.print("Enter the end of the IP pool: ");
             endIP = validateScannerInput(scanner);
             
-            error = newPool.checkIP(startIP,endIP);
+            error = newPool.checkIP(startIP,endIP,subNetwork);
             
             if (error == null) 
             {
@@ -64,7 +68,7 @@ public class DHCPServer extends Device{
              
         }while(error != null);
         
-        newPool.setIpPoolRange(startIP, endIP);
+        newPool.setIpPoolRange(startIP, endIP, subNetwork); 
         
         ipPools.put(gatewayIP,newPool);
 		

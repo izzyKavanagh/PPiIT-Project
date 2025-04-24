@@ -21,40 +21,41 @@ public class Computer extends Device{
 	public void sendMessage(String destinationIP, String message, Topology topology) {
 		String destinationMac = lookupMac(destinationIP);
 		
-		System.out.println("Destination IP: " + destinationIP);
+		System.out.println("\nDestination IP: " + destinationIP);
 	    if (destinationMac == null) 
 	    {
-	        System.out.println(name + " doesn’t know MAC for " + destinationIP + ". Sending ARP request...");
+	        System.out.println("\n" + name + " doesn’t know MAC for " + destinationIP + ". Sending ARP request...");
 	        arpRequest(destinationIP, topology);
 	        destinationMac = lookupMac(destinationIP);
 	        
 	        if (destinationMac == null) 
 	        {
-	            System.out.println("Could not resolve MAC. Message dropped.");
+	            System.out.println("\nERROR: Could not resolve MAC. Message dropped.");
 	            return;
 	        }
 	        
-	        System.out.println(name + " sending message to " + destinationIP + " (" + destinationMac + "): " + message);
+	        System.out.println("\n" + name + " sending message to " + destinationIP + " (" + destinationMac + "): " + message);
 	        
 	        Map<String, Device> registeredDevices = topology.getRegisteredDevices();
 	        
 	        for (Device device : registeredDevices.values()) {
-	            if (ipAddress.equals(device.getIpAddress())) {
+	            if (destinationIP.equals(device.getIpAddress())) {
 	            	if (device instanceof Computer) 
 	            	{
-	    	            ((Computer) device).receiveMessage(this.getIpAddress(), message);
+	            		Computer destinationComputer = (Computer) device;
+	            		destinationComputer.receiveMessage(this.ipAddress, message, topology, destinationComputer);
 	    	        } 
 	            	else 
 	    	        {
-	    	            System.out.println("Destination device not found or not a Computer.");
+	    	            System.out.println("\nDestination device not found or not a Computer.");
 	    	        }
 	            }
 	        }
 	    }
 	}
 
-	private void receiveMessage(String sourceIP, String message) {
-		System.out.println(name + " received message from " + sourceIP + ": " + message);
+	private void receiveMessage(String ipAddress, String message, Topology topology, Computer pc) {
+		System.out.println("\n" + pc.getName() + " received message from " + ipAddress + ": " + message);
 		
 	}
 
@@ -63,10 +64,9 @@ public class Computer extends Device{
 		Map<String, Device> registeredDevices = topology.getRegisteredDevices();
 
 	    for (Device connectedDevice : registeredDevices.values()) {
-	    	//System.out.println("Device: " + connectedDevice);
 	        if (connectedDevice.getIpAddress() != null && connectedDevice.getIpAddress().equals(destinationIP)) {
 	            addArpEntry(destinationIP, connectedDevice.getMacAddress());
-	            System.out.println("Received ARP reply: " + connectedDevice.getMacAddress());
+	            System.out.println("\nReceived ARP reply: " + connectedDevice.getMacAddress());
 	            return;
 	        }
 	    }
@@ -78,7 +78,7 @@ public class Computer extends Device{
 	    
 	    if (!(device1 instanceof DNSServer)) 
 	    {
-	    	System.out.println("ERROR: The specified DNS server IP does not belong to a DNS server device");
+	    	System.out.println("\nERROR: The specified DNS server IP does not belong to a DNS server device");
 	    	return;
 	    } 
 	    
@@ -89,7 +89,7 @@ public class Computer extends Device{
 	    
         if (!(device2 instanceof WebServer)) 
 	    {
-	    	System.out.println("ERROR: The specified Web server IP does not belong to a Web server device");
+	    	System.out.println("\nERROR: The specified Web server IP does not belong to a Web server device");
 	    	return;
 	    } 
         

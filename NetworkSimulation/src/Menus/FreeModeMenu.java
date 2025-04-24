@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.List;
+import java.util.List; 
 import java.util.Scanner;
 import Devices.Computer;
 import Devices.DHCPServer;
@@ -14,7 +14,7 @@ import Network.Topology;
 public class FreeModeMenu {
 
 	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
-			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers) 
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers, int mode) 
 	{
 		int choice;
         
@@ -28,22 +28,22 @@ public class FreeModeMenu {
                 	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
                     break;
                 case 2:
-                	PCMenu.managePCs(scanner, computers, manager);
+                	PCMenu.managePCs(scanner, computers, manager, mode);
                 	break;
                 case 3:
-                	SwitchMenu.manageSwitches(switches, scanner, topology);
+                	SwitchMenu.manageSwitches(switches, scanner, topology, mode);
                 	break; 
                 case 4:
-                	RouterMenu.manageRouters(routers, scanner, topology); 
+                	RouterMenu.manageRouters(routers, scanner, topology, mode); 
                 	break;
                 case 5:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
                 	break;
                 case 6:
-                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
+                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology, mode);
                 	break;
                 case 7:
-                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
                 	break;
                 case 8:
                 	TopologyMenu.addConnection(scanner,topology);

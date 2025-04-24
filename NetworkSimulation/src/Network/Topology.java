@@ -90,9 +90,14 @@ public class Topology {
 	    
 	    updateAdjacencyList();
 	    
-	    if (source instanceof Computer) 
+	    if (source instanceof Computer ) 
 	    {
 		    manager.useStaticIpAllocation(source);
+	    }
+	    
+	    if(target instanceof Computer)
+	    {
+	    	manager.useStaticIpAllocation(target);
 	    }
 	    
 	    System.out.println(target.getName() + " connected to " + source.getName() + " on Port " + availableSourcePort);

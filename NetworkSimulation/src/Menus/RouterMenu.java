@@ -8,7 +8,7 @@ import Network.Topology;
 
 public class RouterMenu {
 	
-	public static void manageRouters(List<Router> routers, Scanner scanner, Topology topology) { 
+	public static void manageRouters(List<Router> routers, Scanner scanner, Topology topology, int mode) { 
 		if (routers.isEmpty()) {
 	        System.out.println("No routers available in the network.");
 	        return;
@@ -29,12 +29,10 @@ public class RouterMenu {
 
 		    Router selectedRouter = routers.get(routerChoice);
 		    
-		    configureRouter(selectedRouter, scanner, topology);
+		    configureRouter(selectedRouter, scanner, topology, mode);
 	}
 	
-	private static void configureRouter(Router router, Scanner scanner, Topology topology) {
-		
-		System.out.println("\nManaging " + router.getName());
+	private static void configureRouter(Router router, Scanner scanner, Topology topology, int mode) {
 		
 		int choice;
 	    do {
@@ -50,7 +48,7 @@ public class RouterMenu {
 	        System.out.print("Enter your choice: ");
 
 	        choice = scanner.nextInt();
-	        scanner.nextLine(); // Consume newline
+	        scanner.nextLine();
 
 	        switch (choice) {
 	            case 1:
@@ -102,7 +100,7 @@ public class RouterMenu {
 	                System.out.println("Invalid choice.");
 	        }
 
-	    } while (choice != 8);
+	    } while (choice != 8 && mode != 2);
 		
 	}
 	

@@ -1,16 +1,15 @@
 package Menus;
 
-import java.util.ArrayList;   
+import java.util.ArrayList;    
 import java.util.List;
 import java.util.Scanner;
-
 import Devices.Layer2Switch;
 import Devices.Layer3Switch;
 import Devices.Switch;
 import Network.Topology;
 
 public class SwitchMenu {
-	public static void manageSwitches(List<Switch> switches, Scanner scanner, Topology topology) {
+	public static void manageSwitches(List<Switch> switches, Scanner scanner, Topology topology, int mode) {
 	    if (switches.isEmpty()) {
 	        System.out.println("No switches available in the network.");
 	        return;
@@ -32,13 +31,13 @@ public class SwitchMenu {
 	    Switch selectedSwitch = switches.get(switchChoice);
 
 	    if (selectedSwitch instanceof Layer2Switch) {
-	    	manageVLANS((Layer2Switch) selectedSwitch, scanner, topology);
+	    	manageVLANS((Layer2Switch) selectedSwitch, scanner, topology, mode);
 	    } else {
-	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner, topology);
+	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner, topology, mode);
 	    }
 	}
 	
-	private static void manageVLANS(Switch selectedSwitch, Scanner scanner, Topology topology) {
+	private static void manageVLANS(Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
 		int choice;
 		
 	    do {
@@ -113,18 +112,18 @@ public class SwitchMenu {
             default:
                 System.out.println("Invalid choice.");
 	        }
-	    } while (choice != 6);
+	    } while (choice != 6 && mode != 2);
 		
 	}
 
-	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner, Topology topology) {
+	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
 		int choice;
 
 	    do {
 	        System.out.println("\nManaging Layer 3 Switch: " + selectedSwitch.getName());
 	        System.out.println("1. Configure Switch IP Address");
 	        System.out.println("2. Manage VLANs");
-	        System.out.println("3. Manage VLAN Interfaces (SVIs)");
+	        System.out.println("3. Configure VLAN Interfaces (SVIs)");
 	        System.out.println("4. Configure IP Helper Address");
 	        System.out.println("5. View VLAN Interfaces (SVIs)");
 	        System.out.println("6. View port connections");
@@ -137,7 +136,7 @@ public class SwitchMenu {
 	        		configureSwitchIpAddress(scanner, selectedSwitch);
 	        		break;
 	            case 2:
-	            	manageVLANS(selectedSwitch, scanner, topology); // Layer 3 inherits Layer 2 capabilities
+	            	manageVLANS(selectedSwitch, scanner, topology, mode); // Layer 3 inherits Layer 2 capabilities
 	                break;
 	            case 3:
 	                System.out.print("Enter VLAN ID for the interface: ");
@@ -163,7 +162,7 @@ public class SwitchMenu {
 	            default:
 	                System.out.println("Invalid choice.");
 	        }
-	    } while (choice != 5);
+	    } while (choice != 5 && mode != 2);
 		
 	}
 	
