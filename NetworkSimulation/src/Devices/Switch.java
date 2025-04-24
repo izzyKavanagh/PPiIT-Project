@@ -5,13 +5,24 @@ import java.util.Map;
 
 import Network.Topology;
 
-// simulates a layer 2 unmanaged switch
+/**
+ * Abstract base class representing a switch with VLAN support
+ * Provides VLAN configuration and port assignment tracking
+ */
 public abstract class Switch extends Device{
 	
 	private final int totalPorts = 24; //number of ports the switch has
-	private Map<String, Integer> vlanPortMap;
+	
+	private Map<String, Integer> vlanPortMap; // the port-to-VLAN map
 	private Map<Integer, String> vlanTable; // VLAN table
 
+	/**
+     * Constructs a Switch with a given name and MAC address.
+     * Initializes all ports to default VLAN 1.
+     *
+     * @param name       the name of the switch
+     * @param macAddress the MAC address of the switch
+     */
     public Switch(String name, String macAddress) {
         super(name, macAddress);
         this.vlanPortMap = new HashMap<>();
@@ -22,32 +33,75 @@ public abstract class Switch extends Device{
         }
     }
     
+    /**
+     * Gets the VLAN ID assigned to each port.
+     *
+     * @return the port-to-VLAN map
+     */
     public void setVlanPortMap(Map<String, Integer> vlanPortMap) {
 		this.vlanPortMap = vlanPortMap;
 	}
     
+    /**
+     * Sets the VLAN port mapping.
+     *
+     * @param vlanPortMap - the port-to-VLAN map
+     */
     public Map<String, Integer> getVlanPortMap() {
 		return vlanPortMap;
 	}
 
+    /**
+     * Sets the VLAN table.
+     *
+     * @param vlanTable the VLAN ID-name map
+     */
 	public void setVlanTable(Map<Integer, String> vlanTable) {
 		this.vlanTable = vlanTable;
 	}
 	
+	/**
+     * Gets the VLAN table with VLAN ID to VLAN name.
+     *
+     * @return the VLAN table
+     */
 	public Map<Integer, String> getVlanTable() {
 		return vlanTable;
 	}
 
+	/**
+     * Gets the total number of physical ports on the switch.
+     *
+     * @return number of ports
+     */
 	@Override 
 	public int getTotalPorts()
 	{
 		return totalPorts;
 	}
     
+	/**
+     * Abstract method to assign a port to a specific VLAN
+     * Should be implemented by concrete switch types
+     *
+     * @param port - the port to assign (e.g., "Fa0/1")
+     * @param vlanId - the VLAN ID
+     * @param topology - the network topology reference
+     */
     public abstract void assignPortToVLAN(String port, int vlanId, Topology topology);
     	
+    /**
+     * Abstract method to configure a VLAN.
+     * Should be implemented by concrete switch types.
+     *
+     * @param vlanId - the VLAN ID
+     * @param vlanName - the name of the VLAN
+     */
     public abstract void configureVLAN(int vlanId, String vlanName);
     
+    /**
+     * Displays a table of port-to-VLAN assignments.
+     */
     public void printPortVLANAssignments() {
 		System.out.println("\nPort to VLAN Assignments on " + name + ":");
         System.out.println("+--------+--------+");
@@ -60,6 +114,9 @@ public abstract class Switch extends Device{
 		
 	}
     
+    /**
+     * Displays the configured VLAN table.
+     */
     public void printVLANs(){
     	System.out.println("\nVLAN Table of " + name + ":");
         if (vlanTable.isEmpty()) {

@@ -1,0 +1,112 @@
+package Devices;
+
+import java.util.HashMap;  
+import java.util.Map;
+
+import Network.Topology;
+
+/**
+ * Abstract base class representing a switch with VLAN support
+ * Provides VLAN configuration and port assignment tracking
+ */
+public abstract class Switch extends Device{
+	
+	private final int totalPorts = 24; //number of ports the switch has
+	
+	private Map<String, Integer> vlanPortMap; // the port-to-VLAN map
+	private Map<Integer, String> vlanTable; // VLAN table
+
+	/**
+     * Constructs a Switch with a given name and MAC address.
+     * Initializes all ports to default VLAN 1.
+     *
+     * @param name       the name of the switch
+     * @param macAddress the MAC address of the switch
+     */
+    public Switch(String name, String macAddress) {
+        super(name, macAddress);
+        this.vlanPortMap = new HashMap<>();
+        this.vlanTable = new HashMap<>();
+
+        for (int i = 0; i < getTotalPorts(); i++) {
+        	vlanPortMap.put("Fa0/" + i, 1);  // Default all ports to VLAN 1
+        }
+    }
+    
+    /**
+     * Gets the VLAN ID assigned to each port.
+     *
+     * @return the port-to-VLAN map
+     */
+    public void setVlanPortMap(Map<String, Integer> vlanPortMap) {
+		this.vlanPortMap = vlanPortMap;
+	}
+    
+    /**
+     * Sets the VLAN port mapping.
+     *
+     * @param vlanPortMap - the port-to-VLAN map
+     */
+    public Map<String, Integer> getVlanPortMap() {
+		return vlanPortMap;
+	}
+
+    /**
+     * Sets the VLAN table.
+     *
+     * @param vlanTable the VLAN ID-name map
+     */
+	public void setVlanTable(Map<Integer, String> vlanTable) {
+		this.vlanTable = vlanTable;
+	}
+	
+	/**
+     * Gets the VLAN table with VLAN ID to VLAN name.
+     *
+     * @return the VLAN table
+     */
+	public Map<Integer, String> getVlanTable() {
+		return vlanTable;
+	}
+
+	@Override 
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+    
+    public abstract void assignPortToVLAN(String port, int vlanId, Topology topology);
+    	
+    public abstract void configureVLAN(int vlanId, String vlanName);
+    
+    public void printPortVLANAssignments() {
+		System.out.println("\nPort to VLAN Assignments on " + name + ":");
+        System.out.println("+--------+--------+");
+        System.out.println("| Port   | VLAN   |");
+        System.out.println("+--------+--------+");
+        for (Map.Entry<String, Integer> entry : getVlanPortMap().entrySet()) {
+            System.out.printf("| %-6s | %-6d |\n", entry.getKey(), entry.getValue());
+        }
+        System.out.println("+--------+--------+\n");
+		
+	}
+    
+    public void printVLANs(){
+    	System.out.println("\nVLAN Table of " + name + ":");
+        if (vlanTable.isEmpty()) {
+            System.out.println("No VLANs configured.");
+            return;
+        }
+
+        System.out.println("+-------+------------+");
+        System.out.println("| VLAN  | Name       |");
+        System.out.println("+-------+------------+");
+
+        for (Map.Entry<Integer, String> entry : vlanTable.entrySet()) {
+            System.out.printf("| %-5d | %-10s |\n", entry.getKey(), entry.getValue());
+        }
+
+        System.out.println("+-------+------------+\n");
+    }
+    
+}

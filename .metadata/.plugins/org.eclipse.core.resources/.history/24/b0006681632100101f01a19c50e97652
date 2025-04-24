@@ -1,0 +1,48 @@
+package DeviceComponents;
+
+/**
+ * Represents a VLAN interface on a network device.
+ * Stores an IP address and an optional IP helper address (used for forwarding DHCP requests)
+ */
+public class VLANInterface {
+	
+	private String ipAddress;
+    private String helperAddress;
+
+    /**
+     * Constructs a VLANInterface with the specified IP address.
+     *
+     * @param ipAddress the IP address to assign to the VLAN interface
+     */
+    public VLANInterface(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    /**
+     * Sets the IP helper address for this VLAN interface.
+     * The helper address is typically used to forward DHCP or broadcast requests to another network.
+     *
+     * @param helperAddress the IP helper address to configure
+     */
+    public void setHelperAddress(String helperAddress) {
+        this.helperAddress = helperAddress;
+    }
+
+    /**
+     * Gets the IP helper address configured for this VLAN interface.
+     *
+     * @return the helper address, or {@code null} if not set
+     */
+    public String getHelperAddress() {
+        return helperAddress;
+    }
+    
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
+    @Override
+    public String toString() {
+        return "IP: " + ipAddress + ", Helper: " + helperAddress;
+    }
+}

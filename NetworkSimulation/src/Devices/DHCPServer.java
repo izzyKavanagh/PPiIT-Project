@@ -8,24 +8,49 @@ import java.util.Set;
 import DeviceComponents.IPPool;
 import Network.ErrorMessages;
 
-// Class to simulate DHCP Server 
+/**
+ * Represents a DHCP server in the network simulation
+ * Responsible for configuring IP pools, assigning IP addresses to devices,
+ * and managing the availability of IP addresses within defined pools.
+ */
 public class DHCPServer extends Device{
 
-	public DHCPServer(String name, String macAddress) {
-		super(name, macAddress);
-	}
-
+	// Stores the IP allocations per MAC address
 	private Map<String, String> ipAllocations = new HashMap<>();
+	
+	// Stores IP pools indexed by their gateway IPs
 	private Map<String, IPPool> ipPools = new HashMap<>();
+	
 	private final int totalPorts = 1;
 	private int nextPoolNumber = 0;
 	
+	/**
+     * Constructs a DHCPServer with the specified name and MAC address.
+     *
+     * @param name - the name of the DHCP server
+     * @param macAddress - the MAC address of the server
+     */
+	public DHCPServer(String name, String macAddress) {
+		super(name, macAddress);
+	}
+	
+	/**
+     * Returns the number of ports on the DHCP server
+     *
+     * @return the number of total ports (always 1 for DHCP server)
+     */
 	@Override
 	public int getTotalPorts()
 	{
 		return totalPorts;
 	}
 	
+	/**
+     * Allows user input to configure a new IP pool via the console
+     * Includes validation of sub-net and range values
+     *
+     * @param scanner - a Scanner instance to read user input
+     */
 	public void configureIpPool(Scanner scanner) {
         int startIP, endIP, subNetwork;
         String poolName, gatewayIP;
@@ -40,13 +65,14 @@ public class DHCPServer extends Device{
         System.out.print("Enter the DNS server IP for the pool (leave blank if none): ");
         String dnsIP = scanner.nextLine();
         
-        // Auto-assign pool number
+        // assign a unique pool number automatically
         int assignedPoolNumber = nextPoolNumber++;
         
         IPPool newPool = new IPPool(poolName, assignedPoolNumber, gatewayIP);
         
         newPool.setDnsServerIP(dnsIP);
         
+        // input and validate IP range
         do {
         	
         	System.out.print("Enter the sub network of the IP pool: ");
@@ -62,7 +88,7 @@ public class DHCPServer extends Device{
             
             if (error == null) 
             {
-                break;  // Exit loop if no errors
+                break;  // exit loop if no errors
             }
             System.out.println("ERROR: " + error.getMessage());
              
@@ -75,11 +101,17 @@ public class DHCPServer extends Device{
 		System.out.println("New IP pool " + poolName + " (Pool #" + assignedPoolNumber + ") created successfully!");
     }
 	
-	// Method to assign an IP to a device
-	// edit method so that available IPs for that pool are retrieved based on pool name
+	/**
+     * Assigns an available IP address from IP pool based on gateway IP
+     *
+     * @param gatewayIP - the gateway IP identifying the IP pool
+     * @param macAddress - the MAC address of the requesting device
+     * @param device - the device to assign the IP to
+     * @return the assigned IP address, or null if unavailable
+     */
     public String assignIp(String gatewayIP, String macAddress, Device device) {
     	
-    	//retrieve correct IP pool from ipPools Map
+    	// retrieve correct IP pool from ipPools Map based on gateway IP
     	IPPool pool = ipPools.get(gatewayIP);
     	
     	if (pool == null) {
@@ -90,6 +122,7 @@ public class DHCPServer extends Device{
     	//get available IPs from the pool
     	Set<String> availableIPs = pool.getAvailableIPs();
     	
+    	// Return previously assigned IP if it exists
         if (ipAllocations.containsKey(macAddress)) {
             return ipAllocations.get(macAddress);
         }
@@ -99,15 +132,20 @@ public class DHCPServer extends Device{
             return null;
         }
 
+        // Assign the first available IP
         String assignedIp = availableIPs.iterator().next();
         availableIPs.remove(assignedIp);
         ipAllocations.put(macAddress, assignedIp);
         
+        // Also assign DNS server IP from pool to the device
         device.setDnsServerIP(pool.getDnsServerIP());
 
         return assignedIp;
     }
     
+    /**
+     * Prints all configured IP pools and their available IPs
+     */
 	public void printPools()
 	{
 		if (ipPools.isEmpty()) {
@@ -125,11 +163,22 @@ public class DHCPServer extends Device{
         }
 	}
 	
+	 /**
+     * Checks whether a pool with the given name exists
+     *
+     * @param poolName - the name of the pool to check
+     * @return true if the pool exists, false otherwise
+     */
 	public boolean poolExists(String poolName) {
 	    return ipPools.containsKey(poolName);
 	}
 	
-	
+	/**
+     * Validates that the next input from the scanner is an integer
+     *
+     * @param scanner - the scanner used to read input
+     * @return the validated integer
+     */
 	private int validateScannerInput(Scanner scanner) {
         while (!scanner.hasNextInt()) {
             System.out.print("Invalid input! Please enter a valid number: ");
@@ -138,6 +187,11 @@ public class DHCPServer extends Device{
         return scanner.nextInt();
     }
 
+	/**
+     * Returns the current map of all configured IP pools.
+     *
+     * @return map of gateway IPs to their IPPool objects
+     */
 	public Map<String, IPPool> getPools() {
 		return ipPools;
 	}

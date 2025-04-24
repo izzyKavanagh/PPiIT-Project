@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.ArrayList;    
+import java.util.ArrayList;     
 import java.util.List;
 import java.util.Scanner;
 import Devices.Layer2Switch;

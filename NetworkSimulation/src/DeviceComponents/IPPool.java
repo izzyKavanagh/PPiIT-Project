@@ -5,6 +5,10 @@ import java.util.Set;
 
 import Network.ErrorMessages;
 
+/**
+ * Represents a pool of IP addresses that can be assigned to devices.
+ * Manages available IPs within a subnet, along with related metadata like gateway and DNS server.
+ */
 public class IPPool {
 
 	private Set<String> availableIPs = new HashSet<>();
@@ -14,45 +18,99 @@ public class IPPool {
     private String dnsServerIP;
     private int poolNumber;
     
+    /**
+     * Gets the name of the IP pool.
+     *
+     * @return the pool name
+     */
     public String getPoolName() {
 		return poolName;
 	}
 
+    /**
+     * Sets the name of the IP pool.
+     *
+     * @param poolName the name to assign to the IP pool
+     */
 	public void setPoolName(String poolName) {
 		this.poolName = poolName;
 	}
 
+	/**
+     * Gets the configured gateway IP for the pool.
+     *
+     * @return the gateway IP address
+     */
 	public String getGatewayIP() {
 		return gatewayIP;
 	}
 
+	/**
+     * Sets the gateway IP address for the pool.
+     *
+     * @param gatewayIP the IP address to use as gateway
+     */
 	public void setGatewayIP(String gatewayIP) {
 		this.gatewayIP = gatewayIP;
 	}
 	
+	/**
+     * Gets the configured DNS server IP.
+     *
+     * @return the DNS server IP address
+     */
 	public String getDnsServerIP() {
 	    return dnsServerIP;
 	}
 
+	/**
+     * Sets the DNS server IP address.
+     *
+     * @param dnsServerIP the IP address of the DNS server
+     */
 	public void setDnsServerIP(String dnsServerIP) {
 	    this.dnsServerIP = dnsServerIP;
 	}
 
+	/**
+     * Gets the unique identifier number for the pool.
+     *
+     * @return the pool number
+     */
 	public int getPoolNumber() {
 		return poolNumber;
 	}
 
+	/**
+     * Sets the identifier number for the pool.
+     *
+     * @param poolNumber - the number to assign to the pool
+     */
 	public void setPoolNumber(int poolNumber) {
 		this.poolNumber = poolNumber;
 	}
 
-	// Method to set an IP pool range 
+	/**
+     * Constructs an IPPool instance with the given parameters
+     *
+     * @param poolName - the name of the IP pool
+     * @param poolNumber - the pool's identifier number
+     * @param gatewayIP - the default gateway IP for the pool
+     */
     public IPPool(String poolName, int poolNumber, String gatewayIP) {
     	this.poolName = poolName;
         this.poolNumber = poolNumber;
         this.gatewayIP = gatewayIP;
     }
     
+    /**
+     * Sets the range of IP addresses available in the pool.
+     * Also defines the subnet via the subNetwork parameter.
+     *
+     * @param start - the starting IP suffix (e.g., 10 for 192.168.x.10)
+     * @param end - the ending IP suffix (e.g., 50 for 192.168.x.50)
+     * @param subNetwork - the subnet number (e.g., 1 for 192.168.1.x)
+     */
     public void setIpPoolRange(int start, int end, int subNetwork) {
         availableIPs.clear();
         
@@ -64,11 +122,24 @@ public class IPPool {
         System.out.println("IP Pool set: " + networkPrefix + start + " to " + networkPrefix + end);;
     }
     
+    /**
+     * Retrieves the set of currently available IP addresses.
+     *
+     * @return a set of IP addresses available for assignment
+     */
     public Set<String> getAvailableIPs()
     {
     	return availableIPs;
     }
     
+    /**
+     * Validates the input IP range and subnet values & returns appropriate errors
+     *
+     * @param startIP - the starting IP suffix
+     * @param endIP - the ending IP suffix
+     * @param subNetwork - the subnet number
+     * @return an {@link ErrorMessages} enum describing any issues, or {@code null} if valid
+     */
     public ErrorMessages checkIP(int startIP, int endIP, int subNetwork) {
     	if (subNetwork > 254 || subNetwork < 0) return ErrorMessages.INVALID_SUB_NETWORK_OUT_OF_BOUNDS;
         if (startIP == 0) return ErrorMessages.INVALID_IP_START_ZERO;

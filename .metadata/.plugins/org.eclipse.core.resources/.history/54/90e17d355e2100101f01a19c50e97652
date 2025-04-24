@@ -1,0 +1,150 @@
+package Devices;
+
+import java.util.HashMap;  
+import java.util.Map;
+import java.util.Scanner;
+
+import DeviceComponents.VLANInterface;
+import Network.DeviceWithCLI;
+import Network.Topology;
+
+/**
+ * Represents a Layer 3 Switch capable of both switching and basic routing.
+ * Supports VLAN configuration and IP helper setup for DHCP relay functions.
+ */
+public class Layer3Switch extends Switch implements DeviceWithCLI{
+	
+	private String ipAddress;
+	private Map<Integer, VLANInterface> vlanInterfaces = new HashMap<>();
+		
+	/**
+     * Constructs a Layer 3 Switch with a specified name and MAC address.
+     *
+     * @param name - the name of the switch
+     * @param macAddress - the MAC address of the switch
+     */
+	public Layer3Switch(String name, String macAddress) {
+		super(name, macAddress);
+	}
+
+	/**
+     * Returns the IP address of the switch.
+     *
+     * @return the IP address
+     */
+    public String getIpAddress() {
+        return ipAddress;
+    }
+	
+    /**
+     * Configures a VLAN with an ID and name.
+     *
+     * @param vlanNumber - the VLAN ID
+     * @param vlanName - the name of the VLAN
+     */
+    @Override
+	public void configureVLAN(int vlanNumber, String vlanName) {
+		getVlanTable().put(vlanNumber, vlanName);
+        System.out.println("VLAN " + vlanNumber + " (" + vlanName + ") configured on Layer 3 Switch: " + name);
+	}
+
+    /**
+     * Assigns a port to a VLAN and updates the connected device’s VLAN
+     *
+     * @param port - the port identifier
+     * @param vlanId - the VLAN ID to assign
+     * @param topology - the network topology to look up connected devices
+     */
+	@Override
+	public void assignPortToVLAN(String port, int vlanId, Topology topology) {
+		getVlanPortMap().put(port, vlanId);
+	    System.out.println("Port " + port + " assigned to VLAN " + vlanId + " on " + name);
+	    
+	    Map<String, Map<String, Device>> fullTopology = topology.getTopology();
+	    Map<String, Device> portMap = fullTopology.get(this.name);
+
+	    if (portMap != null) {
+	        Device connectedDevice = portMap.get(port);
+	        if (connectedDevice != null) {
+	            connectedDevice.setVlanId(vlanId);
+	            System.out.println("Device " + connectedDevice.getName() + " now assigned to VLAN " + vlanId);
+	        }
+	    }
+	}
+	
+	
+	/**
+     * Configures a VLAN interface with a specific IP address
+     *
+     * @param vlanId - the VLAN ID to configure
+     * @param ipAddress - the IP address for the VLAN interface
+     */
+	public void configureVLANInterface(int vlanId, String ipAddress) {
+	    VLANInterface vlanInterface = new VLANInterface(ipAddress);
+	    vlanInterfaces.put(vlanId, vlanInterface);
+	    System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress);
+	}
+
+	 /**
+     * Displays all configured VLAN interfaces and their properties.
+     */
+	public void showVLANInterfaces() {
+	    if (vlanInterfaces.isEmpty()) {
+	        System.out.println("No VLAN interfaces configured.");
+	    } else {
+	        System.out.println("\nVLAN Interfaces:");
+	        for (Map.Entry<Integer, VLANInterface> entry : vlanInterfaces.entrySet()) {
+	            System.out.println("VLAN " + entry.getKey() + " - " + entry.getValue());
+	        }
+	    }
+	}
+	
+	/**
+     * Returns a map of configured VLAN interfaces.
+     *
+     * @return map of VLAN interfaces keyed by VLAN ID
+     */
+	public Map<Integer, VLANInterface> getVLANInterfaces()
+	{
+		return vlanInterfaces;
+	}
+
+	/**
+     * Configures an IP helper address (e.g., for DHCP relay) on a VLAN interface.
+     *
+     * @param vlanId        the VLAN ID on which to configure the helper
+     * @param helperAddress the IP helper address
+     */
+	@Override
+	public void configureIpHelper(int vlanId, String helperAddress) {
+		VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
+		if (vlanInterface != null) {
+			vlanInterface.setHelperAddress(helperAddress);
+		    System.out.println("Added helper address " + helperAddress + " to VLAN " + vlanId);  
+		} 
+		else 
+		{
+			System.out.println("VLAN interface " + vlanId + " not configured.");
+		}
+	}
+
+
+	@Override
+    public void startCLI() {
+    	Scanner sc = new Scanner(System.in);
+        System.out.println("Starting CLI for " + name);
+
+        while (true) {
+            System.out.print("Enter VLAN interface number (or '-1' to quit): ");
+            int vlanId = sc.nextInt();
+            if (vlanId == -1) break;
+
+            System.out.print("Enter IP helper address: ");
+            String helperAddress = sc.nextLine();
+
+            configureIpHelper(vlanId, helperAddress);
+        }
+        sc.close();
+    }
+
+}

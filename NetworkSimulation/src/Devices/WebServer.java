@@ -1,25 +1,45 @@
 package Devices;
 
+/**
+ * Represents a basic Web Server device that can serve content to users
+ */
 public class WebServer extends Device{
 
 	private String websiteContent;
 	private final int totalPorts = 1;
 
+	/**
+     * Constructs a WebServer with a name and MAC address.
+     * 
+     * @param name - the server name
+     * @param macAddress - the MAC address
+     */
     public WebServer(String name, String macAddress) {
         super(name, macAddress);
         this.websiteContent = "";
     }
     
+    /**
+     * Returns the number of ports (always 1 for a basic web server).
+     */
     @Override
    	public int getTotalPorts()
    	{
    		return totalPorts;
    	}
     
+    /**
+     * Sets the website content to be served.
+     *
+     * @param websiteContent - the HTML/text content
+     */
     public void setWebsiteContent(String websiteContent) {
         this.websiteContent = websiteContent;
     }
 
+    /**
+     * Simulates serving a website by printing a formatted box around the content.
+     */
     public void serveWebsite() {
     	String[] lines = websiteContent.split("\n");
 
@@ -33,11 +53,11 @@ public class WebServer extends Device{
             maxLineLength = Math.max(maxLineLength, line.length());
         }
         int contentWidth = maxLineLength + horizontalPadding * 2;
-        String horizontalBorder = "+" + "-".repeat(contentWidth + 2) + "+"; // +2 for space after each |
+        String horizontalBorder = "+" + "-".repeat(contentWidth + 2) + "+"; 
 
-        System.out.println();
-        System.out.println();
         // Print header
+        System.out.println();
+        System.out.println();
         System.out.println(horizontalBorder);
         String title = " " + this.getName() + " - Web Page ";
         int titlePadding = (contentWidth - title.length()) / 2;

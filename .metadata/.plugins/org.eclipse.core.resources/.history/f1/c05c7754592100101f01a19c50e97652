@@ -1,0 +1,62 @@
+package Devices;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+/**
+ * Represents a DNS server in the network simulation.
+ * Responsible for resolving domain names to IP addresses and managing DNS records.
+ */
+public class DNSServer extends Device{
+	
+    // Stores DNS records where the key is the domain name and the value is the corresponding IP address
+	private Map<String, String> dnsRecords;
+	
+	private final int totalPorts = 1;
+	
+	/**
+     * Constructs a DNS server with the given name and MAC address.
+     *
+     * @param name - the name of the DNS server
+     * @param macAddress - the MAC address of the server
+     */
+    public DNSServer(String name, String macAddress) {
+        super(name, macAddress);
+        dnsRecords = new HashMap<>();
+    }
+    
+    /**
+     * Returns the number of ports available on this DNS server.
+     *
+     * @return the number of ports (always 1)
+     */
+    @Override
+	public int getTotalPorts()
+	{
+		return totalPorts;
+	}
+
+    public String resolveDomain(String domainName) {
+        return dnsRecords.get(domainName);
+    }
+
+	public void printDnsRecords() {
+		System.out.println("\nDNS Records:");
+        for (Map.Entry<String, String> entry : dnsRecords.entrySet()) 
+        {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+	}
+	
+	public void addDnsRecord(Scanner scanner, DNSServer dnsServer) {
+        System.out.println("Enter domain name:");
+        String domainName = scanner.nextLine();
+        
+        System.out.println("Enter IP address of web server domain is hosted on:");
+        String webServerIp = scanner.nextLine();
+
+        dnsRecords.put(domainName, webServerIp);
+        System.out.println("Record added: " + domainName + " -> " + webServerIp);
+    }
+}

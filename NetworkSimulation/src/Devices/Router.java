@@ -7,11 +7,12 @@ import java.util.Scanner;
 import DeviceComponents.VLANInterface;
 import Network.DeviceWithCLI;
 
-// Simulates a Router
+/**
+ * Represents a Router capable of static IP allocation, port IP assignments, and VLAN interface configuration.
+ * Also supports CLI-based IP helper setup and routing table management.
+ */
 public class Router extends Device implements DeviceWithCLI{
 	
-	// HashMap to store routing table (connected devices and their IP addresses)
-    private Map<String, Device> routingTable = new HashMap<>();
     // HashMap to store devices' MAC addresses and associated static IPs 
     private Map<String, String> staticIpAllocations = new HashMap<>();
     
@@ -26,6 +27,12 @@ public class Router extends Device implements DeviceWithCLI{
 	private int nextIP = 2;
 	private String assignedStaticIp;
 	
+	 /**
+     * Constructs a Router with the specified name and MAC address.
+     *
+     * @param name       the name of the router
+     * @param macAddress the MAC address of the router
+     */
 	public Router(String name, String macAddress) {
 		super(name, macAddress);
 		this.portIpAssignments = new HashMap<>();
@@ -35,20 +42,41 @@ public class Router extends Device implements DeviceWithCLI{
         }
 	}
 	
+	/**
+     * Gets the router's main IP address.
+     *
+     * @return the IP address
+     */
 	public String getIpAddress() {
 		return ipAddress;
 	}
 
+	 /**
+     * Sets the main IP address of the router.
+     *
+     * @param ipAddress - the IP address to set
+     */
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
 
+	 /**
+     * Returns the total number of ports available on the router.
+     *
+     * @return the total number of ports
+     */
 	@Override
 	public int getTotalPorts()
 	{
 		return totalPorts;
 	}
 	
+	/**
+     * Assigns a static IP to a device based on its MAC address.
+     *
+     * @param macAddress - the MAC address of the device
+     * @return the assigned IP address
+     */
 	public String assignStaticIP(String macAddress) {
 		
 		assignedStaticIp = staticIpPrefix.concat(Integer.toString(nextIP));
@@ -58,16 +86,30 @@ public class Router extends Device implements DeviceWithCLI{
 	    return assignedStaticIp;
 	}
 	
+	 /**
+     * Assigns an IP address to a specific port.
+     *
+     * @param port - the port identifier (e.g., "Fa0/0")
+     * @param ipAddress - the IP address to assign
+     */
 	public void assignIpToPort(String port, String ipAddress) {
         portIpAssignments.put(port, ipAddress);
         System.out.println("Assigned IP " + ipAddress + " to port " + port);
     }
 	
+	/**
+     * Retrieves the map of port-to-IP assignments.
+     *
+     * @return the port-IP map
+     */
 	public Map<String, String> getPortIpAssignments() 
 	{
 		return portIpAssignments;
 	}
 
+	/**
+     * Displays all current port-to-IP assignments.
+     */
     public void showPortIPs() {
     	if (portIpAssignments.isEmpty()) 
     	{
@@ -88,24 +130,20 @@ public class Router extends Device implements DeviceWithCLI{
         }
     }
     
-    public void updateRoutingTable(Device device) 
-    {
-    	if (device.getIpAddress() == null) 
-        {
-            System.out.println("ERROR: Device does not have an IP address.");
-        } 
-        else 
-        {
-            routingTable.put(device.getIpAddress(), device);
-        }
-    }
-    
+    /**
+     * Updates the routing table with a new device.
+     *
+     * @param device - the device to add
+     */
     public void configureVLANInterface(int vlanId, String ipAddress) {
         VLANInterface vlanInterface = new VLANInterface(ipAddress);
         vlanInterfaces.put(vlanId, vlanInterface);
         System.out.println("Configured interface VLAN " + vlanId + " with IP " + ipAddress);
     }
 
+    /**
+     * Displays all configured VLAN interfaces.
+     */
     public void showVLANInterfaces() {
         if (vlanInterfaces.isEmpty()) {
             System.out.println("No VLAN interfaces configured.");
@@ -117,11 +155,19 @@ public class Router extends Device implements DeviceWithCLI{
         }
     }
     
+    /**
+     * Returns the VLAN interface configurations.
+     *
+     * @return the VLAN interfaces map
+     */
     public Map<Integer, VLANInterface> getVLANInterfaces()
 	{
 		return vlanInterfaces;
 	}
     
+    /**
+     * Displays the current static IP allocations.
+     */
     public void printAllocations() {
         System.out.println("\nCurrent Static IP Allocations:");
         if (staticIpAllocations.isEmpty()) {
@@ -140,6 +186,12 @@ public class Router extends Device implements DeviceWithCLI{
         System.out.println("+----------------+-------------------+\n");
     }
 
+    /**
+     * Configures an IP helper address on a VLAN interface.
+     *
+     * @param vlanId - the VLAN ID
+     * @param helperAddress - the IP helper address
+     */
     @Override
     public void configureIpHelper(int vlanId, String helperAddress) {
     	VLANInterface vlanInterface = vlanInterfaces.get(vlanId);
@@ -151,6 +203,9 @@ public class Router extends Device implements DeviceWithCLI{
         }
     }
 
+    /**
+     * Starts a simple CLI interface for IP helper configuration
+     */
     @Override
     public void startCLI() {
     	Scanner sc = new Scanner(System.in);

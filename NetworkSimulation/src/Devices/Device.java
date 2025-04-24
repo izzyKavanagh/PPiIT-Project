@@ -6,6 +6,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Abstract class representing a generic network device.
+ * Provides common attributes and methods used by all types of devices.
+ */
+
 public abstract class Device {
 
 	protected String name;
@@ -23,30 +28,68 @@ public abstract class Device {
 	private static final Set<String> usedMacs = new HashSet<>();
 	private static Random random = new Random();
 
+	/**
+     * Adds an entry to an ARP table
+     * 
+     * @param ip - The IP address to map.
+     * @param mac - The corresponding MAC address.
+     */
 	public void addArpEntry(String ip, String mac) {
 	    arpTable.put(ip, mac);
 	}
 
+	/**
+     * Looks up a MAC address in the ARP table using the given IP address
+     * 
+     * @param ip - The IP address to look up.
+     * @return The associated MAC address/null if not found.
+     */
 	public String lookupMac(String ip) {
 	    return arpTable.get(ip);
 	}
 
+	/**
+     * Gets the VLAN ID for a device.
+     * 
+     * @return VLAN ID.
+     */
     public int getVlanId() {
 		return vlanId;
 	}
 
+    /**
+     * Sets the VLAN ID for a device.
+     * 
+     * @param vlandId - The VLAN ID to assign.
+     */
 	public void setVlanId(int vlandId) {
 		this.vlanId = vlandId;
 	}
 	
+	/**
+     * Sets the DNS server IP address for the device.
+     * 
+     * @param dnsServerIP The DNS server IP address.
+     */
 	public void setDnsServerIP(String dnsServerIP) {
 	    this.dnsServerIP = dnsServerIP;
 	}
 
+	/**
+     * Gets the DNS server IP address.
+     * 
+     * @return The DNS server IP.
+     */
 	public String getDnsServerIP() {
 	    return dnsServerIP;
 	}
 
+	/**
+     * Constructs a new Device instance.
+     * 
+     * @param name - Name of the device.
+     * @param macAddress - MAC address of the device.
+     */
 	public Device(String name, String macAddress) {
         this.name = name;
         this.macAddress = macAddress;
@@ -54,34 +97,72 @@ public abstract class Device {
         this.staticIP = true;
     }
 
+	/**
+     * Gets the name of a device.
+     * 
+     * @return Name of the device.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the MAC address of a device.
+     * 
+     * @return MAC address.
+     */
     public String getMacAddress() {
         return macAddress;
     }
 
+    /**
+     * Sets the IP address of a device.
+     * 
+     * @param ipAddress The IP address to assign.
+     */
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
     
+    /**
+     * Gets the current IP address of a device.
+     * 
+     * @return IP address.
+     */
     public String getIpAddress() {
         return ipAddress;
     }
     
+    /**
+     * Sets the gateway IP address.
+     * 
+     * @param gatewayIP The gateway IP to assign.
+     */
     public void setGatewayIp(String gatewayIP) {
         this.gatewayIP = gatewayIP;
     }
     
+    /**
+     * Gets the gateway IP address.
+     * 
+     * @return Gateway IP address.
+     */
     public String getGatewayIp() {
         return gatewayIP;
     }
     
+    /**
+     * Gets the total number of ports on a device.
+     * 
+     * @return Number of ports.
+     */
     public int getTotalPorts() {
 	    return totalPorts;
 	}
 	
+    /**
+     * Prints the ARP table for a device to the console.
+     */
 	public void printArpTable() {
 	    System.out.println("\nARP Table for " + name);
 	    if (arpTable.isEmpty()) {
@@ -97,6 +178,11 @@ public abstract class Device {
 	    }
 	}
 
+	/**
+     * Generates a unique MAC address for a device
+     * 
+     * @return mac - A unique MAC address in string format
+     */
 	public static String generateUniqueMacAddress() {
 	    String mac;
 	    do {

@@ -3,4 +3,5 @@
     <fullyQualifiedTypeName name="Network.Topology"/>
     <fullyQualifiedTypeName name="java.lang.Override"/>
     <fullyQualifiedTypeName name="Menus.DeviceCreationMenu"/>
+    <fullyQualifiedTypeName name="Menus.TopologyMenu"/>
 </qualifiedTypeNameHistroy>

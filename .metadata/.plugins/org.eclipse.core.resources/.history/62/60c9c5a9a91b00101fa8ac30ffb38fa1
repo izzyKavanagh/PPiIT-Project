@@ -1,7 +1,0 @@
-package Network;
-
-public interface DeviceWitthCLI {
-	void startCLI();
-    void configureIpHelper(String vlanInterface, String helperAddress);
-    void showIpHelpers();
-}

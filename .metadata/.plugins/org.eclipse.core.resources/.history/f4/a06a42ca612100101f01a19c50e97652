@@ -1,0 +1,54 @@
+package DeviceComponents;
+
+import java.util.Scanner;
+
+import Network.DeviceWithCLI;
+
+/**
+ * Command Line Interface for configuring helper addresses on VLANs.
+ */
+public class CLI {
+	
+	private DeviceWithCLI device;
+
+    public CLI(DeviceWithCLI device) {
+        this.device = device;
+    }
+
+    /**
+     * Starts the interactive CLI session.
+     */
+    public void start() {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+
+        System.out.println("Starting CLI for " + device.getName());
+        System.out.println("Type 'exit' to quit.\n");
+
+        while (true) {
+            System.out.print("Enter VLAN interface number (or 'exit'): ");
+            input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("exit")) {
+                break;
+            }
+
+            int vlanNumber;
+            try {
+                vlanNumber = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid VLAN number.");
+                continue;
+            }
+
+            System.out.print("Enter helper IP address for VLAN " + vlanNumber + ": ");
+            String helperAddress = scanner.nextLine();
+
+            device.configureIpHelper(vlanNumber, helperAddress);
+            System.out.println("Helper address " + helperAddress + " assigned to VLAN " + vlanNumber + ".\n");
+        }
+
+        scanner.close();
+        System.out.println("CLI session ended.");
+    }
+}

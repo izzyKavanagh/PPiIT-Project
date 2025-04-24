@@ -13,4 +13,15 @@
 		<item key="DIALOG_HEIGHT" value="485"/>
 		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-24|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
 	</section>
+	<section name="RefactoringWizard.Externalize strings in &apos;GuidedModeMenu.java&apos;">
+		<item key="width" value="640"/>
+		<item key="height" value="560"/>
+	</section>
+	<section name="ExternalizeWizard.dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="320"/>
+		<item key="DIALOG_Y_ORIGIN" value="6"/>
+		<item key="DIALOG_WIDTH" value="653"/>
+		<item key="DIALOG_HEIGHT" value="760"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-24|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+	</section>
 </section>

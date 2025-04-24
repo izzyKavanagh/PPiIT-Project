@@ -3,33 +3,60 @@ package Devices;
 import java.util.Map;
 import Network.Topology;
 
-// Class for representing computer
+/**
+ * Represents a Computer device in the network.
+ * A Computer can send and receive messages, make ARP requests,
+ * and visit domains by resolving them via DNS.
+ */
 public class Computer extends Device{
 	
+	// Each computer has only one port.
 	private final int totalPorts = 1;
 	
+	/**
+     * Constructs a Computer with the specified name and MAC address.
+     *
+     * @param name        the name of the computer
+     * @param macAddress  the MAC address of the computer
+     */
 	public Computer(String name, String macAddress) {
 		super(name,macAddress);
 	}
 	
+	/**
+     * Returns the number of ports on the computer.
+     *
+     * @return the number of total ports (always 1 for a computer)
+     */
 	@Override
 	public int getTotalPorts()
 	{
 		return totalPorts;
 	}
 	
+	/**
+     * Sends a message to a destination IP address
+     * If the MAC address is not in the ARP table, an ARP request is performed
+     * 
+     * @param destinationIP - the destination IP address
+     * @param message - the message to send
+     * @param topology - the network topology for device lookup/communication
+     */
 	public void sendMessage(String destinationIP, String message, Topology topology) {
 		String destinationMac = lookupMac(destinationIP);
 		
 		System.out.println("\nDestination IP: " + destinationIP);
+		
 	    if (destinationMac == null) 
 	    {
+	    	// Perform ARP request since MAC is unknown
 	        System.out.println("\n" + name + " doesn’t know MAC for " + destinationIP + ". Sending ARP request...");
 	        arpRequest(destinationIP, topology);
 	        destinationMac = lookupMac(destinationIP);
 	        
 	        if (destinationMac == null) 
 	        {
+	        	 // Abort if ARP resolution fails
 	            System.out.println("\nERROR: Could not resolve MAC. Message dropped.");
 	            return;
 	        }
@@ -38,6 +65,7 @@ public class Computer extends Device{
 	        
 	        Map<String, Device> registeredDevices = topology.getRegisteredDevices();
 	        
+	        // Look up the destination device using the IP and send the message
 	        for (Device device : registeredDevices.values()) {
 	            if (destinationIP.equals(device.getIpAddress())) {
 	            	if (device instanceof Computer) 
@@ -54,11 +82,26 @@ public class Computer extends Device{
 	    }
 	}
 
+	/**
+     * Receives a message sent from another device.
+     *
+     * @param ipAddress - the source IP address
+     * @param message - the message content
+     * @param topology - the network topology
+     * @param pc - the recipient computer
+     */
 	private void receiveMessage(String ipAddress, String message, Topology topology, Computer pc) {
 		System.out.println("\n" + pc.getName() + " received message from " + ipAddress + ": " + message);
 		
 	}
 
+	/**
+     * Sends an ARP request to resolve the MAC address for the given destination IP
+     * Adds an entry to the ARP table if found
+     *
+     * @param destinationIP - the IP address to resolve
+     * @param topology - the network topology
+     */
 	private void arpRequest(String destinationIP, Topology topology) {
 		
 		Map<String, Device> registeredDevices = topology.getRegisteredDevices();
@@ -72,6 +115,14 @@ public class Computer extends Device{
 	    }
 	}
 	
+	/**
+     * Visits a website by resolving a domain name through the connected DNS server.
+     * If the domain is successfully resolved, requests content from the WebServer.
+     *
+     * @param topology the current network topology
+     * @param domain   the domain name to resolve
+     * @param pc       the requesting computer
+     */
 	public void visitDomain(Topology topology, String domain, Computer pc) {
         
 		Device device1 = topology.findConnectedDeviceByIP(pc, pc.getDnsServerIP());
