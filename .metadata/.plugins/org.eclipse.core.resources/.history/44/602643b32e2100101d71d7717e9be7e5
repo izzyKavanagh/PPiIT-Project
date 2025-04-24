@@ -1,0 +1,46 @@
+package Devices;
+
+public class WebServer extends Device{
+
+	private String websiteContent;
+	private final int totalPorts = 1;
+
+    public WebServer(String name, String macAddress) {
+        super(name, macAddress);
+        this.websiteContent = "";
+    }
+    
+    @Override
+   	public int getTotalPorts()
+   	{
+   		return totalPorts;
+   	}
+    
+    public void setWebsiteContent(String websiteContent) {
+        this.websiteContent = websiteContent;
+    }
+
+    public void serveWebsite() {
+    	String[] lines = websiteContent.split("\n");
+        int maxWidth = this.getName().length() + 19; // default width for the header
+        for (String line : lines) {
+            maxWidth = Math.max(maxWidth, line.length());
+        }
+        maxWidth += 4; // padding
+
+        String horizontalBorder = "+" + "-".repeat(maxWidth) + "+";
+
+        System.out.println(horizontalBorder);
+        String title = " " + this.getName() + " - Web Page ";
+        int padding = (maxWidth - title.length()) / 2;
+        System.out.printf("|%" + (padding + title.length()) + "s%" + (maxWidth - (padding + title.length())) + "s|\n", title, "");
+        System.out.println(horizontalBorder);
+
+        for (String line : lines) {
+            System.out.printf("| %-"+ (maxWidth - 2) +"s |\n", line);
+        }
+
+        System.out.println(horizontalBorder);
+    }
+    
+}

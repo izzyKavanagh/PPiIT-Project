@@ -17,11 +17,16 @@ public class DNSServerMenu {
         
         do
         {
-            System.out.println("\n--- DNS Server List ---");
+        	System.out.println("\n╔═══════════════════════════════════╗");
+            System.out.println("║          DNS Server List          ║");
+            System.out.println("╠═══════════════════════════════════╣");
+
             for (int i = 0; i < dnsServers.size(); i++) {
-                System.out.println((i + 1) + ". " + dnsServers.get(i).getName());
+                System.out.printf("║ %2d. %-29s ║\n", (i + 1), dnsServers.get(i).getName());
             }
-            System.out.println((dnsServers.size() + 1) + ". Return to Main Menu");
+
+            System.out.printf("║ %2d. %-29s ║\n", (dnsServers.size() + 1), "Return to Main Menu");
+            System.out.println("╚═══════════════════════════════════╝");
             System.out.print("Select a DNS server to manage: ");
 
             serverChoice = Integer.parseInt(scanner.nextLine());
@@ -46,12 +51,15 @@ public class DNSServerMenu {
     	
     	do
     	{
-            System.out.println("\n--- Managing DNS Server: " + dnsServer.getName() + " ---");
-            System.out.println("1. Configure Server IP Address");
-            System.out.println("2. Add DNS Record");
-            System.out.println("3. View All Records");
-            System.out.println("4. View port connections");
-            System.out.println("5. Return to DNS Server List");
+    		System.out.println("\n╔════════════════════════════════════╗");
+            System.out.printf("║   Managing DNS Server: " + dnsServer.getName());
+            System.out.println("╠════════════════════════════════════╣");
+            System.out.println("║ 1. Configure Server IP Address     ║");
+            System.out.println("║ 2. Add DNS Record                  ║");
+            System.out.println("║ 3. View All Records                ║");
+            System.out.println("║ 4. View port connections           ║");
+            System.out.println("║ 5. Return to DNS Server List       ║");
+            System.out.println("╚════════════════════════════════════╝");
             System.out.print("Select an option: ");
 
             choice = scanner.nextInt();

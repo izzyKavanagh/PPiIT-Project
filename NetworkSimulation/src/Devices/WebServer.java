@@ -21,9 +21,48 @@ public class WebServer extends Device{
     }
 
     public void serveWebsite() {
-        System.out.println("===== " + this.getName() + " Web Page =====");
-        System.out.println(websiteContent);
-        System.out.println("=============================");
+    	String[] lines = websiteContent.split("\n");
+
+        // Configuration
+        int horizontalPadding = 4; // spaces on left and right of content
+        int verticalPadding = 1;   // blank lines above and below content
+
+        // Calculate max width
+        int maxLineLength = 0;
+        for (String line : lines) {
+            maxLineLength = Math.max(maxLineLength, line.length());
+        }
+        int contentWidth = maxLineLength + horizontalPadding * 2;
+        String horizontalBorder = "+" + "-".repeat(contentWidth + 2) + "+"; // +2 for space after each |
+
+        System.out.println();
+        System.out.println();
+        // Print header
+        System.out.println(horizontalBorder);
+        String title = " " + this.getName() + " - Web Page ";
+        int titlePadding = (contentWidth - title.length()) / 2;
+        System.out.printf("| %" + (titlePadding + title.length()) + "s%" + (contentWidth - titlePadding - title.length() + 1) + "s|\n", title, "");
+        System.out.println(horizontalBorder);
+
+        // Vertical padding (top)
+        for (int i = 0; i < verticalPadding; i++) {
+            System.out.printf("| %" + (contentWidth + 1) + "s|\n", ""); // +1 to match spacing
+        }
+
+        // Content lines with horizontal padding
+        for (String line : lines) {
+            String paddedLine = " ".repeat(horizontalPadding) + line + " ".repeat(contentWidth - line.length() - horizontalPadding);
+            System.out.printf("| %s |\n", paddedLine);
+        }
+
+        // Vertical padding (bottom)
+        for (int i = 0; i < verticalPadding; i++) {
+            System.out.printf("| %" + (contentWidth + 1) + "s|\n", "");
+        }
+
+        System.out.println(horizontalBorder);
+        System.out.println();
+        System.out.println();
     }
     
 }

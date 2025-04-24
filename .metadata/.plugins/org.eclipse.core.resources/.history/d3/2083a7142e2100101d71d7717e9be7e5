@@ -1,0 +1,29 @@
+package Devices;
+
+public class WebServer extends Device{
+
+	private String websiteContent;
+	private final int totalPorts = 1;
+
+    public WebServer(String name, String macAddress) {
+        super(name, macAddress);
+        this.websiteContent = "";
+    }
+    
+    @Override
+   	public int getTotalPorts()
+   	{
+   		return totalPorts;
+   	}
+    
+    public void setWebsiteContent(String websiteContent) {
+        this.websiteContent = websiteContent;
+    }
+
+    public void serveWebsite() {
+        System.out.println("===== " + this.getName() + " Web Page =====");
+        System.out.println(websiteContent);
+        System.out.println("=============================");
+    }
+    
+}

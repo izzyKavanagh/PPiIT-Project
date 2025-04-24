@@ -14,37 +14,43 @@ public class RouterMenu {
 	        return;
 	    }
 		
-		 System.out.println("\n===== Router Management =====");
-		    for (int i = 0; i < routers.size(); i++) {
-		        System.out.println((i + 1) + ". " + routers.get(i).getName());
-		    }
+		System.out.println("\n╔════════════════════════════════════════╗");
+		System.out.println("║           Router Management            ║");
+		System.out.println("╠════════════════════════════════════════╣");
+		for (int i = 0; i < routers.size(); i++) {
+		    System.out.printf("║ %2d. %-34s ║\n", i + 1, routers.get(i).getName());
+		}
+		System.out.println("╚════════════════════════════════════════╝");
 		    
-		    System.out.print("Select a router to manage: ");
-		    int routerChoice = scanner.nextInt() - 1;
+		System.out.print("Select a router to manage: ");
+		int routerChoice = scanner.nextInt() - 1;
 
-		    if (routerChoice < 0 || routerChoice >= routers.size()) {
-		        System.out.println("Invalid selection.");
-		        return;
-		    }
-
-		    Router selectedRouter = routers.get(routerChoice);
-		    
-		    configureRouter(selectedRouter, scanner, topology, mode);
+		if (routerChoice < 0 || routerChoice >= routers.size()) {
+			System.out.println("Invalid selection.");
+		    return;
+		}
+		
+		Router selectedRouter = routers.get(routerChoice);
+		
+		configureRouter(selectedRouter, scanner, topology, mode);
 	}
 	
 	private static void configureRouter(Router router, Scanner scanner, Topology topology, int mode) {
 		
 		int choice;
 	    do {
-	        System.out.println("\n===== Router Configuration: " + router.getName() + " =====");
-	        System.out.println("1. Configure IP Address");
-	        System.out.println("2. Configure VLAN Interface");
-	        System.out.println("3. Show VLAN Interfaces");
-	        System.out.println("4. Configure IP Helper Address");
-	        System.out.println("5. Assign IP to Port");
-	        System.out.println("6. Show Port IP Assignments");
-	        System.out.println("7. View port connections");
-	        System.out.println("8. Exit");
+	    	System.out.println("\n╔════════════════════════════════════════╗");
+	        System.out.println("║     Router Configuration: " + router.getName());
+	        System.out.println("╠════════════════════════════════════════╣");
+	        System.out.println("║ 1. Configure IP Address                ║");
+	        System.out.println("║ 2. Configure VLAN Interface            ║");
+	        System.out.println("║ 3. Show VLAN Interfaces                ║");
+	        System.out.println("║ 4. Configure IP Helper Address         ║");
+	        System.out.println("║ 5. Assign IP to Port                   ║");
+	        System.out.println("║ 6. Show Port IP Assignments            ║");
+	        System.out.println("║ 7. View port connections               ║");
+	        System.out.println("║ 8. Exit                                ║");
+	        System.out.println("╚════════════════════════════════════════╝");
 	        System.out.print("Enter your choice: ");
 
 	        choice = scanner.nextInt();

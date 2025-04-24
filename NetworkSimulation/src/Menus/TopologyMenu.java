@@ -13,20 +13,18 @@ public class TopologyMenu {
 	public static void addConnection(Scanner scanner,Topology topology) {
 		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    
-	    System.out.println("\n===== Network Devices =====");
-
-	    for(int i = 0;i<devices.size();i++) {
-	    	System.out.println((i + 1) + ". " + devices.get(i));
-	    }
+		System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║        Network Devices       ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < devices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, devices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
 	    
 	    System.out.println("Enter device you wish to form a connection on: ");
 	    int sourceDeviceIndex = scanner.nextInt() - 1;
 	    
-	    for(int i = 0;i<devices.size();i++) {
-	    	System.out.println((i + 1) + ". " + devices.get(i));
-	    }
-	    
-	    System.out.println("Enter device you wish to connect to : ");
+	    System.out.println("Enter device you wish to connect to: ");
 	    int targetDeviceIndex = scanner.nextInt() - 1;
 	    
 	    String sourceDevice = devices.get(sourceDeviceIndex); 
@@ -41,12 +39,13 @@ public class TopologyMenu {
 	public static void removeConnection(Scanner scanner,Topology topology) {
 		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    
-	    System.out.println("\n===== Network Devices =====");
-	    
-	    // print devices
-	    for(int i = 0;i<devices.size();i++) {
-	    	System.out.println((i + 1) + ". " + devices.get(i));
-	    }
+		System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║        Network Devices       ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < devices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, devices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
 	    
 	    System.out.println("Enter device you wish to delete a connection from: ");
 	    int sourceDeviceIndex = scanner.nextInt() - 1;
@@ -76,10 +75,13 @@ public class TopologyMenu {
 	        return;
 	    }
 
-	    System.out.println("\nConnected Devices:");
-	    for (int i = 0; i < connectedDevices.size(); i++) {
-	        System.out.println((i + 1) + ". " + connectedDevices.get(i));
-	    }
+	    System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║       Connected Devices      ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < connectedDevices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, connectedDevices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
 	    
 	    System.out.print("Select the device to disconnect: ");
 	    int targetDeviceIndex = scanner.nextInt() - 1;
@@ -90,7 +92,7 @@ public class TopologyMenu {
 	        return;
 	    }
 	    
-	    String targetDeviceName = devices.get(targetDeviceIndex);
+	    String targetDeviceName = connectedDevices.get(targetDeviceIndex);
         Device target = topology.getRegisteredDevices().get(targetDeviceName);
         
         topology.disconnectDevices(source, target);

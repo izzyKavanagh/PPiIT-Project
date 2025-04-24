@@ -12,10 +12,11 @@ import Devices.Switch;
 import Devices.WebServer;
 import Menus.FreeModeMenu;
 import Menus.GuidedModeMenu;
+import Menus.MainMenu;
 
 public class NetworkSimulationRunner {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		// initialize scanner object for reading in data
 		Scanner scanner = new Scanner(System.in);
 		
@@ -33,18 +34,32 @@ public class NetworkSimulationRunner {
 		List<DNSServer> dnsServers = new ArrayList<>();
 		List<WebServer> webServers = new ArrayList<>();
 		List<Computer> computers = new ArrayList<>();
-		
-		topology.updateAdjacencyList();
+				
+        
+        int totalTasks = 100;  // Example total tasks
+        for (int i = 1; i <= totalTasks; i++) {
+            // Simulate doing some work
+            Thread.sleep(10); // Example delay
+
+            // Print progress bar
+            MainMenu.printProgress(i, totalTasks); 
+        }
+        
+        MainMenu.printWelcomeMessage();
      		
         int mode;
         
         do{
         	
-        	System.out.println("=== Network Simulation ===");
-            System.out.println("Choose Mode:");
-            System.out.println("1. Free Mode");
-            System.out.println("2. Guided Mode");
-            System.out.println("3. Close Simulation");
+        	System.out.println("\n╔══════════════════════════════════════════════╗");
+            System.out.println("║           🌐 NETWORK SIMULATION 🌐           ║");
+            System.out.println("╚══════════════════════════════════════════════╝");
+            System.out.println("               Select a Mode:");
+            System.out.println("╔══════════════════════════════════════════════╗");
+            System.out.println("║  1. 🛠  Free Mode                            ║");
+            System.out.println("║  2. 🎯 Guided Mode                           ║");
+            System.out.println("║  3. ❌ Exit Simulation                       ║");
+            System.out.println("╚══════════════════════════════════════════════╝\n");
             System.out.print("Enter your choice: ");
             mode = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -57,7 +72,8 @@ public class NetworkSimulationRunner {
                 	GuidedModeMenu.mainMenu(scanner, topology, manager, routers, computers, switches, dhcpServers, dnsServers, webServers, mode);
                 	break;
                 case 3:
-                	break; 
+                    System.out.println("Closing simulation. Goodbye!");
+                    break;
                 default: System.out.println("ERROR: Invalid choice. Please try again.");
                 	break;
             }

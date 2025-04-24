@@ -17,11 +17,16 @@ public class WebServerMenu {
 
         do
         {
-            System.out.println("\n--- Web Server List ---");
+        	System.out.println("\n╔═══════════════════════════════════╗");
+            System.out.println("║          Web Server List          ║");
+            System.out.println("╠═══════════════════════════════════╣");
+
             for (int i = 0; i < webServers.size(); i++) {
-                System.out.println((i + 1) + ". " + webServers.get(i).getName());
+                System.out.printf("║ %2d. %-29s ║\n", (i + 1), webServers.get(i).getName());
             }
-            System.out.println((webServers.size() + 1) + ". Return to Main Menu");
+
+            System.out.printf("║ %2d. %-29s ║\n", (webServers.size() + 1), "Return to Main Menu");
+            System.out.println("╚═══════════════════════════════════╝");
             System.out.print("Select a Web server to manage: ");
 
             serverChoice = Integer.parseInt(scanner.nextLine());
@@ -45,12 +50,15 @@ public class WebServerMenu {
     	
     	do
     	{
-            System.out.println("\n--- Managing Web Server: " + webServer.getName() + " ---");
-            System.out.println("1. Configure Server IP Address");
-            System.out.println("2. Set Website Content");
-            System.out.println("3. View Website Content");
-            System.out.println("4. View port connections");
-            System.out.println("5. Return to Web Server List");
+    		System.out.println("\n╔════════════════════════════════════╗");
+            System.out.printf("║   Managing Web Server: " + webServer.getName());
+            System.out.println("╠════════════════════════════════════╣");
+            System.out.println("║ 1. Configure Server IP Address     ║");
+            System.out.println("║ 2. Set Website Content             ║");
+            System.out.println("║ 3. View Website Content            ║");
+            System.out.println("║ 4. View port connections           ║");
+            System.out.println("║ 5. Return to Web Server List       ║");
+            System.out.println("╚════════════════════════════════════╝");
             System.out.print("Select an option: ");
 
             choice = scanner.nextInt();

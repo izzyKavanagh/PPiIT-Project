@@ -19,15 +19,19 @@ public class DeviceCreationMenu {
 	public static void createDevice(Scanner scanner, Topology topology, List<Router> routers, List<Computer> computers,
 			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers)
 	{
-		System.out.println("\n=== Device Creation Menu ===");
-	    System.out.println("1. Router");
-	    System.out.println("2. Layer 2 Switch");
-	    System.out.println("3. Layer 3 Switch");
-	    System.out.println("4. DHCP Server");
-	    System.out.println("5. DNS Server");
-	    System.out.println("6. Web Server");
-	    System.out.println("7. Computer (PC)");
-	    System.out.println("8. Exit");
+		System.out.println("\n╔════════════════════════════════════════════╗");
+	    System.out.println("║        🛠️  DEVICE CREATION MENU            ║");
+	    System.out.println("╚════════════════════════════════════════════╝");
+	    System.out.println("╔════════════════════════════════════════════╗");
+	    System.out.println("║ 1. Router                                  ║");
+	    System.out.println("║ 2. Layer 2 Switch                          ║");
+	    System.out.println("║ 3. Layer 3 Switch                          ║");
+	    System.out.println("║ 4. DHCP Server                             ║");
+	    System.out.println("║ 5. DNS Server                              ║");
+	    System.out.println("║ 6. Web Server                              ║");
+	    System.out.println("║ 7. Computer (PC)                           ║");
+	    System.out.println("║ 8. Exit                                    ║");
+	    System.out.println("╚════════════════════════════════════════════╝");
 	    System.out.print("Choose a device to create: ");
 	    int choice = scanner.nextInt();
 	    scanner.nextLine();

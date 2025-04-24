@@ -15,10 +15,13 @@ public class SwitchMenu {
 	        return;
 	    }
 
-	    System.out.println("\n===== Switch Management =====");
-	    for (int i = 0; i < switches.size(); i++) {
-	        System.out.println((i + 1) + ". " + switches.get(i).getName());
-	    }
+	    System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║        Switch Management           ║");
+        System.out.println("╠════════════════════════════════════╣");
+        for (int i = 0; i < switches.size(); i++) {
+            System.out.printf("║ %2d. %-30s ║\n", i + 1, switches.get(i).getName());
+        }
+        System.out.println("╚════════════════════════════════════╝");
 	    
 	    System.out.print("Select a switch to manage: ");
 	    int switchChoice = scanner.nextInt() - 1;
@@ -42,15 +45,17 @@ public class SwitchMenu {
 		
 	    do {
 	    	
-	        System.out.println("\nManaging VLANs on " + selectedSwitch.getName());
-	        System.out.println("1. View VLANs");
-	        System.out.println("2. Create VLAN");
-	        System.out.println("3. Assign VLAN to Port");
-	        System.out.println("4. View VLAN Port Assignments");
-	        System.out.println("5. View port connections");
-	        System.out.println("6. Return to Main Menu");
-	        System.out.print("Choice: ");
-	        
+	    	System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║         Managing VLANs on " + selectedSwitch.getName());
+            System.out.println("╠════════════════════════════════════════╣");
+            System.out.println("║ 1. View VLANs                          ║");
+            System.out.println("║ 2. Create VLAN                         ║");
+            System.out.println("║ 3. Assign VLAN to Port                 ║");
+            System.out.println("║ 4. View VLAN Port Assignments          ║");
+            System.out.println("║ 5. View port connections               ║");
+            System.out.println("║ 6. Return to Main Menu                 ║");
+            System.out.println("╚════════════════════════════════════════╝");
+            System.out.print("Choice: ");
 	        choice = scanner.nextInt();
 	        scanner.nextLine();
 	        
@@ -120,14 +125,17 @@ public class SwitchMenu {
 		int choice;
 
 	    do {
-	        System.out.println("\nManaging Layer 3 Switch: " + selectedSwitch.getName());
-	        System.out.println("1. Configure Switch IP Address");
-	        System.out.println("2. Manage VLANs");
-	        System.out.println("3. Configure VLAN Interfaces (SVIs)");
-	        System.out.println("4. Configure IP Helper Address");
-	        System.out.println("5. View VLAN Interfaces (SVIs)");
-	        System.out.println("6. View port connections");
-	        System.out.println("7. Return to Previous Menu");
+	    	System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║        Managing Layer 3 Switch: " + selectedSwitch.getName() + "        ║");
+            System.out.println("╠════════════════════════════════════════╣");
+            System.out.println("║ 1. Configure Switch IP Address         ║");
+            System.out.println("║ 2. Manage VLANs                        ║");
+            System.out.println("║ 3. Configure VLAN Interfaces (SVIs)    ║");
+            System.out.println("║ 4. Configure IP Helper Address         ║");
+            System.out.println("║ 5. View VLAN Interfaces (SVIs)         ║");
+            System.out.println("║ 6. View port connections               ║");
+            System.out.println("║ 7. Return to Previous Menu             ║");
+            System.out.println("╚════════════════════════════════════════╝");
 	        System.out.print("Choice: ");
 	        choice = scanner.nextInt();
 

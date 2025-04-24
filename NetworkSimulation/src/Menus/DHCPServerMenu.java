@@ -16,11 +16,16 @@ public class DHCPServerMenu {
         int serverChoice;
         
         do{
-            System.out.println("\n--- DHCP Server List ---");
+        	System.out.println("\n╔═══════════════════════════════════╗");
+            System.out.println("║         DHCP Server List          ║");
+            System.out.println("╠═══════════════════════════════════╣");
+
             for (int i = 0; i < dhcpServers.size(); i++) {
-                System.out.println((i + 1) + ". " + dhcpServers.get(i).getName());
+                System.out.printf("║ %2d. %-29s ║\n", (i + 1), dhcpServers.get(i).getName());
             }
-            System.out.println((dhcpServers.size() + 1) + ". Return to Main Menu");
+
+            System.out.printf("║ %2d. %-29s ║\n", (dhcpServers.size() + 1), "Return to Main Menu");
+            System.out.println("╚═══════════════════════════════════╝");
             System.out.print("Select a DHCP server to manage: ");
 
             serverChoice = Integer.parseInt(scanner.nextLine());
@@ -45,12 +50,15 @@ public class DHCPServerMenu {
     	
     	do
     	{
-            System.out.println("\n--- Managing DHCP Server: " + dhcpServer.getName() + " ---");
-            System.out.println("1. Configure Server IP Address");
-            System.out.println("2. Create new IP pool");
-            System.out.println("3. View All IP pools");
-            System.out.println("4. View port connections");
-            System.out.println("5. Return to DHCP Server List");
+    		System.out.println("\n╔══════════════════════════════════════════════╗");
+            System.out.println("║        Managing DHCP Server: " + dhcpServer.getName());
+            System.out.println("╠══════════════════════════════════════════════╣");
+            System.out.println("║ 1. Configure Server IP Address               ║");
+            System.out.println("║ 2. Create new IP pool                        ║");
+            System.out.println("║ 3. View All IP pools                         ║");
+            System.out.println("║ 4. View port connections                     ║");
+            System.out.println("║ 5. Return to DHCP Server List                ║");
+            System.out.println("╚══════════════════════════════════════════════╝");
             System.out.print("Select an option: ");
 
             choice = scanner.nextInt();

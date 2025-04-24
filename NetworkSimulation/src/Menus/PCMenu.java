@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.List;  
+import java.util.List;   
 import java.util.Scanner;
 import Devices.Computer;
 import Network.NetworkManager;
@@ -14,72 +14,73 @@ public class PCMenu {
 		
 		 do
 		 {
-			 System.out.println("\n===== PC Management =====");
-	         for (int i = 0; i < computers.size(); i++) 
-	         {
-	        	 Computer pc = computers.get(i);
+			 System.out.println("\n╔════════════════════════════════════════╗");
+			 System.out.println("║           PC Management                ║");
+			 System.out.println("╚════════════════════════════════════════╝");
+			 for (int i = 0; i < computers.size(); i++) {
+				Computer pc = computers.get(i);
+				System.out.print((i + 1) + ". " + pc.getName() + " (IP: ");
 	        	 
-	        	 System.out.print((i + 1) + ". " + pc.getName() + " (IP: ");
+				if (pc.getIpAddress() == null) 
+	        	{
+					System.out.print("Not Assigned");
+	        	} 
+	        	else 
+	        	{
+	        		System.out.print(pc.getIpAddress());
+	        	}
 	        	 
-	        	 if (pc.getIpAddress() == null) 
-	        	 {
-	        		    System.out.print("Not Assigned");
-	        	 } 
-	        	 else 
-	        	 {
-	        		 System.out.print(pc.getIpAddress());
-	        	 }
+	        	System.out.print(", DNS: ");
 	        	 
-	        	 System.out.print(", DNS: ");
+	        	if (pc.getDnsServerIP() == null) 
+	        	{
+	        	    System.out.print("Not Assigned");
+	        	} 
+	        	else 
+	        	{
+	        		System.out.print(pc.getDnsServerIP());
+	        	}
 	        	 
-	        	 if (pc.getDnsServerIP() == null) 
-	        	 {
-	        		    System.out.print("Not Assigned");
-	        	 } 
-	        	 else 
-	        	 {
-	        		 System.out.print(pc.getDnsServerIP());
-	        	 }
-	        	 
-	        	 System.out.print(", DHCP: ");
+	        	System.out.print(", DHCP: ");
 
-	        	 if (!pc.staticIP) 
-	        	 {
-	        		 System.out.println("Enabled)");
-	        	 } 
-	        	 else 
-	        	 {
-	        		 System.out.println("Disabled)");
-	        	 }
-	         }
+	        	if (!pc.staticIP) 
+	        	{
+	        		System.out.println("Enabled)");
+	        	} 
+	        	else 
+	        	{
+	        		System.out.println("Disabled)");
+	        	}
+	        }
 	         
-	         System.out.println((computers.size() + 1) + ". Return to Main Menu");
-	         System.out.print("Select a PC to manage: ");
+			System.out.println((computers.size() + 1) + ". Return to Main Menu ");
+	        System.out.print("Select a PC to manage: ");
 
-	         pcChoice = scanner.nextInt();
-	         scanner.nextLine(); // Consume newline
+	        pcChoice = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
 
-	         if (pcChoice == computers.size() + 1) 
-	         {
-	        	 return; 
-	         }
+	        if (pcChoice == computers.size() + 1) 
+	        {
+	        	return; 
+	        }
 
-	         if (pcChoice < 1 || pcChoice > computers.size()) 
-	         {
-	        	 System.out.println("Invalid selection! Try again.");
-	             continue;
-	         }
+	        if (pcChoice < 1 || pcChoice > computers.size()) 
+	        {
+	        	System.out.println("Invalid selection! Try again.");
+	            continue;
+	        }
 
-	         Computer selectedPC = computers.get(pcChoice - 1);
-	         configurePC(scanner, computers, selectedPC, manager);
-	     }while(pcChoice != (computers.size() + 1) && mode != 2);
+	        Computer selectedPC = computers.get(pcChoice - 1);
+	        configurePC(scanner, computers, selectedPC, manager);
+	        
+	    }while(pcChoice != (computers.size() + 1) && mode != 2);
 	}
 
 	private static void configurePC(Scanner scanner, List<Computer> computers, Computer pc, NetworkManager manager) {
 		
 		Topology topology = manager.getTopology();
 		
-		System.out.println("\nManaging " + pc.getName());
+		System.out.println("\n ===== " + pc.getName() + " =====");
 		
 		System.out.print("Current IP: ");
 		
@@ -102,16 +103,18 @@ public class PCMenu {
 		    System.out.println("No");
 		}
 
-		System.out.println("1. Send Message");
-		System.out.println("2. Open web browser");
-		System.out.println("3. Enable DHCP");
-	    System.out.println("4. Disable DHCP (Use Static IP)");
-	    if(pc.staticIP) 
-	    {
-	    	System.out.println("5. Add DNS server");
-	    }
-	    System.out.println("6. View port connections");
-	    System.out.println("7. Return to PC Menu");
+		System.out.println("╔════════════════════════════════════╗");
+		System.out.println("║ 1. Send Message                    ║");
+		System.out.println("║ 2. Open Web Browser                ║");
+		System.out.println("║ 3. Enable DHCP                     ║");
+		System.out.println("║ 4. Disable DHCP (Use Static IP)    ║");
+		if (pc.staticIP) {
+			System.out.println("║ 5. Add DNS server                  ║");
+		}
+		System.out.println("║ 6. View Port Connections           ║");
+		System.out.println("║ 7. Return to PC Menu               ║");
+		System.out.println("╚════════════════════════════════════╝");
+		System.out.print("Enter your choice: ");
 	    System.out.print("Enter your choice: ");
 	    
 	    int choice = scanner.nextInt();

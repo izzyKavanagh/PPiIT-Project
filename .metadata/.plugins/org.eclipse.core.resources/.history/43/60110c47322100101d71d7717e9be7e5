@@ -1,0 +1,191 @@
+package Menus;
+
+import java.util.ArrayList;    
+import java.util.List;
+import java.util.Scanner;
+import Devices.Layer2Switch;
+import Devices.Layer3Switch;
+import Devices.Switch;
+import Network.Topology;
+
+public class SwitchMenu {
+	public static void manageSwitches(List<Switch> switches, Scanner scanner, Topology topology, int mode) {
+	    if (switches.isEmpty()) {
+	        System.out.println("No switches available in the network.");
+	        return;
+	    }
+
+	    System.out.println("\n╔════════════════════════════════════╗");
+        System.out.println("║        Switch Management           ║");
+        System.out.println("╠════════════════════════════════════╣");
+        for (int i = 0; i < switches.size(); i++) {
+            System.out.printf("║ %2d. %-30s ║\n", i + 1, switches.get(i).getName());
+        }
+        System.out.println("╚════════════════════════════════════╝");
+	    
+	    System.out.print("Select a switch to manage: ");
+	    int switchChoice = scanner.nextInt() - 1;
+
+	    if (switchChoice < 0 || switchChoice >= switches.size()) {
+	        System.out.println("Invalid selection.");
+	        return;
+	    }
+
+	    Switch selectedSwitch = switches.get(switchChoice);
+
+	    if (selectedSwitch instanceof Layer2Switch) {
+	    	manageVLANS((Layer2Switch) selectedSwitch, scanner, topology, mode);
+	    } else {
+	        manageLayer3Switch((Layer3Switch) selectedSwitch, scanner, topology, mode);
+	    }
+	}
+	
+	private static void manageVLANS(Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
+		int choice;
+		
+	    do {
+	    	
+	    	System.out.println("\n╔════════════════════════════════════════╗");
+            System.out.println("║         Managing VLANs on " + selectedSwitch.getName() + "         ║");
+            System.out.println("╠════════════════════════════════════════╣");
+            System.out.println("║ 1. View VLANs                          ║");
+            System.out.println("║ 2. Create VLAN                         ║");
+            System.out.println("║ 3. Assign VLAN to Port                 ║");
+            System.out.println("║ 4. View VLAN Port Assignments          ║");
+            System.out.println("║ 5. View port connections               ║");
+            System.out.println("║ 6. Return to Main Menu                 ║");
+            System.out.println("╚════════════════════════════════════════╝");
+	        
+	        choice = scanner.nextInt();
+	        scanner.nextLine();
+	        
+	        switch (choice) {
+            case 1:
+                selectedSwitch.printVLANs();
+                break;
+            case 2:
+                System.out.print("Enter VLAN Number: ");
+                int vlanId = scanner.nextInt();
+                scanner.nextLine();
+                System.out.print("Enter VLAN Name: ");
+                String vlanName = scanner.nextLine();
+                selectedSwitch.configureVLAN(vlanId, vlanName);
+                break;
+            case 3:
+                System.out.println("Ports:");
+                List<String> ports = new ArrayList<>(selectedSwitch.getVlanPortMap().keySet());
+                for (int j = 0; j < ports.size(); j++) {
+                    System.out.println((j + 1) + ". " + ports.get(j));
+                }
+                
+                System.out.print("Select port number: ");
+                int portChoice = scanner.nextInt();
+                String selectedPort = ports.get(portChoice - 1);
+                scanner.nextLine();
+                
+                if (selectedSwitch.getVlanTable().isEmpty()) {
+                    System.out.println("No VLANs configured. Please create a VLAN first.");
+                    break;
+                }
+
+                System.out.println("Available VLANs:");
+                List<Integer> vlans = new ArrayList<>(selectedSwitch.getVlanTable().keySet());
+                
+                for (int i = 0; i < vlans.size(); i++) {
+                    int id = vlans.get(i);
+                    System.out.println((i + 1) + ". VLAN " + id + " - " + selectedSwitch.getVlanTable().get(id));
+                }
+
+                System.out.print("Select VLAN number: ");
+                int vlanChoice = scanner.nextInt();
+                
+                int selectedVlanId = vlans.get(vlanChoice - 1);
+                scanner.nextLine();
+
+                selectedSwitch.assignPortToVLAN(selectedPort, selectedVlanId, topology);
+                System.out.println("Port " + selectedPort + " assigned to VLAN " + selectedVlanId);
+                
+                selectedSwitch.printPortVLANAssignments();
+                break;
+            case 4:
+            	selectedSwitch.printPortVLANAssignments();
+                break;
+            case 5:
+            	topology.printPortConnections(selectedSwitch);
+            case 6:
+            	break;
+            default:
+                System.out.println("Invalid choice.");
+	        }
+	    } while (choice != 6 && mode != 2);
+		
+	}
+
+	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
+		int choice;
+
+	    do {
+	        System.out.println("\nManaging Layer 3 Switch: " + selectedSwitch.getName());
+	        System.out.println("1. Configure Switch IP Address");
+	        System.out.println("2. Manage VLANs");
+	        System.out.println("3. Configure VLAN Interfaces (SVIs)");
+	        System.out.println("4. Configure IP Helper Address");
+	        System.out.println("5. View VLAN Interfaces (SVIs)");
+	        System.out.println("6. View port connections");
+	        System.out.println("7. Return to Previous Menu");
+	        System.out.print("Choice: ");
+	        choice = scanner.nextInt();
+
+	        switch (choice) {
+	        	case 1: 
+	        		configureSwitchIpAddress(scanner, selectedSwitch);
+	        		break;
+	            case 2:
+	            	manageVLANS(selectedSwitch, scanner, topology, mode); // Layer 3 inherits Layer 2 capabilities
+	                break;
+	            case 3:
+	                System.out.print("Enter VLAN ID for the interface: ");
+	                int vlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter IP Address for VLAN interface: ");
+	                String ipAddress = scanner.nextLine();
+	                selectedSwitch.configureVLANInterface(vlanId, ipAddress);
+	                break;
+	            case 4:
+	                System.out.print("Enter VLAN ID to configure IP Helper for: ");
+	                int helperVlanId = scanner.nextInt();
+	                scanner.nextLine();
+	                System.out.print("Enter DHCP Server IP Address: ");
+	                String helperIp = scanner.nextLine();
+	                selectedSwitch.configureIpHelper(helperVlanId, helperIp);
+	                break;
+	            case 5:
+	                selectedSwitch.showVLANInterfaces();
+	                break;
+	            case 6:
+	                break;
+	            default:
+	                System.out.println("Invalid choice.");
+	        }
+	    } while (choice != 5 && mode != 2);
+		
+	}
+	
+	private static void configureSwitchIpAddress(Scanner scanner, Layer3Switch switchDevice) {
+	    String currentIp = switchDevice.getIpAddress();
+	    if (currentIp == null || currentIp.isEmpty()) {
+	        System.out.println("Current IP Address: IP not set");
+	    } else {
+	        System.out.println("Current IP Address: " + currentIp);
+	    }
+
+	    System.out.print("Would you like to set a new IP address? (Y/N): ");
+	    String response = scanner.nextLine().trim().toLowerCase();
+	    if (response.equalsIgnoreCase("Y")) {
+	        System.out.print("Enter new IP address: ");
+	        String newIp = scanner.nextLine();
+	        switchDevice.setIpAddress(newIp);
+	        System.out.println("IP address updated to: " + newIp);
+	    }
+	}
+}
