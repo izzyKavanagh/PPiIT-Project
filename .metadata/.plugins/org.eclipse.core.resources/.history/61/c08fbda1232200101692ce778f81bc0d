@@ -3,6 +3,8 @@ package Menus;
 import java.util.List; 
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
 import Devices.Computer;
 import Devices.DHCPServer;
 import Devices.DNSServer;
@@ -11,14 +13,63 @@ import Devices.Switch;
 import Devices.WebServer;
 import Network.NetworkManager;
 import Network.Topology;
+import Network.TopologyVisualiser;
 
+/**
+ * The {@code GuidedModeMenu} class provides a user interface to guide the user through the process
+ * of setting up a VLAN network for an office building in Guided Mode. The user is led through a series 
+ * of steps to configure various network devices and connections.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class GuidedModeMenu {
 
+	/**
+     * Displays the main menu and guides the user through the VLAN setup process step by step.
+     *
+     * @param scanner - {@link Scanner} for capturing user input  
+     * @param topology - {@link Topology} of the network for device registration and connections  
+     * @param manager - {@link NetworkManager} to facilitate network-wide operations  
+     * @param routers - list of available {@link Router} instances  
+     * @param computers - list of available {@link Computer} instances  
+     * @param switches - list of available {@link Switch} instances (Layer 2 and 3)  
+     * @param dhcpServers - list of available {@link DHCPServer} instances  
+     * @param dnsServers - list of available {@link DNSServer} instances  
+     * @param webServers - list of available {@link WebServer} instances  
+     * @param mode - operational mode (e.g., guided or free); affects how long the menu stays open  
+     */
 	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
-			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers) 
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers, int mode) 
 	{
 		
-		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building ===");
+		System.out.println("╔══════════════════════════════════════════════════════════════════════════════╗");
+		System.out.println("║                           Welcome to Guided Mode!                            ║");
+		System.out.println("╠══════════════════════════════════════════════════════════════════════════════╣");
+		System.out.println("║ In this Guided Mode, you will be setting up the LAN (Local Area Network)     ║");
+		System.out.println("║ for a modern multi-floor office building. Step by step, you'll build a       ║");
+		System.out.println("║ complete network infrastructure that mirrors a real-world scenario.          ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ The Office Building Setup:                                                   ║");
+		System.out.println("║ - A Router will act as the gateway to the internet.                          ║");
+		System.out.println("║ - A Layer 3 Switch (CoreSwitch) will connect all floors and manage VLANs.    ║");
+		System.out.println("║ - Each floor has a Layer 2 Switch connecting employees' computers.           ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ Each floor will have office PCs (PC0, PC1, etc.) connected to Layer 2        ║");
+		System.out.println("║ switches, which in turn connect to the Layer 3 switch for central routing.   ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ In the Server Room, connected to one Layer 2 switch, you will install:       ║");
+		System.out.println("║   - DHCP Server: Automatically assigns IP addresses to devices.              ║");
+		System.out.println("║   - DNS Server: Translates domain names (like www.example.com)               ║");
+		System.out.println("║                            into IP addresses.                                ║");
+		System.out.println("║   - Web Server: Hosts websites and responds to browser requests.             ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ As you progress, you'll configure IP addresses, make connections, and ensure ║");
+		System.out.println("║ everything works just like it would in a real office network.                ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ Let's get started building your network – one step at a time!                ║");
+		System.out.println("╚══════════════════════════════════════════════════════════════════════════════╝");
 		
 		// STEP 1 - CREATE ROUTER
 		GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
@@ -27,6 +78,8 @@ public class GuidedModeMenu {
 		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
 	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
 
+	    System.out.println("\n[Step 1/30] ✅ Completed: Create Router0\n");
+	    
 	    // STEP 2 - GIVE ROUTER IP
         GuidedModeUtils.printStepBox("Step 2: Give Router0 an IP address",
         		"Navigate to 'Manage Routers' and give Router0 an the IP address: 192.168.0.1");
@@ -34,17 +87,21 @@ public class GuidedModeMenu {
         GuidedModeUtils.printTipBox("IP addresses ending in 1 (192.168.0.1) are reserved for routers");
 		
         validateUserInput(scanner, 4, "Please Select 'Manage Routers' option from the menu");
-        RouterMenu.manageRouters(routers, scanner, topology);
+        RouterMenu.manageRouters(routers, scanner, topology, mode);
 		
+        System.out.println("\n[Step 2/30] ✅ Completed: Configure Router0 IP\n");
+        
 		// STEP 3 - CREATE LAYER 3 SWITCH
 		GuidedModeUtils.printStepBox("Step 3: Create a Layer 3 Switch",
         		"Navigate to 'Create New Device' and create a layer 3 switch named 'CoreSwitch'");
         	
-        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interface!");
+        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interfaces!");
         
         validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
         DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
 		
+        System.out.println("\n[Step 3/30] ✅ Completed: Create CoreSwitch\n");
+        
         // STEP 4 - CONNECT ROUTER & LAYER 3 SWITCH 
         GuidedModeUtils.printStepBox("Step 4: Connect Router0 to the CoreSwitch",
         		"Navigate to 'Add Connection' and create a connection between Router0 and coreSwitch");
@@ -52,7 +109,9 @@ public class GuidedModeMenu {
         validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
         TopologyMenu.addConnection(scanner, topology);
         
-		// STEP 5 - CREATE FIRST LAYER 2 SWITCH 
+        System.out.println("\n[Step 4/30] ✅ Completed: Connect Router0 and CoreSwitch\n");
+        
+		// STEP 5 - CREATE LAYER 2 SWITCHES 
         GuidedModeUtils.printStepBox("Step 5: Create three Layer 2 Switch",
         		"Navigate to 'Create New Device' and create a layer 2 switch named 'Switch1'");
 		
@@ -68,6 +127,8 @@ public class GuidedModeMenu {
                  		"Navigate to 'Create New Device' and create a layer 2 switch named 'Switch" + (i+2) + "'");
             }
         }
+        
+        System.out.println("[Step 5/30] ✅ Completed: Create Layer 2 Switches");
         
         // STEP 6 - CONNECT THREE 2 LAYER SWITCHES TO CORE SWITCH
         GuidedModeUtils.printStepBox("Step 6: Connect the three layer 2 switches to the CoreSwitch",
@@ -85,6 +146,9 @@ public class GuidedModeMenu {
         }
       
         
+        System.out.println("\n[Step 6/30] ✅ Completed: Connect Layer 2 Switches and CoreSwitch\n");
+
+        
         // STEP 7 - CREATE PC0 AND PC1
         GuidedModeUtils.printStepBox("Step 7: Create two computers",
         		"Navigate to 'Create New Device' and create a computer named 'PC0'");
@@ -100,6 +164,8 @@ public class GuidedModeMenu {
             }
         }
         
+        System.out.println("\n[Step 7/30] ✅ Completed: Create PC0 & PC1\n");
+
         // STEP 8 - CONNECT PC0 & PC1 TO SWITCH1
         GuidedModeUtils.printStepBox("Step 8: Connect PC0 and PC1 to Switch1",
         		"Navigate to 'Add Connection' and create a connection between Switch1 and PC0");
@@ -114,6 +180,8 @@ public class GuidedModeMenu {
                  		"Navigate to 'Add Connection' and create a connection between Switch1 and PC" + (i+1));
             }
         }
+        
+        System.out.println("\n[Step 8/30] ✅ Completed: Connect PCs and Switch1\n");
         
         // STEP 9 - CREATE PC2 and PC3
         GuidedModeUtils.printStepBox("Step 9: Create two more computers",
@@ -130,6 +198,8 @@ public class GuidedModeMenu {
             }
         }
         
+        System.out.println("\n[Step 9/30] ✅ Completed: Create PC2 & PC3\n");
+
         // STEP 10 - CONNECT PC2 & PC3 TO SWITCH2
         GuidedModeUtils.printStepBox("Step 10: Connect PC2 and PC3 to Switch2",
         		"Navigate to 'Add Connection' and create a connection between Switch2 and PC2");
@@ -145,6 +215,8 @@ public class GuidedModeMenu {
             }
         }
         
+        System.out.println("\n[Step 10/30] ✅ Completed: Connect PCs and Switch2\n");
+
         // STEP 11 - CREATE DHCP SERVER
         GuidedModeUtils.printStepBox("Step 11: Create a DHCP Server!", 
 				"Navigate to 'Create New Device' and create a new DHCP Server with the name 'DHCPServer'");
@@ -152,6 +224,8 @@ public class GuidedModeMenu {
 		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
 	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
 	    
+        System.out.println("\n[Step 11/30] ✅ Completed: Create DHCP Server\n");
+
         // STEP 12 - GIVE DHCP SERVER IP 
 	    GuidedModeUtils.printStepBox("Step 12: Give DHCPServer an IP address",
         		"Navigate to 'Manage DHCP Servers' and give DHCPServer an the IP address: 192.168.0.5");
@@ -159,8 +233,10 @@ public class GuidedModeMenu {
         GuidedModeUtils.printTipBox("The DHCP Server's IP address will be the IP address used when setting up a helper IP on the CoreSwitch later on!");
 		
         validateUserInput(scanner, 6, "Please Select 'Manage DHCP Servers' option from the menu");
-        DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
+        DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology, mode);
         
+        System.out.println("\n[Step 12/30] ✅ Completed: Configure DHCP Server IP\n");
+
         // STEP 13 - CONNECT DHCP SERVER TO SWITCH3
         GuidedModeUtils.printStepBox("Step 13: Connect DHCPServer to Switch3",
         		"Navigate to 'Add Connection' and create a connection between Switch3 and DHCPServer");
@@ -169,6 +245,8 @@ public class GuidedModeMenu {
         
         validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
     	TopologyMenu.addConnection(scanner, topology);
+    	
+        System.out.println("\n[Step 13/30] ✅ Completed: Connect DHCP Server and Switch3\n");
         
         // STEP 14 - CREATE DNS SERVER
     	GuidedModeUtils.printStepBox("Step 14: Create a DNS Server!", 
@@ -177,15 +255,19 @@ public class GuidedModeMenu {
 		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
 	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
         
+        System.out.println("\n[Step 14/30] ✅ Completed: Create DNS Server\n");
+
         // STEP 15 - GIVE DNS SERVER IP 
 	    GuidedModeUtils.printStepBox("Step 15: Give DNSServer an IP address",
-        		"Navigate to 'Manage DHCP Servers' and give DnsServer an the IP address: 192.168.0.50");
+        		"Navigate to 'Manage DNS Servers' and give DnsServer an the IP address: 192.168.0.50");
         	
         GuidedModeUtils.printTipBox("The DNS Server's IP address will be used when setting up IP Pools on the DHCPServer later on!");
 		
         validateUserInput(scanner, 5, "Please Select 'Manage DNS Servers' option from the menu");
-        DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+        DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
         
+        System.out.println("\n[Step 15/30] ✅ Completed: Configure DNS Server IP\n");
+
         // STEP 16 - CONNECT DNS SERVER TO SWITCH3
         GuidedModeUtils.printStepBox("Step 16: Connect DNSServer to Switch3",
         		"Navigate to 'Add Connection' and create a connection between Switch3 and DNSServer");
@@ -193,6 +275,8 @@ public class GuidedModeMenu {
         validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
     	TopologyMenu.addConnection(scanner, topology);
         
+        System.out.println("\n[Step 16/30] ✅ Completed: Connect DNS Server and Switch3\n");
+
         // STEP 17 - MAKE VLANS ON SWITCHES -> ONE FOR EACH "FLOOR"
     	GuidedModeUtils.printStepBox("Step 17: Create VLANs on layer 2 switches",
         		"Navigate to 'Manage Switches' and select 'Switch1'. Create a VLAN where Number = 10 and named = 'VLAN10' ");
@@ -200,7 +284,7 @@ public class GuidedModeMenu {
     	for(int i =0; i < 2; i++)
     	{
     		validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
-            SwitchMenu.manageSwitches(switches, scanner, topology);
+            SwitchMenu.manageSwitches(switches, scanner, topology, mode);
             if(i<1)
             {
             	GuidedModeUtils.printStepBox("Great! Now create a VLAN on Switch2",
@@ -208,6 +292,8 @@ public class GuidedModeMenu {
             }
     	}
    
+        System.out.println("\n[Step 17/30] ✅ Completed: Create VLANs on Switch1 & Switch2\n");
+
         // STEP 18 - ASSIGN VLANs TO PORTS ON SWITCH1
     	GuidedModeUtils.printStepBox("Step 18: Assign the VLANs to Switch1 ports",
         		"We now have to assign the VLANs we've created to the ports of Switch1 that PC0 and PC1 are connected to!");
@@ -215,13 +301,16 @@ public class GuidedModeMenu {
     	GuidedModeUtils.printStepBox("Find out which ports on Switch1 PC0 and PC1 are using",
         		"Navigate to 'Manage Switches' and select 'Switch1'. Now select 'View Port Connections' and check what ports PC0 and PC1 are connected to Switch1 on");
     	
+    	validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
+    	SwitchMenu.manageSwitches(switches, scanner, topology, mode);
+        
     	GuidedModeUtils.printStepBox("Got the port numbers? Great!",
         		"Navigate to 'Manage Switches' and select 'Switch1'. Now select 'Assign VLAN to port' and choose the port PC0 is connected to Switch1 on and assign it to VLAN10");
     	
     	for(int i =0; i < 2; i++)
     	{
     		validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
-            SwitchMenu.manageSwitches(switches, scanner, topology);
+            SwitchMenu.manageSwitches(switches, scanner, topology, mode);
             if(i<1)
             {
             	GuidedModeUtils.printStepBox("Great! Now assign VLAN10 to PC1's port aswell",
@@ -229,20 +318,25 @@ public class GuidedModeMenu {
             }
     	}
     	
-    	// STEP 18 - ASSIGN VLANs TO PORTS ON SWITCH2
+        System.out.println("\n[Step 18/30] ✅ Completed: Assign VLAN to Switch1 Ports\n");
+
+    	// STEP 19 - ASSIGN VLANs TO PORTS ON SWITCH2
     	GuidedModeUtils.printStepBox("Step 19: Assign the VLANs to Switch2 ports",
         		"We now have to assign the VLANs we've created to the ports of Switch2 that PC2 and PC3 are connected to!");
                 
     	GuidedModeUtils.printStepBox("Find out which ports on Switch2 PC2 and PC3 are using",
         		"Navigate to 'Manage Switches' and select 'Switch2'. Now select 'View Port Connections' and check what ports PC2 and PC3 are connected to Switch1 on");
     	
+    	validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
+        SwitchMenu.manageSwitches(switches, scanner, topology, mode);
+        
     	GuidedModeUtils.printStepBox("Got the port numbers? Great!",
         		"Navigate to 'Manage Switches' and select 'Switch2'. Now select 'Assign VLAN to port' and choose the port PC2 is connected to Switch2 on and assign it to VLAN20");
     	
-    	for(int i =0; i < 2; i++)
+    	for(int i = 0; i < 2; i++)
     	{
     		validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
-            SwitchMenu.manageSwitches(switches, scanner, topology);
+            SwitchMenu.manageSwitches(switches, scanner, topology, mode);
             if(i<1)
             {
             	GuidedModeUtils.printStepBox("Great! Now assign VLAN20 to PC3's port aswell",
@@ -250,6 +344,8 @@ public class GuidedModeMenu {
             }
     	}
     	
+        System.out.println("\n[Step 19/30] ✅ Completed: Assign VLAN to Switch2 Ports\n");
+
     	// STEP 20 - CONFIGURE VLAN INTERFACE ON LAYER 3 SWITCH-> ONE FOR EACH VLAN
     	GuidedModeUtils.printStepBox("Step 20: Configure VLAN Interfaces on layer 3 switch",
         		"We now have to configure VLAN Interfaces on the 'CoreSwitch' - a VLAN Interface for each VLAN created on the layer 2 switches 'Switch1' and 'Switch2'");
@@ -262,7 +358,7 @@ public class GuidedModeMenu {
         for(int i =0; i < 2; i++)
     	{
     		validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
-            SwitchMenu.manageSwitches(switches, scanner, topology);
+            SwitchMenu.manageSwitches(switches, scanner, topology, mode);
             if(i<1)
             {
             	GuidedModeUtils.printStepBox("Next: Configure VLAN Interface for VLAN 20",
@@ -270,10 +366,11 @@ public class GuidedModeMenu {
             }
     	}
         
-    	
+        System.out.println("\n[Step 20/30] ✅ Completed: Configure VLAN Interfaces for VLAN10 & VLAN20 on CoreSwitch\n");
+
         // STEP 21 - CONFIGURE IP HELPER: DHCP SERVER IP
-        GuidedModeUtils.printStepBox("Step 21: Configure VLAN Interfaces on layer 3 switch",
-        		"We now have to configure VLAN Interfaces on the 'CoreSwitch' - a VLAN Interface for each VLAN created on the layer 2 switches 'Switch1' and 'Switch2'");
+        GuidedModeUtils.printStepBox("Step 21: Configure IP Helpers for VLANs",
+        		"We now have to configure IP Helpers for the VLANs created on Switch1 and Switch2");
         
         GuidedModeUtils.printTipBox("The IP Helper is the IP address of our DHCPServer. It's configured so that the CoreSwitch can send devices' DHCP requests to the DHCPServer");
         
@@ -283,13 +380,16 @@ public class GuidedModeMenu {
         for(int i =0; i < 2; i++)
     	{
     		validateUserInput(scanner, 3, "Please Select 'Manage Switches' option from the menu");
-            SwitchMenu.manageSwitches(switches, scanner, topology);
+            SwitchMenu.manageSwitches(switches, scanner, topology, mode);
             if(i<1)
             {
-            	GuidedModeUtils.printStepBox("First: Configure IP Helper for VLAN 20",
+            	GuidedModeUtils.printStepBox("Next: Configure IP Helper for VLAN 20",
                 		"Navigate to 'Manage Switches' and select 'CoreSwitch'. Now select 'Configure IP Helper Address' and configure an ip helper for VLAN ID = 20 and where IP helper = 192.168.0.5 (DHCPServer's IP address)");
             }
     	}
+        
+        System.out.println("\n[Step 21/30] ✅ Completed: Helper IP Configured For VLAN10 & VLAN20\n");
+
         
         // STEP 22 - CREATE DHCP IP POOLS -> ONE FOR EACH VLAN WHERE GATEWAY IP = VLAN INTERFACE IP & DNS = DNS IP
         GuidedModeUtils.printStepBox("Step 22: Create IP Pools on the DHCP Server!", 
@@ -301,7 +401,7 @@ public class GuidedModeMenu {
         for(int i =0; i < 2; i++)
     	{
     		validateUserInput(scanner, 6, "Please Select 'Manage Computers' option from the menu");
-    		DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology);
+    		DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology, mode);
     		
             if(i<1)
             {
@@ -311,13 +411,16 @@ public class GuidedModeMenu {
             }
     	}
         
+        System.out.println("\n[Step 22/30] ✅ Completed: IP Pools POOL10 & POOL20 Created on DHCP Server\n");
+
+        
         // STEP 23 - SWITCH PCs TO DYNAMIC & CHECK THEY GOT CORRECT IP ADDRESSES
         GuidedModeUtils.printStepBox("Step 23: Give PCs Dynamic IP Addresses!", 
 				"Navigate to 'Manage Computers' and select PC0. Enable DHCP for PC0!");
         for(int i =0; i < 4; i++)
     	{
     		validateUserInput(scanner, 2, "Please Select 'Manage Computers' option from the menu");
-            PCMenu.managePCs(scanner, computers, manager);
+            PCMenu.managePCs(scanner, computers, manager, mode);
             if(i<3)
             {
             	GuidedModeUtils.printStepBox("Great! Now Enable DHCP for 'PC" + (i+1) + "'",
@@ -328,15 +431,18 @@ public class GuidedModeMenu {
         GuidedModeUtils.printStepBox("Great! Now all PCs have been given IP addresses dynamically", 
 				"PC0 and PC1 have been given IP addresses from IP pool POOL10, and PC2 and PC3 have been given IP addresses from IP pool POOL20!");
         
+        System.out.println("\n[Step 23/30] ✅ Completed: Set PCs' IP to Dynamic & View New IP Addresses\n");
+
         // STEP 24: CHECK MESSAGING WORKS
         GuidedModeUtils.printStepBox("Step 24: Check that messaging works for PCs",
         		"Navigate to 'Manage Computers' and select PC0. Then, select 'Send Message' and choose PC3 from the list. Enter the message: 'Hello from PC0!'");
         
         validateUserInput(scanner, 2, "Please Select 'Manage Computers' option from the menu");
-        PCMenu.managePCs(scanner, computers, manager);
+        PCMenu.managePCs(scanner, computers, manager, mode);
         
         GuidedModeUtils.printTipBox("PC0 and PC3 are on different VLANs, so if they can talk to eachother, everything has been set up correctly!");
 
+        System.out.println("\n[Step 24/30] ✅ Completed: Check That PCs Can Send Messages To PCs on Other VLANs\n");
                 
         // STEP 25 - CREATE WEB SERVER -> NAME IT GOOGLE.COM
         GuidedModeUtils.printStepBox("Step 25: Create a Web Server!", 
@@ -345,21 +451,27 @@ public class GuidedModeMenu {
 		validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
 	    DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
 	    
+        System.out.println("\n[Step 25/30] ✅ Completed: Create 'www.google.com' Web Server\n");
+
         // STEP 26 - GIVE WEB SERVER IP 
 	    GuidedModeUtils.printStepBox("Step 26: Give 'www.google.com' Web Server an IP address",
         		"Navigate to 'Manage Web Servers' and give 'www.google.com' Web Server an the IP address: 192.168.0.100");
         	
         GuidedModeUtils.printTipBox("The Web Server's IP address will be the IP address used when creating a record in the DNSServer later on!");
 		
-        validateUserInput(scanner, 4, "Please Select 'Manage Web Servers' option from the menu");
-        WebServerMenu.manageDHCPServers(scanner, webServers, topology);
+        validateUserInput(scanner, 7, "Please Select 'Manage Web Servers' option from the menu");
+        WebServerMenu.manageWebServers(scanner, webServers, topology, mode);
         
+        System.out.println("\n[Step 26/30] ✅ Completed: Configure 'www.google.com' Web Server IP\n");
+
         // STEP 27 - CONNECT WEB SERVER TO SWITCH3
         GuidedModeUtils.printStepBox("Step 27: Connect 'www.google.com' Web Server to Switch3",
         		"Navigate to 'Add Connection' and create a connection between Switch3 and 'www.google.com' Web Server");
                 
         validateUserInput(scanner, 8, "Please Select 'Add Connection' option from the menu");
     	TopologyMenu.addConnection(scanner, topology);
+    	
+        System.out.println("\n[Step 27/30] ✅ Completed: Connect Web Server to Switch3\n");
         
         // STEP 28 - CREATE DNS RECORD IN DNS SERVER W IP = WEB SERVER & DOMAIN NAME = WWW.GOOGLE.COM
     	GuidedModeUtils.printStepBox("Step 28: Create a DNS 'A Record' on the DNS Server",
@@ -367,8 +479,10 @@ public class GuidedModeMenu {
         	
         GuidedModeUtils.printTipBox("The A Records on the DNS server are what map web addresses to IP addresses!");
 		
-        validateUserInput(scanner, 4, "Please Select 'Manage DNS Servers' option from the menu");
-        DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+        validateUserInput(scanner, 5, "Please Select 'Manage DNS Servers' option from the menu");
+        DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
+        
+        System.out.println("\n[Step 28/30] ✅ Completed: Create DNS Record That Maps www.google.com to Web Server IP\n");
         
         // STEP 29 - SET WEB SERVER CONTENT -> "WELCOME TO GOOGLE.COM"
         GuidedModeUtils.printStepBox("Step 29: Set the website content for www.google.com",
@@ -376,20 +490,35 @@ public class GuidedModeMenu {
         	
         GuidedModeUtils.printTipBox("Because this simulation isn't connected to the internet, we have to create our own website content!");
 		
-        validateUserInput(scanner, 4, "Please Select 'Manage Web Servers' option from the menu");
-        DNSServerMenu.manageDNSServers(scanner, dnsServers, topology);
+        validateUserInput(scanner, 7, "Please Select 'Manage Web Servers' option from the menu");
+        WebServerMenu.manageWebServers(scanner, webServers, topology, mode);
+        
+        System.out.println("\n[Step 29/30] ✅ Completed: Set Website Content for 'www.google.com'\n");
         
         //STEP 30: SEARCH FOR WEBSITE
         GuidedModeUtils.printStepBox("Step 30: Search for the website we've created!",
         		"Navigate to 'Manage Computers' and select PC0. Then, select 'Search Website' and enter the domain: 'www.google.com'");
         
-        validateUserInput(scanner, 3, "Please Select 'Manage Computers' option from the menu");
-        PCMenu.managePCs(scanner, computers, manager);
-        
         GuidedModeUtils.printTipBox("The website we've created should now be accessible by searching the domain name: www.google.com");
+
+        validateUserInput(scanner, 2, "Please Select 'Manage Computers' option from the menu");
+        PCMenu.managePCs(scanner, computers, manager, mode);
         
+        System.out.println("\n[Step 30/30] ✅ Completed: Check that www.google.com is reachable\n");
+
+               
         GuidedModeUtils.printStepBox("Simulation Complete!",
         		"Well done! You have successfully set up a LAN for an office building!");
+        
+
+        GuidedModeUtils.printStepBox("Now Printing Configured Network Topology!",
+        		"Printing...");
+        
+		SwingUtilities.invokeLater(() -> {
+	        TopologyVisualiser visualiser = new TopologyVisualiser(topology);
+	        visualiser.setVisible(true);
+	    });
+
 	}
 	
 	private static void validateUserInput(Scanner scanner, int validOption, String errorMessage) {

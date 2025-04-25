@@ -78,7 +78,7 @@ public class DNSServerMenu {
     	do
     	{
     		System.out.println("\n╔════════════════════════════════════╗");
-            System.out.println("║   Managing DNS Server: " + dnsServer.getName());
+            System.out.printf("║   Managing DNS Server: " + dnsServer.getName());
             System.out.println("╠════════════════════════════════════╣");
             System.out.println("║ 1. Configure Server IP Address     ║");
             System.out.println("║ 2. Add DNS Record                  ║");
