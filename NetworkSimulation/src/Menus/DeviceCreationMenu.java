@@ -43,7 +43,7 @@ public class DeviceCreationMenu {
 	{
 		// Display the device creation menu
 		System.out.println("\n╔════════════════════════════════════════════╗");
-	    System.out.println("║        🛠️  DEVICE CREATION MENU            ║");
+	    System.out.println("║           DEVICE CREATION MENU             ║");
 	    System.out.println("╚════════════════════════════════════════════╝");
 	    System.out.println("╔════════════════════════════════════════════╗");
 	    System.out.println("║ 1. Router                                  ║");

@@ -41,7 +41,7 @@ public class GuidedModeUtils {
         System.out.println();
         System.out.println(horizontalBorder);
         System.out.printf(padding + "║ %-"+(width-4)+"s ║\n", title);
-        System.out.println(padding + "╟" + "─".repeat(width - 2) + "╢");
+        System.out.println(padding + "║" + "─".repeat(width - 2) + "║");
 
         for (String line : wrappedLines) {
             System.out.printf(padding + "║ %-"+(width-4)+"s ║\n", line);

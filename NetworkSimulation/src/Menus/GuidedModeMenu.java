@@ -3,6 +3,8 @@ package Menus;
 import java.util.List; 
 import java.util.Scanner;
 
+import javax.swing.SwingUtilities;
+
 import Devices.Computer;
 import Devices.DHCPServer;
 import Devices.DNSServer;
@@ -11,6 +13,7 @@ import Devices.Switch;
 import Devices.WebServer;
 import Network.NetworkManager;
 import Network.Topology;
+import Network.TopologyVisualiser;
 
 /**
  * The {@code GuidedModeMenu} class provides a user interface to guide the user through the process
@@ -41,7 +44,32 @@ public class GuidedModeMenu {
 			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers, int mode) 
 	{
 		
-		System.out.println("\n=== Guided Mode: Setting up a VLAN for an Office Building ===");
+		System.out.println("╔══════════════════════════════════════════════════════════════════════════════╗");
+		System.out.println("║                           Welcome to Guided Mode!                            ║");
+		System.out.println("╠══════════════════════════════════════════════════════════════════════════════╣");
+		System.out.println("║ In this Guided Mode, you will be setting up the LAN (Local Area Network)     ║");
+		System.out.println("║ for a modern multi-floor office building. Step by step, you'll build a       ║");
+		System.out.println("║ complete network infrastructure that mirrors a real-world scenario.          ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ The Office Building Setup:                                                   ║");
+		System.out.println("║ - A Router will act as the gateway to the internet.                          ║");
+		System.out.println("║ - A Layer 3 Switch (CoreSwitch) will connect all floors and manage VLANs.    ║");
+		System.out.println("║ - Each floor has a Layer 2 Switch connecting employees' computers.           ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ Each floor will have office PCs (PC0, PC1, etc.) connected to Layer 2        ║");
+		System.out.println("║ switches, which in turn connect to the Layer 3 switch for central routing.   ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ In the Server Room, connected to one Layer 2 switch, you will install:       ║");
+		System.out.println("║   - DHCP Server: Automatically assigns IP addresses to devices.              ║");
+		System.out.println("║   - DNS Server: Translates domain names (like www.example.com)               ║");
+		System.out.println("║                            into IP addresses.                                ║");
+		System.out.println("║   - Web Server: Hosts websites and responds to browser requests.             ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ As you progress, you'll configure IP addresses, make connections, and ensure ║");
+		System.out.println("║ everything works just like it would in a real office network.                ║");
+		System.out.println("║                                                                              ║");
+		System.out.println("║ Let's get started building your network – one step at a time!                ║");
+		System.out.println("╚══════════════════════════════════════════════════════════════════════════════╝");
 		
 		// STEP 1 - CREATE ROUTER
 		GuidedModeUtils.printStepBox("Step 1: Create a Router!", 
@@ -67,7 +95,7 @@ public class GuidedModeMenu {
 		GuidedModeUtils.printStepBox("Step 3: Create a Layer 3 Switch",
         		"Navigate to 'Create New Device' and create a layer 3 switch named 'CoreSwitch'");
         	
-        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interface!");
+        GuidedModeUtils.printTipBox("Layer 3 switches are different than Layer 2 switches because they allow for the creation of VLAN Interfaces!");
         
         validateUserInput(scanner, 1, "Please Select 'Create New Device' option from the menu");
         DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
@@ -481,6 +509,16 @@ public class GuidedModeMenu {
                
         GuidedModeUtils.printStepBox("Simulation Complete!",
         		"Well done! You have successfully set up a LAN for an office building!");
+        
+
+        GuidedModeUtils.printStepBox("Now Printing Configured Network Topology!",
+        		"Printing...");
+        
+		SwingUtilities.invokeLater(() -> {
+	        TopologyVisualiser visualiser = new TopologyVisualiser(topology);
+	        visualiser.setVisible(true);
+	    });
+
 	}
 	
 	private static void validateUserInput(Scanner scanner, int validOption, String errorMessage) {

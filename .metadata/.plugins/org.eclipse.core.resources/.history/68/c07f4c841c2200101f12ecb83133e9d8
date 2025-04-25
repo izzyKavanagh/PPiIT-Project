@@ -1,0 +1,88 @@
+package Menus;
+
+import java.util.List; 
+import java.util.Scanner;
+import Devices.Computer;
+import Devices.DHCPServer;
+import Devices.DNSServer;
+import Devices.Router;
+import Devices.Switch;
+import Devices.WebServer;
+import Network.NetworkManager;
+import Network.Topology;
+import Network.TopologyVisualiser;
+
+/**
+ * The {@code FreeModeMenu} class provides a user interface for managing and configuring
+ * a network in Free Mode. Users can create devices, manage configurations, and modify connections.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
+public class FreeModeMenu {
+
+	/**
+     * Displays the main menu and processes user selections for device and topology management.
+     *
+     * @param scanner - {@link Scanner} for capturing user input  
+     * @param topology - {@link Topology} of the network for device registration and connections  
+     * @param manager - {@link NetworkManager} to facilitate network-wide operations  
+     * @param routers - list of available {@link Router} instances  
+     * @param computers - list of available {@link Computer} instances  
+     * @param switches - list of available {@link Switch} instances (Layer 2 and 3)  
+     * @param dhcpServers - list of available {@link DHCPServer} instances  
+     * @param dnsServers - list of available {@link DNSServer} instances  
+     * @param webServers - list of available {@link WebServer} instances  
+     * @param mode - operational mode (e.g., guided or free); affects how long the menu stays open  
+     */
+	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
+			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers, int mode) 
+	{
+		int choice;
+        
+        do{
+        	MainMenu.printMainMenu();
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                	DeviceCreationMenu.createDevice(scanner, topology, routers, computers, switches, dhcpServers, dnsServers, webServers);
+                    break;
+                case 2:
+                	PCMenu.managePCs(scanner, computers, manager, mode);
+                	break;
+                case 3:
+                	SwitchMenu.manageSwitches(switches, scanner, topology, mode);
+                	break; 
+                case 4:
+                	RouterMenu.manageRouters(routers, scanner, topology, mode); 
+                	break;
+                case 5:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
+                	break;
+                case 6:
+                	DHCPServerMenu.manageDHCPServers(scanner, dhcpServers, topology, mode);
+                	break;
+                case 7:
+                	DNSServerMenu.manageDNSServers(scanner, dnsServers, topology, mode);
+                	break;
+                case 8:
+                	TopologyMenu.addConnection(scanner,topology);
+                	break; 
+                case 9:
+                	TopologyMenu.removeConnection(scanner,topology); 
+                	break; 
+                case 10:
+                	SwingUtilities.invokeLater(() -> {
+                        TopologyVisualiser visualiser = new TopologyVisualiser(topology);
+                        visualiser.setVisible(true);
+                    });
+                	break; 
+                case 11:
+                	break;
+            }
+            
+        }while(choice !=10);
+	}
+}

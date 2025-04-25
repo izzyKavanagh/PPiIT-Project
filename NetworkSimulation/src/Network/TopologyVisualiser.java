@@ -1,0 +1,144 @@
+package Network;
+
+import javax.swing.*;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Color;
+import java.util.*;
+import Devices.Device;
+
+/**
+ * The TopologyVisualiser class provides a GUI window that visually represents
+ * the network topology. It displays all devices and their connections on a panel
+ * using simple 2D graphics.
+ * 
+ * Devices are placed based on their type (router, switch, computer, server), and connections
+ * are visualized as lines between them.
+ * 
+ * This tool helps students better understand the structure and layout of a network.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ * 
+ */
+public class TopologyVisualiser extends JFrame {
+ 
+	private static final long serialVersionUID = 1L;
+	private Topology topology;
+
+	/**
+     * Constructs a new TopologyVisualiser window using the provided {@link Topology}.
+     * Initializes the GUI window and adds the visual panel for rendering the network.
+     * 
+     * @param topology the current network topology to visualize
+     */
+    public TopologyVisualiser(Topology topology) {
+        this.topology = topology;
+        setTitle("Network Topology Viewer");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        add(new TopologyPanel());
+        setLocationRelativeTo(null); // Center window
+        setVisible(true);
+    }
+
+    /**
+     * Inner class TopologyPanel extends {@link JPanel} and is responsible for
+     * rendering the devices and connections of the network topology.
+     */
+    class TopologyPanel extends JPanel {
+
+		private static final long serialVersionUID = 1L;
+		Map<String, Point> devicePositions = new HashMap<>();
+
+		/**
+         * Called automatically by the Swing framework to draw the panel contents.
+         * Draws all network devices and their connections using simple circles and lines.
+         * 
+         * @param g the Graphics object used for drawing
+         */
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            Map<String, List<String>> adjacencyList = topology.updateAdjacencyList();
+            Map<String, Device> devices = topology.getRegisteredDevices();
+
+            // Assign structured positions if not already assigned
+            if (devicePositions.isEmpty()) {
+                assignStructuredPositions(devices);
+            }
+
+            // Draw connections (lines)
+            g.setColor(Color.GRAY);
+            for (Map.Entry<String, List<String>> entry : adjacencyList.entrySet()) {
+                String deviceName = entry.getKey();
+                Point p1 = devicePositions.get(deviceName);
+                for (String connectedDevice : entry.getValue()) {
+                    Point p2 = devicePositions.get(connectedDevice);
+                    g.drawLine(p1.x, p1.y, p2.x, p2.y);
+                }
+            }
+
+            // Draw devices (circles)
+            for (Map.Entry<String, Point> entry : devicePositions.entrySet()) {
+                String deviceName = entry.getKey();
+                Point p = entry.getValue();
+
+                g.setColor(Color.CYAN);
+                g.fillOval(p.x - 20, p.y - 20, 40, 40);
+
+                g.setColor(Color.BLACK);
+                g.drawOval(p.x - 20, p.y - 20, 40, 40);
+
+                // Device name label
+                g.drawString(deviceName, p.x - 20, p.y - 25);
+            }
+        }
+        
+        /**
+         * Assigns structured positions to devices based on their type to ensure
+         * a clean and organized layout. Routers are at the top, switches below,
+         * PCs below that, and servers at the bottom.
+         * 
+         * @param devices a map of device names to Device objects
+         */
+        private void assignStructuredPositions(Map<String, Device> devices) {
+            int width = getWidth();
+            int routerY = 50;
+            int switchY = 200;
+            int pcY = 350;
+            int serverY = 450;
+
+            int routerX = width / 2;
+            int switchX = 150;
+            int pcX = 50;
+            int serverX = 50;
+
+            int switchSpacing = 150;
+            int pcSpacing = 100;
+            int serverSpacing = 100;
+
+            for (Device device : devices.values()) {
+                String type = device.getClass().getSimpleName();
+
+                if (type.contains("Router")) {
+                    devicePositions.put(device.getName(), new Point(routerX, routerY));
+                } 
+                else if (type.contains("Switch")) {
+                    devicePositions.put(device.getName(), new Point(switchX, switchY));
+                    switchX += switchSpacing;
+                } 
+                else if (type.equals("Computer")) {
+                    devicePositions.put(device.getName(), new Point(pcX, pcY));
+                    pcX += pcSpacing;
+                } 
+                else if (type.contains("Server")) {
+                    devicePositions.put(device.getName(), new Point(serverX, serverY));
+                    serverX += serverSpacing;
+                }
+            }
+        }
+    }
+}
+

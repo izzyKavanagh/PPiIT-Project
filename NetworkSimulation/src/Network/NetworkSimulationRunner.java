@@ -70,13 +70,13 @@ public class NetworkSimulationRunner {
         do{
         	
         	System.out.println("\n╔══════════════════════════════════════════════╗");
-            System.out.println("║           🌐 NETWORK SIMULATION 🌐           ║");
+            System.out.println("║              NETWORK SIMULATION              ║");
             System.out.println("╚══════════════════════════════════════════════╝");
             System.out.println("               Select a Mode:");
             System.out.println("╔══════════════════════════════════════════════╗");
-            System.out.println("║  1. 🛠  Free Mode                            ║");
-            System.out.println("║  2. 🎯 Guided Mode                           ║");
-            System.out.println("║  3. ❌ Exit Simulation                       ║");
+            System.out.println("║  1. Free Mode                                ║");
+            System.out.println("║  2. Guided Mode                              ║");
+            System.out.println("║  3. Exit Simulation                          ║");
             System.out.println("╚══════════════════════════════════════════════╝\n");
             System.out.print("Enter your choice: ");
             mode = scanner.nextInt();

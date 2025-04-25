@@ -2,6 +2,9 @@ package Menus;
 
 import java.util.List; 
 import java.util.Scanner;
+
+import javax.swing.SwingUtilities;
+
 import Devices.Computer;
 import Devices.DHCPServer;
 import Devices.DNSServer;
@@ -10,6 +13,7 @@ import Devices.Switch;
 import Devices.WebServer;
 import Network.NetworkManager;
 import Network.Topology;
+import Network.TopologyVisualiser;
 
 /**
  * The {@code FreeModeMenu} class provides a user interface for managing and configuring
@@ -73,9 +77,15 @@ public class FreeModeMenu {
                 	TopologyMenu.removeConnection(scanner,topology); 
                 	break; 
                 case 10:
+                	SwingUtilities.invokeLater(() -> {
+                        TopologyVisualiser visualiser = new TopologyVisualiser(topology);
+                        visualiser.setVisible(true);
+                    });
+                	break; 
+                case 11:
                 	break;
             }
             
-        }while(choice !=10);
+        }while(choice !=11);
 	}
 }

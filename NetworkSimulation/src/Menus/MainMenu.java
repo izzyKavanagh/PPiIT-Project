@@ -16,19 +16,20 @@ public class MainMenu {
 	public static void printMainMenu()
 	{
 		System.out.println("\n╔════════════════════════════════════════════╗");
-	    System.out.println("║               📋 MAIN MENU                 ║");
+	    System.out.println("║                 MAIN MENU                  ║");
 	    System.out.println("╚════════════════════════════════════════════╝");
 	    System.out.println("╔════════════════════════════════════════════╗");
-	    System.out.println("║ 1. ➕ Create New Device                    ║");
-	    System.out.println("║ 2. 🖥️  Manage Computers                    ║");
-	    System.out.println("║ 3. 🔀 Manage Switches                      ║");
-	    System.out.println("║ 4. 🌐 Manage Routers                       ║");
-	    System.out.println("║ 5. 🧭 Manage DNS Servers                   ║");
-	    System.out.println("║ 6. 📡 Manage DHCP Servers                  ║");
-	    System.out.println("║ 7. 💻 Manage Web Servers                   ║");
-	    System.out.println("║ 8. 🔗 Add Connection                       ║"); 
-	    System.out.println("║ 9. ❌ Remove Connection                    ║");
-	    System.out.println("║ 10. Exit                                   ║");
+	    System.out.println("║ 1. Create New Device                       ║");
+	    System.out.println("║ 2. Manage Computers                        ║");
+	    System.out.println("║ 3. Manage Switches                         ║");
+	    System.out.println("║ 4. Manage Routers                          ║");
+	    System.out.println("║ 5. Manage DNS Servers                      ║");
+	    System.out.println("║ 6. Manage DHCP Servers                     ║");
+	    System.out.println("║ 7. Manage Web Servers                      ║");
+	    System.out.println("║ 8. Add Connection                          ║"); 
+	    System.out.println("║ 9. Remove Connection                       ║");
+	    System.out.println("║ 10. Print Network Topology                 ║");
+	    System.out.println("║ 11. Exit                                   ║");
 	    System.out.println("╚════════════════════════════════════════════╝");
 	    System.out.print("Enter your choice: ");
 	}
