@@ -8,7 +8,24 @@ import Devices.Layer3Switch;
 import Devices.Switch;
 import Network.Topology;
 
+/**
+ * A menu class for managing switches in the network simulation. It provides options to configure VLANs,
+ * assign ports to VLANs, and configure Layer 3 switches with IP addresses and VLAN interfaces.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class SwitchMenu {
+	
+	/**
+     * Displays the switch management menu and allows the user to select a switch to manage.
+     * Once a switch is selected, the menu will provide options to manage VLANs or configure the switch.
+     *
+     * @param switches - list of switches available in the network.
+     * @param scanner - scanner object for reading user input.
+     * @param topology - network topology object for network configuration.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu is not fully interactive.
+     */
 	public static void manageSwitches(List<Switch> switches, Scanner scanner, Topology topology, int mode) {
 	    if (switches.isEmpty()) {
 	        System.out.println("No switches available in the network.");
@@ -40,6 +57,15 @@ public class SwitchMenu {
 	    }
 	}
 	
+	/**
+     * Provides the menu for managing VLANs on a Layer 2 switch, including creating VLANs,
+     * assigning VLANs to ports, and viewing port VLAN assignments.
+     *
+     * @param selectedSwitch - selected Layer 2 switch to configure.
+     * @param scanner - scanner object for reading user input.
+     * @param topology - network topology object for network configuration.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu may not be fully interactive.
+     */
 	private static void manageVLANS(Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
 		int choice;
 		
@@ -121,6 +147,15 @@ public class SwitchMenu {
 		
 	}
 
+	/**
+     * Provides the menu for managing Layer 3 switches, including configuring IP addresses,
+     * managing VLANs, and configuring VLAN interfaces (SVIs).
+     *
+     * @param selectedSwitch The selected Layer 3 switch to configure.
+     * @param scanner - scanner object for reading user input.
+     * @param topology - network topology object for network configuration.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu may not be fully interactive.
+     */
 	private static void manageLayer3Switch(Layer3Switch selectedSwitch, Scanner scanner, Topology topology, int mode) {
 		int choice;
 
@@ -174,6 +209,12 @@ public class SwitchMenu {
 		
 	}
 	
+	/**
+     * Configures the IP address for the selected Layer 3 switch.
+     *
+     * @param scanner - scanner object for reading user input.
+     * @param switchDevice - Layer 3 switch whose IP address is to be configured.
+     */
 	private static void configureSwitchIpAddress(Scanner scanner, Layer3Switch switchDevice) {
 	    String currentIp = switchDevice.getIpAddress();
 	    if (currentIp == null || currentIp.isEmpty()) {

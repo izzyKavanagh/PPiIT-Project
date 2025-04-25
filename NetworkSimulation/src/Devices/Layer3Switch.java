@@ -11,6 +11,10 @@ import Network.Topology;
 /**
  * Represents a Layer 3 Switch capable of both switching and basic routing.
  * Supports VLAN configuration and IP helper setup for DHCP relay functions.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class Layer3Switch extends Switch implements DeviceWithCLI{
 	

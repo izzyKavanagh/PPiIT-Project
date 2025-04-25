@@ -1,5 +1,13 @@
 package Network;
 
+/**
+ * An enumeration of error messages used in network configurations.
+ * This enum contains predefined error messages that are useful in various scenarios
+ * such as when configuring IP addresses, subnets, or ports.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public enum ErrorMessages {
 	// IP Pool Errors
     INVALID_IP_START_ZERO("IP pool cannot start with 0."),
@@ -13,10 +21,21 @@ public enum ErrorMessages {
     
     private final String message;
 
+    /**
+     * Constructor for the ErrorMessages enum.
+     * Initializes each error message with a specific error string.
+     * 
+     * @param message - error message string to associate with this enum constant.
+     */
     ErrorMessages(String message) {
         this.message = message;
     }
 
+    /**
+     * Retrieves the error message associated with this enum constant.
+     * 
+     * @return The error message string.
+     */
     public String getMessage() {
         return message;
     }

@@ -10,6 +10,9 @@ import Network.DeviceWithCLI;
 /**
  * Represents a Router capable of static IP allocation, port IP assignments, and VLAN interface configuration.
  * Also supports CLI-based IP helper setup and routing table management.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class Router extends Device implements DeviceWithCLI{
 	
@@ -131,9 +134,13 @@ public class Router extends Device implements DeviceWithCLI{
     }
     
     /**
-     * Updates the routing table with a new device.
-     *
-     * @param device - the device to add
+     * Configures a VLAN interface with a specific VLAN ID and IP address.
+     * 
+     * <p>This method creates a new {@link VLANInterface} instance and associates it with the provided VLAN ID and IP address.
+     * It then stores the VLAN interface in a map for further use. The configuration is confirmed with a printed message.
+     * 
+     * @param vlanId the VLAN ID for which the interface is to be configured.
+     * @param ipAddress the IP address to assign to the VLAN interface.
      */
     public void configureVLANInterface(int vlanId, String ipAddress) {
         VLANInterface vlanInterface = new VLANInterface(ipAddress);

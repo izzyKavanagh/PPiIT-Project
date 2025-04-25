@@ -5,8 +5,27 @@ import java.util.Scanner;
 import Devices.DHCPServer;
 import Network.Topology;
 
+/**
+ * The DHCPServerMenu class provides a console-based interface
+ * for managing DHCP server devices within a network simulation.
+ * Users can configure server IP addresses, create and view IP pools, 
+ * and inspect port connections for each DHCP server.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
+
 public class DHCPServerMenu {
 
+	/**
+     * Displays a menu to list and manage all available DHCP servers.
+     * Allows selection of a specific server and navigates to its configuration options.
+     *
+     * @param scanner - {@link Scanner} used for user input
+     * @param dhcpServers - list of {@link DHCPServer} objects available in the network
+     * @param topology - {@link Topology} of the network
+     * @param mode - operating mode (e.g., guided or free mode)
+     */
 	public static void manageDHCPServers(Scanner scanner, List<DHCPServer> dhcpServers, Topology topology, int mode) {
         if (dhcpServers.isEmpty()) {
             System.out.println("No DHCP servers available.");
@@ -45,6 +64,16 @@ public class DHCPServerMenu {
         }while(serverChoice != (dhcpServers.size() + 1) && mode != 2);
     }
 
+	/**
+     * Displays a configuration menu for a selected DHCP server and allows users
+     * to perform various operations such as configuring IP, managing IP pools,
+     * and viewing port connections.
+     *
+     * @param scanner - {@link Scanner} used for user input
+     * @param dhcpServer - selected {@link DHCPServer} to manage
+     * @param topology - {@link Topology} of the network
+     * @param mode - operating mode (e.g., guided or free)
+     */
     private static void manageSingleDHCPServer(Scanner scanner, DHCPServer dhcpServer, Topology topology, int mode) {
     	int choice;
     	
@@ -87,6 +116,12 @@ public class DHCPServerMenu {
 		
 	}
     
+    /**
+     * Prompts the user to view and optionally set a new IP address for the DHCP server.
+     *
+     * @param scanner - {@link Scanner} used for user input
+     * @param dhcpServer - {@link DHCPServer} being configured
+     */
     private static void configureDHCPServerIpAddress(Scanner scanner, DHCPServer dhcpServer) {
 	    String currentIp = dhcpServer.getIpAddress();
 	    if (currentIp == null || currentIp.isEmpty()) {

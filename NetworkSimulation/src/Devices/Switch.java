@@ -8,6 +8,10 @@ import Network.Topology;
 /**
  * Abstract base class representing a switch with VLAN support
  * Provides VLAN configuration and port assignment tracking
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public abstract class Switch extends Device{
 	
@@ -34,18 +38,17 @@ public abstract class Switch extends Device{
     }
     
     /**
-     * Gets the VLAN ID assigned to each port.
+     * Sets the VLAN port mapping.
      *
-     * @return the port-to-VLAN map
      */
     public void setVlanPortMap(Map<String, Integer> vlanPortMap) {
 		this.vlanPortMap = vlanPortMap;
 	}
     
     /**
-     * Sets the VLAN port mapping.
+     * Gets the VLAN ID assigned to each port.
      *
-     * @param vlanPortMap - the port-to-VLAN map
+     * @return the port-to-VLAN map
      */
     public Map<String, Integer> getVlanPortMap() {
 		return vlanPortMap;

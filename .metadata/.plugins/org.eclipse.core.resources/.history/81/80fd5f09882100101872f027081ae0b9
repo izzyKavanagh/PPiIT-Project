@@ -1,0 +1,25 @@
+package Network;
+
+/**
+ * An interface representing a device that has a Command Line Interface (CLI). 
+ * This interface provides methods for interacting with the device's CLI, 
+ * configuring IP helper addresses, and retrieving the device's name.
+ */
+public interface DeviceWithCLI {
+	 /**
+     * Starts the Command Line Interface (CLI) of the device.
+     * This method should initiate the device's CLI for user interaction.
+     */
+	void startCLI();
+	
+	/**
+     * Configures an IP helper address for a specific VLAN interface.
+     * The helper address is typically used to relay certain types of traffic 
+     * (such as DHCP) to a specific address.
+     * 
+     * @param vlanInterface - VLAN interface number to configure.
+     * @param helperAddress - IP address of the helper address to set.
+     */
+    void configureIpHelper(int vlanInterface, String helperAddress);
+	String getName();
+}

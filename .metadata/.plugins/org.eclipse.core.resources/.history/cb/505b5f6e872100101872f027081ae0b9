@@ -1,0 +1,121 @@
+package Menus;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+import Devices.Device;
+import Network.Topology;
+
+/**
+ * A menu class that allows the user to manage the network topology, including adding and removing connections
+ * between devices within the network. The user can view a list of devices and interact with them to create or delete connections.
+ */
+public class TopologyMenu {
+	
+	 /**
+     * Allows the user to add a connection between two devices in the network topology.
+     * It presents a list of devices, prompts the user to select the source and target devices, 
+     * and establishes a connection between them in the topology.
+     *
+     * @param scanner - Scanner object to read user input.
+     * @param topology - network topology object that manages the devices and their connections.
+     */
+	public static void addConnection(Scanner scanner,Topology topology) {
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
+	    
+		System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║        Network Devices       ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < devices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, devices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
+	    
+	    System.out.println("Enter device you wish to form a connection on: ");
+	    int sourceDeviceIndex = scanner.nextInt() - 1;
+	    
+	    System.out.println("Enter device you wish to connect to: ");
+	    int targetDeviceIndex = scanner.nextInt() - 1;
+	    
+	    String sourceDevice = devices.get(sourceDeviceIndex); 
+	    String targetDevice = devices.get(targetDeviceIndex);
+	    
+	    Device source = topology.getRegisteredDevices().get(sourceDevice);
+        Device target = topology.getRegisteredDevices().get(targetDevice);
+        
+        topology.connectDevices(source, target);
+	}
+	
+	/**
+     * Allows the user to remove a connection between two devices in the network topology.
+     * It displays a list of connected devices and prompts the user to select the device to disconnect from.
+     * The method then removes the connection between the selected source and target devices in the topology.
+     *
+     * @param scanner   A Scanner object to read user input.
+     * @param topology  The network topology object that manages the devices and their connections.
+     */
+	public static void removeConnection(Scanner scanner,Topology topology) {
+		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
+	    
+		System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║        Network Devices       ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < devices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, devices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
+	    
+	    System.out.println("Enter device you wish to delete a connection from: ");
+	    int sourceDeviceIndex = scanner.nextInt() - 1;
+	    scanner.nextLine(); // consume newline
+
+	    if (sourceDeviceIndex < 0 || sourceDeviceIndex >= devices.size()) {
+	        System.out.println("Invalid selection.");
+	        return;
+	    }
+	    
+	    String sourceDeviceName = devices.get(sourceDeviceIndex); 
+	    Device source = topology.getRegisteredDevices().get(sourceDeviceName);
+	    
+	    Map<String, Device> ports = topology.getTopology().get(sourceDeviceName);
+	    List<String> connectedDevices = new ArrayList<>();
+
+	    if (ports != null) {
+	        for (Device connectedDevice : ports.values()) {
+	            if (connectedDevice != null && !connectedDevices.contains(connectedDevice.getName())) {
+	                connectedDevices.add(connectedDevice.getName());
+	            }
+	        }
+	    }
+
+	    if (connectedDevices.isEmpty()) {
+	        System.out.println(sourceDeviceName + " has no connections.");
+	        return;
+	    }
+
+	    System.out.println("\n╔══════════════════════════════╗");
+        System.out.println("║       Connected Devices      ║");
+        System.out.println("╠══════════════════════════════╣");
+        for (int i = 0; i < connectedDevices.size(); i++) {
+            System.out.printf("║ %2d. %-24s ║\n", i + 1, connectedDevices.get(i));
+        }
+        System.out.println("╚══════════════════════════════╝");
+	    
+	    System.out.print("Select the device to disconnect: ");
+	    int targetDeviceIndex = scanner.nextInt() - 1;
+	    scanner.nextLine();
+
+	    if (targetDeviceIndex < 0 || targetDeviceIndex >= connectedDevices.size()) {
+	        System.out.println("Invalid selection.");
+	        return;
+	    }
+	    
+	    String targetDeviceName = connectedDevices.get(targetDeviceIndex);
+        Device target = topology.getRegisteredDevices().get(targetDeviceName);
+        
+        topology.disconnectDevices(source, target);
+	}
+	
+}

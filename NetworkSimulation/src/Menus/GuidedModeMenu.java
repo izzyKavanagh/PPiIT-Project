@@ -12,8 +12,31 @@ import Devices.WebServer;
 import Network.NetworkManager;
 import Network.Topology;
 
+/**
+ * The {@code GuidedModeMenu} class provides a user interface to guide the user through the process
+ * of setting up a VLAN network for an office building in Guided Mode. The user is led through a series 
+ * of steps to configure various network devices and connections.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class GuidedModeMenu {
 
+	/**
+     * Displays the main menu and guides the user through the VLAN setup process step by step.
+     *
+     * @param scanner - {@link Scanner} for capturing user input  
+     * @param topology - {@link Topology} of the network for device registration and connections  
+     * @param manager - {@link NetworkManager} to facilitate network-wide operations  
+     * @param routers - list of available {@link Router} instances  
+     * @param computers - list of available {@link Computer} instances  
+     * @param switches - list of available {@link Switch} instances (Layer 2 and 3)  
+     * @param dhcpServers - list of available {@link DHCPServer} instances  
+     * @param dnsServers - list of available {@link DNSServer} instances  
+     * @param webServers - list of available {@link WebServer} instances  
+     * @param mode - operational mode (e.g., guided or free); affects how long the menu stays open  
+     */
 	public static void mainMenu(Scanner scanner, Topology topology, NetworkManager manager, List<Router> routers, List<Computer> computers,
 			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers, int mode) 
 	{

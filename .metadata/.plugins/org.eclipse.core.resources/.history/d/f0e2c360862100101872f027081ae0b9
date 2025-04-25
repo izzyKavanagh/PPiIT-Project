@@ -1,0 +1,80 @@
+package Menus;
+
+/**
+ * Utility class to display the main menu and progress bar in a console-based application.
+ * Provides methods for printing the main menu, progress bar, and a welcome message.
+ */
+public class MainMenu {
+
+	 /**
+     * Prints the main menu with different options for the user to choose from.
+     * This menu displays options related to managing devices, servers, and connections.
+     */
+	public static void printMainMenu()
+	{
+		System.out.println("\n╔════════════════════════════════════════════╗");
+	    System.out.println("║               📋 MAIN MENU                 ║");
+	    System.out.println("╚════════════════════════════════════════════╝");
+	    System.out.println("╔════════════════════════════════════════════╗");
+	    System.out.println("║ 1. ➕ Create New Device                    ║");
+	    System.out.println("║ 2. 🖥️  Manage Computers                    ║");
+	    System.out.println("║ 3. 🔀 Manage Switches                      ║");
+	    System.out.println("║ 4. 🌐 Manage Routers                       ║");
+	    System.out.println("║ 5. 🧭 Manage DNS Servers                   ║");
+	    System.out.println("║ 6. 📡 Manage DHCP Servers                  ║");
+	    System.out.println("║ 7. 💻 Manage Web Servers                   ║");
+	    System.out.println("║ 8. 🔗 Add Connection                       ║"); 
+	    System.out.println("║ 9. ❌ Remove Connection                    ║");
+	    System.out.println("║ 10. Exit                                   ║");
+	    System.out.println("╚════════════════════════════════════════════╝");
+	    System.out.print("Enter your choice: ");
+	}
+	
+	/**
+     * Prints a progress bar to the console, showing the completion percentage.
+     * The progress bar is dynamically updated based on the current index and total.
+     *
+     * @param index The current step or progress point.
+     * @param total The total number of steps or progress points.
+     */
+	public static void printProgress(int index, int total) {
+        if (index > total) return; // Out of range
+        int size = 50; // Max length for the progress bar
+        char done = '█'; // Character for completed part of the progress bar
+        char todo = '░'; // Character for incomplete part of the progress bar
+        
+        // Calculate percentage completed
+        int complete = (100 * index) / total;
+        int completeLen = size * complete / 100;
+        
+        // Build the progress bar string
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        // Add the done and todo characters to the progress bar
+        for (int i = 0; i < size; i++) {
+            sb.append((i < completeLen) ? done : todo);
+        }
+        
+        // Print the progress bar
+        System.out.print("\r" + sb + "] " + complete + "%");
+
+        // Print a new line once the progress bar reaches 100%
+        if (complete == 100) {
+            System.out.println("\n");
+        }
+    }
+	
+	/**
+     * Prints a welcome message to the console when the program is started.
+     * Displays a greeting with the version of the application.
+     */
+	public static void printWelcomeMessage()
+	{
+		System.out.println();
+		System.out.println("╔════════════════════════════════════╗");
+		System.out.println("║     Welcome to NetSim v1.0         ║");
+		System.out.println("╚════════════════════════════════════╝");
+		System.out.println();
+	}
+}

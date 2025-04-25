@@ -8,8 +8,23 @@ import java.util.Scanner;
 import Devices.Device;
 import Network.Topology;
 
+/**
+ * A menu class that allows the user to manage the network topology, including adding and removing connections
+ * between devices within the network. The user can view a list of devices and interact with them to create or delete connections.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class TopologyMenu {
 	
+	 /**
+     * Allows the user to add a connection between two devices in the network topology.
+     * It presents a list of devices, prompts the user to select the source and target devices, 
+     * and establishes a connection between them in the topology.
+     *
+     * @param scanner - Scanner object to read user input.
+     * @param topology - network topology object that manages the devices and their connections.
+     */
 	public static void addConnection(Scanner scanner,Topology topology) {
 		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    
@@ -36,6 +51,14 @@ public class TopologyMenu {
         topology.connectDevices(source, target);
 	}
 	
+	/**
+     * Allows the user to remove a connection between two devices in the network topology.
+     * It displays a list of connected devices and prompts the user to select the device to disconnect from.
+     * The method then removes the connection between the selected source and target devices in the topology.
+     *
+     * @param scanner - Scanner object to read user input.
+     * @param topology - network topology object that manages the devices and their connections.
+     */
 	public static void removeConnection(Scanner scanner,Topology topology) {
 		List<String> devices = new ArrayList<>(topology.getRegisteredDevices().keySet());
 	    

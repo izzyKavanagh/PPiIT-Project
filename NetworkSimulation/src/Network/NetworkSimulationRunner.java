@@ -14,8 +14,26 @@ import Menus.FreeModeMenu;
 import Menus.GuidedModeMenu;
 import Menus.MainMenu;
 
+/**
+ * The NetworkSimulationRunner class serves as the entry point for simulating a network environment.
+ * It initializes the network topology, manages the network devices, and allows the user to run the 
+ * simulation in different modes (Free Mode or Guided Mode).
+ * The simulation includes tasks like setting up devices, connecting them, and handling network-related operations.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class NetworkSimulationRunner {
 	
+	/**
+	 * Main method to run the network simulation.
+	 * This method initializes the network environment, handles user interaction, and runs the simulation in different modes.
+	 * It also simulates task progress and prints a welcome message before entering the mode selection menu.
+	 *
+	 * @param args Command line arguments (not used in this simulation).
+	 * @throws InterruptedException If the thread is interrupted during the task simulation.
+	 */
 	public static void main(String[] args) throws InterruptedException {
 		// initialize scanner object for reading in data
 		Scanner scanner = new Scanner(System.in);
@@ -25,9 +43,9 @@ public class NetworkSimulationRunner {
 		
 		// create network manager instance to manage connecting devices
 		NetworkManager manager = new NetworkManager(topology);
-		
 		topology.setNetworkManager(manager);
 		
+		// Create lists to store devices for simulation
 		List<Router> routers = new ArrayList<>();
 		List<Switch> switches = new ArrayList<>();
 		List<DHCPServer> dhcpServers = new ArrayList<>();

@@ -8,6 +8,9 @@ import Network.ErrorMessages;
 /**
  * Represents a pool of IP addresses that can be assigned to devices.
  * Manages available IPs within a subnet, along with related metadata like gateway and DNS server.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class IPPool {
 
@@ -133,7 +136,7 @@ public class IPPool {
     }
     
     /**
-     * Validates the input IP range and subnet values & returns appropriate errors
+     * Validates the input IP range and subnet values and returns appropriate errors
      *
      * @param startIP - the starting IP suffix
      * @param endIP - the ending IP suffix

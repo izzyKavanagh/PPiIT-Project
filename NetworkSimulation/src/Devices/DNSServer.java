@@ -7,6 +7,10 @@ import java.util.Scanner;
 /**
  * Represents a DNS server in the network simulation.
  * Responsible for resolving domain names to IP addresses and managing DNS records.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class DNSServer extends Device{
 	
@@ -62,8 +66,8 @@ public class DNSServer extends Device{
      * Adds a new DNS record by accepting user input through the console
      * Associates a domain name with a web server's IP address
      *
-     * @param scanner   a Scanner object used to read user input
-     * @param dnsServer the DNS server to which the record is being added (not strictly necessary)
+     * @param scanner - a Scanner object used to read user input
+     * @param dnsServer - the DNS server to which the record is being added (not strictly necessary)
      */
 	public void addDnsRecord(Scanner scanner, DNSServer dnsServer) {
         System.out.println("Enter domain name:");

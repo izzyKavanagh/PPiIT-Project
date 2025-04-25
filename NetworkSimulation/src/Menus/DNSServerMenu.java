@@ -5,8 +5,25 @@ import java.util.Scanner;
 import Devices.DNSServer;
 import Network.Topology;
 
+/**
+ * The {@code DNSServerMenu} class provides a text-based menu system for managing DNS servers
+ * in a simulated network environment. It allows users to select and configure DNS servers,
+ * set IP addresses, manage DNS records, and view port connections.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class DNSServerMenu {
 	
+	/**
+     * Displays a menu to manage all available DNS servers.
+     * Users can choose a DNS server from the list and perform actions on it.
+     *
+     * @param scanner - {@link Scanner} for capturing user input
+     * @param dnsServers - list of available {@link DNSServer} instances
+     * @param topology - {@link Topology} of the network for port management
+     * @param mode - mode (e.g., guided or free); affects how long the menu stays open
+     */
 	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers, Topology topology, int mode) {
         if (dnsServers.isEmpty()) {
             System.out.println("No DNS servers available.");
@@ -46,6 +63,15 @@ public class DNSServerMenu {
         }while(serverChoice != (dnsServers.size()+1) && mode != 2);
     }
 
+	/**
+     * Displays the management menu for a specific DNS server, allowing configuration
+     * and viewing of DNS records and port connections.
+     *
+     * @param scanner - {@link Scanner} for user input
+     * @param dnsServer - selected {@link DNSServer} to manage
+     * @param topology - {@link Topology} for viewing connections
+     * @param mode - mode (e.g., guided or free); affects loop behavior
+     */
     private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer, Topology topology, int mode) {
     	int choice;
     	
@@ -87,6 +113,12 @@ public class DNSServerMenu {
 		
 	}
     
+    /**
+     * Allows the user to configure or update the IP address of the specified DNS server.
+     *
+     * @param scanner - {@link Scanner} used to read input
+     * @param dnsServer - {@link DNSServer} to configure
+     */
     private static void configureDNSServerIpAddress(Scanner scanner, DNSServer dnsServer) {
 	    String currentIp = dnsServer.getIpAddress();
 	    if (currentIp == null || currentIp.isEmpty()) {

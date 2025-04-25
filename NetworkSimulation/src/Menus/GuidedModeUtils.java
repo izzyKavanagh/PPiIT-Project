@@ -3,8 +3,23 @@ package Menus;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for displaying formatted text boxes in the console.
+ * Provides methods for displaying steps and tips with text wrapping and box drawing.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class GuidedModeUtils {
 
+	/**
+     * Prints a step box with a title and multi-line content.
+     * The content is wrapped to fit within the box and is displayed with a title.
+     *
+     * @param title - The title of the step.
+     * @param lines - The content (steps) to be displayed inside the box.
+     */
 	public static void printStepBox(String title, String... lines) {
         int indent = 4;
         String padding = " ".repeat(indent);
@@ -36,6 +51,12 @@ public class GuidedModeUtils {
         System.out.println(); // Bottom spacing
     }
 
+	/**
+     * Prints a tip box with a given message.
+     * The message is wrapped to fit within the box, which has a fixed width.
+     *
+     * @param message - The tip message to be displayed inside the box.
+     */
 	public static void printTipBox(String message) {
 		int boxWidth = 30;
         int indent = 8;
@@ -57,6 +78,14 @@ public class GuidedModeUtils {
         System.out.println();
 	}
 	
+	/**
+     * Wraps a given line into multiple lines if it exceeds the specified maximum line length.
+     * The line is wrapped at spaces to avoid splitting words.
+     *
+     * @param line - The input line to be wrapped.
+     * @param maxLineLength - The maximum length of each wrapped line.
+     * @return A list of wrapped lines.
+     */
     private static List<String> wrapLine(String line, int maxLineLength) {
         List<String> wrapped = new ArrayList<>();
         while (line.length() > maxLineLength) {
@@ -69,6 +98,13 @@ public class GuidedModeUtils {
         return wrapped;
     }
 
+    /**
+     * Returns the maximum line length from a list of lines.
+     * This is used to calculate the width of the box for the step box.
+     *
+     * @param lines - The list of lines to check for the longest line.
+     * @return The length of the longest line.
+     */
     private static int getMaxLineLength(List<String> lines) {
         int max = 0;
         for (String line : lines) {

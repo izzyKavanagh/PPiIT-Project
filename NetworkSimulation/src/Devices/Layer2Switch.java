@@ -7,6 +7,9 @@ import Network.Topology;
 /**
  * Represents a Layer 2 Switch in the network.
  * This type of switch handles VLAN configuration and port assignments based on VLAN ID
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class Layer2Switch extends Switch{
 	

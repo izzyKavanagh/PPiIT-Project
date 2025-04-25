@@ -9,6 +9,9 @@ import java.util.Set;
 /**
  * Abstract class representing a generic network device.
  * Provides common attributes and methods used by all types of devices.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 
 public abstract class Device {

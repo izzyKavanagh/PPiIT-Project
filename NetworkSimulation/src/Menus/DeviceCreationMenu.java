@@ -1,6 +1,6 @@
 package Menus;
 
-import java.util.List;
+import java.util.List; 
 import java.util.Scanner;
 
 import Devices.Computer;
@@ -14,11 +14,34 @@ import Devices.Switch;
 import Devices.WebServer;
 import Network.Topology;
 
+/**
+ * The DeviceCreationMenu class provides a user interface through the console
+ * for creating various types of network devices (Router, Switch, Server, etc.)
+ * and adding them to the network topology.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class DeviceCreationMenu {
 
+	/**
+     * Displays a console menu for creating network devices, collects user input,
+     * instantiates the chosen device type, assigns it a unique MAC address, 
+     * and adds it to the corresponding device list and network topology.
+     *
+     * @param scanner - the {@link Scanner} object for reading user input
+     * @param topology - the {@link Topology} representing the network
+     * @param routers - list of all {@link Router} devices in the network
+     * @param computers - list of all {@link Computer} devices in the network
+     * @param switches - list of all {@link Switch} devices in the network (Layer2 and Layer3)
+     * @param dhcpServers - list of all {@link DHCPServer} devices in the network
+     * @param dnsServers - list of all {@link DNSServer} devices in the network
+     * @param webServers - list of all {@link WebServer} devices in the network
+     */
 	public static void createDevice(Scanner scanner, Topology topology, List<Router> routers, List<Computer> computers,
 			List<Switch> switches, List<DHCPServer> dhcpServers, List<DNSServer> dnsServers, List<WebServer> webServers)
 	{
+		// Display the device creation menu
 		System.out.println("\n╔════════════════════════════════════════════╗");
 	    System.out.println("║        🛠️  DEVICE CREATION MENU            ║");
 	    System.out.println("╚════════════════════════════════════════════╝");

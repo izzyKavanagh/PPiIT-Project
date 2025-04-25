@@ -6,8 +6,25 @@ import java.util.Scanner;
 import Devices.Router;
 import Network.Topology;
 
+/**
+ * A menu class for managing routers in the network simulation. This class provides options
+ * to configure IP addresses, VLAN interfaces, IP helper addresses, and port assignments.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class RouterMenu {
 	
+	/**
+     * Displays the router management menu and allows the user to select a router to manage.
+     * Once a router is selected, the user can configure the router's settings.
+     *
+     * @param routers - list of routers available in the network.
+     * @param scanner - scanner object for reading user input.
+     * @param topology - network topology object for network configuration.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu may not be fully interactive.
+     */
 	public static void manageRouters(List<Router> routers, Scanner scanner, Topology topology, int mode) { 
 		if (routers.isEmpty()) {
 	        System.out.println("No routers available in the network.");
@@ -35,6 +52,15 @@ public class RouterMenu {
 		configureRouter(selectedRouter, scanner, topology, mode);
 	}
 	
+	/**
+     * Configures the settings of a selected router. This method allows the user to configure IP addresses,
+     * VLAN interfaces, DHCP settings, port IP assignments, and view port connections.
+     *
+     * @param router - selected router to configure.
+     * @param scanner - scanner object for reading user input.
+     * @param topology - network topology object for network configuration.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu may not be fully interactive.
+     */
 	private static void configureRouter(Router router, Scanner scanner, Topology topology, int mode) {
 		
 		int choice;
@@ -110,6 +136,13 @@ public class RouterMenu {
 		
 	}
 	
+	/**
+     * Configures the IP address for the selected router. This method allows the user to view and change
+     * the router's IP address.
+     *
+     * @param scanner - scanner object for reading user input.
+     * @param router - router whose IP address is to be configured.
+     */
 	private static void configureRouterIpAddress(Scanner scanner, Router router) {
 	    String currentIp = router.getIpAddress();
 	    if (currentIp == null || currentIp.isEmpty()) {

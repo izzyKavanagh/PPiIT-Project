@@ -1,0 +1,136 @@
+package Menus;
+
+import java.util.List;
+import java.util.Scanner;
+import Devices.DNSServer;
+import Network.Topology;
+
+/**
+ * The {@code DNSServerMenu} class provides a text-based menu system for managing DNS servers
+ * in a simulated network environment. It allows users to select and configure DNS servers,
+ * set IP addresses, manage DNS records, and view port connections.
+ */
+public class DNSServerMenu {
+	
+	/**
+     * Displays a menu to manage all available DNS servers.
+     * Users can choose a DNS server from the list and perform actions on it.
+     *
+     * @param scanner - {@link Scanner} for capturing user input
+     * @param dnsServers - list of available {@link DNSServer} instances
+     * @param topology - {@link Topology} of the network for port management
+     * @param mode - mode (e.g., guided or free); affects how long the menu stays open
+     */
+	public static void manageDNSServers(Scanner scanner, List<DNSServer> dnsServers, Topology topology, int mode) {
+        if (dnsServers.isEmpty()) {
+            System.out.println("No DNS servers available.");
+            return;
+        }
+
+        int serverChoice;
+        
+        do
+        {
+        	System.out.println("\n╔═══════════════════════════════════╗");
+            System.out.println("║          DNS Server List          ║");
+            System.out.println("╠═══════════════════════════════════╣");
+
+            for (int i = 0; i < dnsServers.size(); i++) {
+                System.out.printf("║ %2d. %-29s ║\n", (i + 1), dnsServers.get(i).getName());
+            }
+
+            System.out.printf("║ %2d. %-29s ║\n", (dnsServers.size() + 1), "Return to Main Menu");
+            System.out.println("╚═══════════════════════════════════╝");
+            System.out.print("Select a DNS server to manage: ");
+
+            serverChoice = Integer.parseInt(scanner.nextLine());
+
+            if (serverChoice == dnsServers.size() + 1) {
+                return;
+            }
+
+            if (serverChoice < 1 || serverChoice > dnsServers.size()) {
+                System.out.println("Invalid selection. Please try again.");
+                continue;
+            }
+
+            DNSServer selectedServer = dnsServers.get(serverChoice - 1);
+            manageSingleDNSServer(scanner, selectedServer, topology, mode);
+            
+        }while(serverChoice != (dnsServers.size()+1) && mode != 2);
+    }
+
+	/**
+     * Displays the management menu for a specific DNS server, allowing configuration
+     * and viewing of DNS records and port connections.
+     *
+     * @param scanner - {@link Scanner} for user input
+     * @param dnsServer - selected {@link DNSServer} to manage
+     * @param topology - {@link Topology} for viewing connections
+     * @param mode - mode (e.g., guided or free); affects loop behavior
+     */
+    private static void manageSingleDNSServer(Scanner scanner, DNSServer dnsServer, Topology topology, int mode) {
+    	int choice;
+    	
+    	do
+    	{
+    		System.out.println("\n╔════════════════════════════════════╗");
+            System.out.printf("║   Managing DNS Server: " + dnsServer.getName());
+            System.out.println("╠════════════════════════════════════╣");
+            System.out.println("║ 1. Configure Server IP Address     ║");
+            System.out.println("║ 2. Add DNS Record                  ║");
+            System.out.println("║ 3. View All Records                ║");
+            System.out.println("║ 4. View port connections           ║");
+            System.out.println("║ 5. Return to DNS Server List       ║");
+            System.out.println("╚════════════════════════════════════╝");
+            System.out.print("Select an option: ");
+
+            choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+            	case 1:
+            		configureDNSServerIpAddress(scanner, dnsServer);
+            		break;
+                case 2:
+                	dnsServer.addDnsRecord(scanner,dnsServer);
+                    break;
+                case 3:
+                    dnsServer.printDnsRecords();
+                    break;
+                case 4:
+                	topology.printPortConnections(dnsServer);
+                case 5:
+                	System.out.println("Exiting DNS Server Menu...");
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }while(choice!=5 && mode != 2);
+		
+	}
+    
+    /**
+     * Allows the user to configure or update the IP address of the specified DNS server.
+     *
+     * @param scanner - {@link Scanner} used to read input
+     * @param dnsServer - {@link DNSServer} to configure
+     */
+    private static void configureDNSServerIpAddress(Scanner scanner, DNSServer dnsServer) {
+	    String currentIp = dnsServer.getIpAddress();
+	    if (currentIp == null || currentIp.isEmpty()) {
+	        System.out.println("Current IP Address: IP not set");
+	    } else {
+	        System.out.println("Current IP Address: " + currentIp);
+	    }
+
+	    System.out.print("Would you like to set a new IP address? (Y/N): ");
+	    String response = scanner.nextLine().trim().toLowerCase();
+	    if (response.equalsIgnoreCase("Y")) {
+	        System.out.print("Enter new IP address: ");
+	        String newIp = scanner.nextLine();
+	        dnsServer.setIpAddress(newIp);
+	        System.out.println("IP address updated to: " + newIp);
+	    }
+	}
+}

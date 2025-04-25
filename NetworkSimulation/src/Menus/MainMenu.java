@@ -1,7 +1,18 @@
 package Menus;
 
+/**
+ * Utility class to display the main menu and progress bar in a console-based application.
+ * Provides methods for printing the main menu, progress bar, and a welcome message.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class MainMenu {
 
+	 /**
+     * Prints the main menu with different options for the user to choose from.
+     * This menu displays options related to managing devices, servers, and connections.
+     */
 	public static void printMainMenu()
 	{
 		System.out.println("\n╔════════════════════════════════════════════╗");
@@ -22,6 +33,13 @@ public class MainMenu {
 	    System.out.print("Enter your choice: ");
 	}
 	
+	/**
+     * Prints a progress bar to the console, showing the completion percentage.
+     * The progress bar is dynamically updated based on the current index and total.
+     *
+     * @param index The current step or progress point.
+     * @param total The total number of steps or progress points.
+     */
 	public static void printProgress(int index, int total) {
         if (index > total) return; // Out of range
         int size = 50; // Max length for the progress bar
@@ -50,6 +68,10 @@ public class MainMenu {
         }
     }
 	
+	/**
+     * Prints a welcome message to the console when the program is started.
+     * Displays a greeting with the version of the application.
+     */
 	public static void printWelcomeMessage()
 	{
 		System.out.println();

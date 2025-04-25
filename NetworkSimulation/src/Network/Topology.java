@@ -13,19 +13,45 @@ import Devices.Computer;
 import Devices.Device;
 import Devices.Switch;
 
+/**
+ * The Topology class manages the network topology, registering devices, connecting and disconnecting devices,
+ * and maintaining the adjacency list to represent the device network structure.
+ * It also provides methods to check connections between devices and display port connections.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class Topology {
 	
+	// Network topology represented by a map of device names to their port mappings
 	private Map<String, Map<String, Device>> networkTopology = new HashMap<>();
+	// Map to store all registered devices
 	private Map<String, Device> registeredDevices = new HashMap<String, Device>();
+	// Adjacency list for device connections
 	private Map<String, List<String>> adjacencyList = new HashMap<String, List<String>>();
+	// Reference to the network manager instance
 	private NetworkManager manager;
 
+	/**
+	 * Default constructor for the Topology class.
+	 */
 	public Topology(){}
 	
+	/**
+	 * Sets the network manager for the topology.
+	 * 
+	 * @param manager The NetworkManager instance to manage network operations.
+	 */
 	public void setNetworkManager(NetworkManager manager) {
 		this.manager = manager;
 	}
 	
+	/**
+	 * Registers a device in the network topology.
+	 * Each device is assigned a map of ports that are initially set to null.
+	 * 
+	 * @param device The device to register in the topology.
+	 */
 	public void registerDevice(Device device) {
 		if (!networkTopology.containsKey(device.getName())) {
 	        Map<String, Device> portMap = new HashMap<>();
@@ -37,6 +63,14 @@ public class Topology {
 	    }
 	}
 
+	/**
+	 * Connects two devices by assigning available ports to each other.
+	 * If either device is not registered or doesn't have available ports, the connection will not be established.
+	 * Also sets VLAN IDs if the source device is a Switch.
+	 * 
+	 * @param source The source device to connect.
+	 * @param target The target device to connect to the source device.
+	 */
 	public void connectDevices(Device source, Device target) {
 		
 		if (source.equals(target)) {
@@ -105,6 +139,13 @@ public class Topology {
 	    return;
 	}
 	
+	/**
+	 * Disconnects two devices by removing the connection between them.
+	 * 
+	 * @param source The source device to disconnect.
+	 * @param target The target device to disconnect from the source device.
+	 * @return True if the disconnection was successful, false otherwise.
+	 */
 	public boolean disconnectDevices(Device source, Device target) {
 		Map<String, Device> sourcePorts = networkTopology.get(source.getName());
 	    Map<String, Device> targetPorts = networkTopology.get(target.getName());
@@ -143,6 +184,12 @@ public class Topology {
 	    return true;
 	}
 	
+	/**
+	 * Updates the adjacency list based on the current connections in the network topology.
+	 * This list represents the network graph, where each device is connected to its neighboring devices.
+	 * 
+	 * @return The updated adjacency list.
+	 */
 	public Map<String, List<String>> updateAdjacencyList(){
 		// loop over key/value pairs in the topology map
 		for (Map.Entry<String, Map<String, Device>> entry : networkTopology.entrySet()) {
@@ -168,6 +215,9 @@ public class Topology {
 		return adjacencyList;
 	}
 	
+	/**
+	 * Prints the network's adjacency list, which shows the devices connected to each device.
+	 */
 	public void printAdjacencyList()
 	{
 		System.out.println("\nNetwork Topology Adjacency List:");
@@ -176,6 +226,13 @@ public class Topology {
 	    }
 	}
 	
+	/**
+	 * Searches for a connected device of a specific type starting from the given device.
+	 * 
+	 * @param startDevice The device to start the search from.
+	 * @param targetType The target device type to search for (e.g., Computer, Switch).
+	 * @return The found connected device of the target type, or null if not found.
+	 */
 	public Device checkIfConnected(Device startDevice, Class<?> targetType) {
 		// set to track visited devices -> to ensure same device isn't revisited multiple times
 	    Set<String> visitedDevices = new HashSet<>();
@@ -222,6 +279,13 @@ public class Topology {
 	    return null;
 	}
 	
+	/**
+	 * Searches for a device by name in the network starting from a given device.
+	 * 
+	 * @param startDevice The device to start the search from.
+	 * @param targetDeviceName The name of the target device to find.
+	 * @return The device found, or null if not found.
+	 */
 	public Device findConnectedDeviceByName(Device startDevice, String targetDeviceName) {
 		// set to track visited devices -> to ensure same device isn't revisited multiple times
 	    Set<String> visitedDevices = new HashSet<>();
@@ -268,6 +332,13 @@ public class Topology {
 	    return null;
 	}
 	
+	/**
+	 * Searches for a device by its IP address in the network starting from a given device.
+	 * 
+	 * @param startDevice The device to start the search from.
+	 * @param targetDeviceIP The IP address of the target device to find.
+	 * @return The device found, or null if not found.
+	 */
 	public Device findConnectedDeviceByIP(Device startDevice, String targetDeviceIP) {
 		// set to track visited devices -> to ensure same device isn't revisited multiple times
 	    Set<String> visitedDevices = new HashSet<>();
@@ -314,6 +385,13 @@ public class Topology {
 	    return null;
 	}
 	
+	/**
+	 * Prints the port connections of a given device in the network topology.
+	 * It shows the port names and the names of the devices connected to those ports. 
+	 * If a port is empty (not connected), it will display "Empty".
+	 *
+	 * @param device The device whose port connections will be printed.
+	 */
 	public void printPortConnections(Device device) {
 		String deviceName = device.getName();
 	    Map<String, Device> ports = networkTopology.get(deviceName); 
@@ -336,14 +414,32 @@ public class Topology {
         System.out.println("+--------+-------------------+\n");
     }
 
+	/**
+	 * Retrieves the map of all registered devices in the network.
+	 * The map contains device names as keys and the corresponding Device objects as values.
+	 * 
+	 * @return A map of registered devices with the device name as the key and Device object as the value.
+	 */
 	public Map<String, Device> getRegisteredDevices() {
 		return registeredDevices;
 	}
 	
+	/**
+	 * Retrieves the entire network topology.
+	 * The map contains device names as keys, with each device's ports mapped to connected devices.
+	 * 
+	 * @return A map representing the network topology, where each device's ports are mapped to other devices.
+	 */
 	public Map<String, Map<String, Device>> getTopology() {
 		return networkTopology;
 	}
 	
+	/**
+	 * Retrieves a device from the network by its IP address.
+	 * 
+	 * @param ipAddress The IP address of the device to search for.
+	 * @return The device with the given IP address, or null if no such device exists.
+	 */
 	public Device getDeviceByIp(String ipAddress) {
 	    for (Device device : registeredDevices.values()) {
 	        if (ipAddress.equals(device.getIpAddress())) {

@@ -3,6 +3,10 @@ package DeviceComponents;
 /**
  * Represents a VLAN interface on a network device.
  * Stores an IP address and an optional IP helper address (used for forwarding DHCP requests)
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class VLANInterface {
 	

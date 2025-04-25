@@ -2,6 +2,10 @@ package Devices;
 
 /**
  * Represents a basic Web Server device that can serve content to users
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class WebServer extends Device{
 

@@ -9,13 +9,35 @@ import Devices.Layer2Switch;
 import Devices.Layer3Switch;
 import Devices.Router;
 
+/**
+ * NetworkManager is responsible for managing network-related tasks,
+ * including static IP allocation, finding Layer 3 devices, and finding DHCP servers.
+ * It interacts with the network topology to assign IPs to devices and configure networking
+ * settings based on network topology.
+ * 
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class NetworkManager {
 	private Topology topology;
 	
+	/**
+     * Constructor for NetworkManager, initializing it with a given network topology.
+     * 
+     * @param topology - network topology that this manager will operate on.
+     */
 	public NetworkManager(Topology topology) {
         this.topology = topology;
     }
 
+	/**
+     * Allocates a static IP address to the specified device.
+     * The IP address is assigned by a connected router, if one exists.
+     * If no router is connected, an error message is displayed.
+     * 
+     * @param device - device that needs a static IP allocation.
+     */
     public void useStaticIpAllocation(Device device) {
     	
     	topology.updateAdjacencyList();
@@ -36,7 +58,13 @@ public class NetworkManager {
     	
     }
    
-    //method to check if there is a layer 3 device connected to device & get corresponding VLAN interface & check if there is IP helper
+    /**
+     * Finds the first connected Layer 3 device (either a Layer 3 Switch or a Router) 
+     * and retrieves the corresponding VLAN interface information, including the gateway IP and helper IP.
+     * 
+     * @param device - device for which to find the Layer 3 device and retrieve network settings.
+     * @return The helper IP address associated with the device's VLAN, or null if not found.
+     */
     public String findLayer3Device(Device device) 
     {	
     	String gatewayIP, helperIP;
@@ -105,7 +133,14 @@ public class NetworkManager {
     	return null;
     }
     
-    //method to find connected DHCP & give pc/device IP from pool w/ same gateway IP
+    /**
+     * Finds the DHCP server in the network and assigns an IP address to the device 
+     * based on the DHCP server's configuration, provided the helper IP matches the VLAN's gateway IP.
+     * 
+     * @param device - device requesting a dynamic IP.
+     * @param gatewayIP - gateway IP address for the device.
+     * @param helperIP - helper IP address for the VLAN.
+     */
     public void findDHCPServer(Device device, String gatewayIP, String helperIP) {
     	
     	Device connectedDHCP = topology.checkIfConnected(device, DHCPServer.class);
@@ -133,6 +168,11 @@ public class NetworkManager {
     	}
     }
 
+    /**
+     * Retrieves the network topology associated with this NetworkManager.
+     * 
+     * @return The current network topology.
+     */
     public Topology getTopology() {
         return topology;
     }

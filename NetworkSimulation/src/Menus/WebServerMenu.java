@@ -5,8 +5,26 @@ import java.util.Scanner;
 import Devices.WebServer;
 import Network.Topology;
 
+/**
+ * A menu class that allows the user to manage web servers in the network. 
+ * It enables the user to configure server settings, manage website content, 
+ * view port connections, and more.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class WebServerMenu {
 	
+	 /**
+     * Displays a list of available web servers and allows the user to manage a selected server.
+     * The user can select a web server to configure its IP, set website content, 
+     * view the website content, and more.
+     * 
+     * @param scanner - Scanner object to read user input.
+     * @param webServers - list of WebServer objects to be managed.
+     * @param topology - network topology object that manages connections between devices.
+     * @param mode - mode of operation (used to control the flow of the menu).
+     */
 	public static void manageWebServers(Scanner scanner, List<WebServer> webServers, Topology topology, int mode) {
         if (webServers.isEmpty()) {
             System.out.println("No Web servers available.");
@@ -45,6 +63,15 @@ public class WebServerMenu {
         }while (serverChoice != (webServers.size() + 1) && mode != 2);
     }
 
+	/**
+     * Manages a single web server by displaying a menu of options such as configuring its IP address,
+     * setting website content, viewing website content, and more.
+     * 
+     * @param scanner - Scanner object to read user input.
+     * @param webServer - WebServer object to be managed.
+     * @param topology - network topology object that manages connections between devices.
+     * @param mode - mode of operation (used to control the flow of the menu).
+     */
     private static void manageSingleWebServer(Scanner scanner, WebServer webServer, Topology topology, int mode) {
     	int choice;
     	
@@ -89,6 +116,13 @@ public class WebServerMenu {
 		
 	}
     
+    /**
+     * Configures the IP address of a web server. The user is given the option to 
+     * set a new IP address or keep the current one.
+     * 
+     * @param scanner - Scanner object to read user input.
+     * @param webServer - WebServer object whose IP address is to be configured.
+     */
     private static void configureWebServerIpAddress(Scanner scanner, WebServer webServer) {
 	    String currentIp = webServer.getIpAddress();
 	    if (currentIp == null || currentIp.isEmpty()) {

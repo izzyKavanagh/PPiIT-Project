@@ -12,6 +12,9 @@ import Network.ErrorMessages;
  * Represents a DHCP server in the network simulation
  * Responsible for configuring IP pools, assigning IP addresses to devices,
  * and managing the availability of IP addresses within defined pools.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class DHCPServer extends Device{
 

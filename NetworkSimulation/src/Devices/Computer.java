@@ -7,6 +7,9 @@ import Network.Topology;
  * Represents a Computer device in the network.
  * A Computer can send and receive messages, make ARP requests,
  * and visit domains by resolving them via DNS.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
  */
 public class Computer extends Device{
 	
@@ -116,12 +119,12 @@ public class Computer extends Device{
 	}
 	
 	/**
-     * Visits a website by resolving a domain name through the connected DNS server.
-     * If the domain is successfully resolved, requests content from the WebServer.
+     * Visits a website by resolving a domain name through the connected DNS server
+     * If the domain is successfully resolved -> requests content from the WebServer
      *
-     * @param topology the current network topology
-     * @param domain   the domain name to resolve
-     * @param pc       the requesting computer
+     * @param topology - the current network topology
+     * @param domain - the domain name to resolve
+     * @param pc - the requesting computer
      */
 	public void visitDomain(Topology topology, String domain, Computer pc) {
         

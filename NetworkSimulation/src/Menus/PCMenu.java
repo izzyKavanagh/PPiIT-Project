@@ -6,8 +6,25 @@ import Devices.Computer;
 import Network.NetworkManager;
 import Network.Topology;
 
+/**
+ * A menu class for managing PCs in the network simulation. This class provides options
+ * for managing PC configurations such as IP address, DNS server, DHCP, and sending messages.
+ * 
+ * @author Izzy Kavanagh
+ * @version 1.0
+ */
 public class PCMenu {
 	
+	/**
+     * Manages the interaction with the PC menu, allowing users to select a PC and configure its settings.
+     * This method provides options for enabling/disabling DHCP, setting DNS, viewing port connections,
+     * sending messages, and other PC-related settings.
+     *
+     * @param scanner - scanner object to read user input.
+     * @param computers - list of computers available in the network to manage.
+     * @param manager - network manager for interacting with network topology.
+     * @param mode - mode of operation for the menu. If mode is 2, the menu may not be fully interactive.
+     */
 	public static void managePCs(Scanner scanner, List<Computer> computers, NetworkManager manager, int mode) {
 		
 		int pcChoice;
@@ -76,6 +93,15 @@ public class PCMenu {
 	    }while(pcChoice != (computers.size() + 1) && mode != 2);
 	}
 
+	/**
+     * Configures the selected PC's settings. This method allows configuring IP addresses, DHCP settings,
+     * DNS settings, sending messages, and viewing port connections.
+     *
+     * @param scanner - scanner object to read user input.
+     * @param computers - list of computers available in the network to manage.
+     * @param pc - selected computer that needs to be configured.
+     * @param manager - network manager to interact with network topology.
+     */
 	private static void configurePC(Scanner scanner, List<Computer> computers, Computer pc, NetworkManager manager) {
 		
 		Topology topology = manager.getTopology();
